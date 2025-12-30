@@ -1,119 +1,166 @@
 {{ define "main" }}
 
-<!-- Hero Section -->
-<section class="hero" id="hero">
-  <div class="hero-content">
-    <h1>XEarthLayer</h1>
-    <p class="hero-tagline">{{ site.Params.tagline }}</p>
-    <div class="hero-buttons">
-      <a href="#download" class="btn btn-primary">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="7 10 12 15 17 10"/>
-          <line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-        Download v{{ site.Params.latestVersion }}
-      </a>
-      <a href="{{ site.Params.github }}" class="btn btn-secondary" target="_blank" rel="noopener">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-        </svg>
-        View on GitHub
-      </a>
-    </div>
+<!-- Video Hero Section -->
+<section class="hero-video" id="hero">
+  <!-- Video background (placeholder: shows poster image) -->
+  <video class="hero-video__bg" autoplay muted loop playsinline poster="/images/hero-poster.svg">
+    <source src="/video/hero.webm" type="video/webm">
+    <source src="/video/hero.mp4" type="video/mp4">
+  </video>
 
-    <!-- Computer Display Mockup -->
-    <div class="display-mockup">
-      <div class="display-frame">
-        <div class="display-bezel">
-          <div class="display-screen">
-            <img src="/images/hero-screenshot.jpg" alt="X-Plane with XEarthLayer satellite scenery" loading="lazy">
-          </div>
-        </div>
+  <!-- Glassmorphism card overlay -->
+  <div class="hero-video__overlay">
+    <div class="hero-video__card" id="hero-card">
+      <h1>XEarthLayer</h1>
+      <p class="hero-video__tagline">{{ site.Params.tagline }}</p>
+      <div class="hero-video__buttons">
+        <a href="#download" class="btn btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download v{{ site.Params.latestVersion }}
+        </a>
+        <a href="{{ site.Params.github }}" class="btn btn-secondary" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          View on GitHub
+        </a>
       </div>
-      <div class="display-stand"></div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="hero-video__scroll-hint">
+    <span>Scroll to explore</span>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </div>
+
+  <!-- Monitor frame (fades in during scroll transition) -->
+  <div class="hero-video__monitor" id="hero-monitor">
+    <div class="monitor-glow"></div>
+    <div class="monitor-frame">
+      <div class="monitor-screen"></div>
     </div>
   </div>
 </section>
 
-<!-- Features Section -->
-<section class="features" id="features">
-  <div class="container">
-    <div class="section-header">
+<!-- Features Scrollytelling Section -->
+<section class="features-scroll" id="features">
+  <!-- Progress dots navigation -->
+  <nav class="features-progress" id="features-progress" aria-label="Feature navigation">
+    <button class="features-progress__dot active" data-feature="providers" aria-label="Multiple Providers"></button>
+    <button class="features-progress__dot" data-feature="loading" aria-label="Optimized Loading"></button>
+    <button class="features-progress__dot" data-feature="caching" aria-label="Smart Caching"></button>
+    <button class="features-progress__dot" data-feature="prefetch" aria-label="Predictive Prefetch"></button>
+    <button class="features-progress__dot" data-feature="dashboard" aria-label="Real-Time Dashboard"></button>
+    <button class="features-progress__dot" data-feature="packages" aria-label="Package Management"></button>
+  </nav>
+
+  <!-- Feature panels (left side) -->
+  <div class="features-scroll__content">
+    <div class="features-scroll__header">
       <h2>Download Only What You Need</h2>
       <p>XEarthLayer streams satellite imagery just-in-time as you fly. Only the scenery you see gets downloaded.</p>
     </div>
 
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="2" y1="12" x2="22" y2="12"/>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-          </svg>
-        </div>
-        <h3>Mutltiple Ortho Providers</h3>
-        <p>Choose from Apple, ArcGIS, Bing, Google, MapBox, or USGS. Most are free to use.</p>
+    <article class="feature-panel" data-feature="providers">
+      <div class="feature-panel__icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
       </div>
+      <h3>Multiple Ortho Providers</h3>
+      <p>Choose from Apple, ArcGIS, Bing, Google, MapBox, or USGS. Most are free to use.</p>
+    </article>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-          </svg>
-        </div>
-        <h3>Optimized Initial Loading</h3>
-        <p>Intelligent tile prefetching and cache warming get you flying sooner.</p>
+    <article class="feature-panel" data-feature="loading">
+      <div class="feature-panel__icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
       </div>
+      <h3>Optimized Initial Loading</h3>
+      <p>Intelligent tile prefetching and cache warming get you flying sooner.</p>
+    </article>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-            <line x1="12" y1="22.08" x2="12" y2="12"/>
-          </svg>
-        </div>
-        <h3>Smart Caching</h3>
-        <p>Two-tier cache system stores scenery in memory to reduce stuttering. Storage cache saves downloading scenery multiple times.</p>
+    <article class="feature-panel" data-feature="caching">
+      <div class="feature-panel__icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
       </div>
+      <h3>Smart Caching</h3>
+      <p>Two-tier cache system stores scenery in memory to reduce stuttering. Storage cache saves downloading scenery multiple times.</p>
+    </article>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-            <polyline points="22 4 12 14.01 9 11.01"/>
-          </svg>
-        </div>
-        <h3>Predictive Prefetching</h3>
-        <p>Uses X-Plane telemetry to prefetch tiles ahead of your aircraft. Smoother experience with fewer pop-ins during flight.</p>
+    <article class="feature-panel" data-feature="prefetch">
+      <div class="feature-panel__icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
       </div>
+      <h3>Predictive Prefetching</h3>
+      <p>Uses X-Plane telemetry to prefetch tiles ahead of your aircraft. Smoother experience with fewer pop-ins during flight.</p>
+    </article>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <line x1="3" y1="9" x2="21" y2="9"/>
-            <line x1="9" y1="21" x2="9" y2="9"/>
-          </svg>
-        </div>
-        <h3>Real-Time Dashboard</h3>
-        <p>Live dashboard with cache stats, download metrics, GPS position, and pipeline health. Know exactly what's happening.</p>
+    <article class="feature-panel" data-feature="dashboard">
+      <div class="feature-panel__icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="9" y1="21" x2="9" y2="9"/>
+        </svg>
       </div>
+      <h3>Real-Time Dashboard</h3>
+      <p>Live dashboard with cache stats, download metrics, GPS position, and pipeline health. Know exactly what's happening.</p>
+    </article>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-          </svg>
-        </div>
-        <h3>Package Management</h3>
-        <p>Install, update, and remove regional scenery packages with simple commands. Built-in publisher tools for content creators.</p>
+    <article class="feature-panel" data-feature="packages">
+      <div class="feature-panel__icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        </svg>
       </div>
+      <h3>Package Management</h3>
+      <p>Install, update, and remove regional scenery packages with simple commands. Built-in publisher tools for content creators.</p>
+    </article>
+  </div>
+
+  <!-- Sticky monitor (right side) -->
+  <div class="features-scroll__monitor" id="features-monitor">
+    <div class="monitor-glow"></div>
+    <div class="monitor-frame">
+      <img class="monitor-screen active" data-feature="providers" src="/images/features/providers.svg" alt="Multiple imagery providers">
+      <img class="monitor-screen" data-feature="loading" src="/images/features/loading.svg" alt="Fast initial loading">
+      <img class="monitor-screen" data-feature="caching" src="/images/features/caching.svg" alt="Smart caching system">
+      <img class="monitor-screen" data-feature="prefetch" src="/images/features/prefetch.svg" alt="Predictive prefetching">
+      <img class="monitor-screen" data-feature="dashboard" src="/images/features/dashboard.svg" alt="Real-time dashboard">
+      <img class="monitor-screen" data-feature="packages" src="/images/features/packages.svg" alt="Package management">
     </div>
   </div>
 </section>
+
+<!-- Fallback features grid for no-JS -->
+<noscript>
+  <style>
+    .features-scroll { display: block !important; }
+    .features-scroll__content { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important; gap: 2rem !important; padding: 4rem 2rem !important; }
+    .features-scroll__monitor { display: none !important; }
+    .features-progress { display: none !important; }
+    .feature-panel { min-height: auto !important; opacity: 1 !important; }
+    .hero-video__monitor { display: none !important; }
+  </style>
+</noscript>
 
 <!-- Download Section -->
 <section class="download" id="download">
