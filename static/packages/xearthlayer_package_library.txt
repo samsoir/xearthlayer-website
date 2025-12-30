@@ -1,0 +1,6 @@
+# XEarthLayer Package Library
+# This file is synced from https://github.com/samsoir/xearthlayer-regional-scenery
+# Format: region_code|name|version|metadata_url|description
+
+# Placeholder - this file will be populated by GitHub Actions
+# from the xearthlayer-regional-scenery repository

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="{{ site.Language.LanguageCode }}" dir="{{ or site.Language.LanguageDirection `ltr` }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  <header class="site-header">
+    {{ partial "header.html" . }}
+  </header>
+  <div class="docs-layout">
+    <aside class="docs-sidebar">
+      <nav>
+        <ul class="docs-nav">
+          {{ $currentPage := . }}
+          {{ range (where site.RegularPages "Section" "docs").ByWeight }}
+          <li>
+            <a href="{{ .RelPermalink }}" {{ if eq .RelPermalink $currentPage.RelPermalink }}class="active"{{ end }}>
+              {{ .Title }}
+            </a>
+          </li>
+          {{ end }}
+        </ul>
+      </nav>
+    </aside>
+    <main class="docs-content">
+      {{ block "main" . }}{{ end }}
+    </main>
+  </div>
+  <footer class="site-footer">
+    {{ partial "footer.html" . }}
+  </footer>
+</body>
+</html>

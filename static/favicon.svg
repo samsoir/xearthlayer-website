@@ -1,0 +1,29 @@
+<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- XEarthLayer Favicon - Three stacked isometric tile layers -->
+
+  <!-- DSF LAYER (Bottom) - dark with subtle dots -->
+  <g transform="translate(2, 18)">
+    <polygon points="0,7 14,0 28,7 14,14" fill="#313244"/>
+    <polygon points="0,7 0,10 14,17 14,14" fill="#1e1e2e"/>
+    <polygon points="14,14 14,17 28,10 28,7" fill="#181825"/>
+  </g>
+
+  <!-- TER LAYER (Middle) - with mauve tint -->
+  <g transform="translate(2, 12)">
+    <polygon points="0,7 14,0 28,7 14,14" fill="#45475a"/>
+    <polygon points="0,7 0,10 14,17 14,14" fill="#313244"/>
+    <polygon points="14,14 14,17 28,10 28,7" fill="#313244"/>
+    <!-- Subtle wireframe hint -->
+    <line x1="7" y1="7" x2="21" y2="7" stroke="#cba6f7" stroke-width="0.5" opacity="0.5"/>
+  </g>
+
+  <!-- ORTHO LAYER (Top) - green with brown earth edges -->
+  <g transform="translate(2, 6)">
+    <polygon points="0,7 14,0 28,7 14,14" fill="#a6e3a1"/>
+    <polygon points="0,7 0,10 14,17 14,14" fill="#7c5c3e"/>
+    <polygon points="14,14 14,17 28,10 28,7" fill="#5c4030"/>
+    <!-- Grass edge hint -->
+    <polygon points="0,7 0,8 14,15 14,14" fill="#87c57a"/>
+  </g>
+
+</svg>

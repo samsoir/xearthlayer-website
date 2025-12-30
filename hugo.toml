@@ -1,0 +1,51 @@
+baseURL = 'https://xearthlayer.app/'
+languageCode = 'en-us'
+title = 'XEarthLayer'
+theme = 'xearthlayer'
+
+[params]
+  description = "Stunning photoreal scenery for X-Plane 12. Download only what you need, when you need it."
+  tagline = "Stunning photoreal scenery for X-Plane 12"
+  author = "XEarthLayer Contributors"
+  github = "https://github.com/samsoir/xearthlayer"
+  discord = ""  # Add Discord invite link
+  kofi = ""     # Add Ko-fi page URL
+
+  # Latest release info (update on each release)
+  latestVersion = "0.2.9"
+  releaseDate = "2025-12-28"
+
+  # Package library
+  packageLibraryUrl = "/packages/xearthlayer_package_library.txt"
+
+[menu]
+  [[menu.main]]
+    name = "Features"
+    url = "/#features"
+    weight = 1
+  [[menu.main]]
+    name = "Download"
+    url = "/#download"
+    weight = 2
+  [[menu.main]]
+    name = "Docs"
+    url = "/docs/"
+    weight = 3
+  [[menu.main]]
+    name = "Community"
+    url = "/#community"
+    weight = 4
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    style = "catppuccin-mocha"
+    lineNos = true
+    lineNumbersInTable = true
+
+[outputs]
+  home = ["HTML"]
+  section = ["HTML"]
+  page = ["HTML"]

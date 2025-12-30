@@ -1,0 +1,15 @@
+{{ define "main" }}
+<article>
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+
+  <div class="docs-index">
+    {{ range (where site.RegularPages "Section" "docs").ByWeight }}
+    <div class="docs-index-item">
+      <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+      {{ with .Description }}<p>{{ . }}</p>{{ end }}
+    </div>
+    {{ end }}
+  </div>
+</article>
+{{ end }}

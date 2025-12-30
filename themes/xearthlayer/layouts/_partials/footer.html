@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="footer-content">
+    <div class="footer-logo">XEarthLayer</div>
+    <div class="footer-links">
+      <a href="{{ site.Params.github }}" target="_blank" rel="noopener">GitHub</a>
+      {{ with site.Params.discord }}<a href="{{ . }}" target="_blank" rel="noopener">Discord</a>{{ end }}
+      {{ with site.Params.kofi }}<a href="{{ . }}" target="_blank" rel="noopener">Ko-fi</a>{{ end }}
+      <a href="/docs/">Documentation</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; {{ now.Year }} XEarthLayer Contributors</p>
+    <p class="made-with">Made with <span class="heart">&hearts;</span> in California</p>
+  </div>
+</div>
