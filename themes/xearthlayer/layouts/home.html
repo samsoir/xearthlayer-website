@@ -39,21 +39,14 @@
       <polyline points="6 9 12 15 18 9"/>
     </svg>
   </div>
-
-  <!-- Monitor frame (fades in during scroll transition) -->
-  <div class="hero-video__monitor" id="hero-monitor">
-    <div class="monitor-glow"></div>
-    <div class="monitor-frame">
-      <div class="monitor-screen"></div>
-    </div>
-  </div>
 </section>
 
 <!-- Features Scrollytelling Section -->
 <section class="features-scroll" id="features">
-  <!-- Progress dots navigation -->
+  <!-- Progress dots navigation (right side) -->
   <nav class="features-progress" id="features-progress" aria-label="Feature navigation">
-    <button class="features-progress__dot active" data-feature="providers" aria-label="Multiple Providers"></button>
+    <button class="features-progress__dot active" data-feature="streaming" aria-label="Just-in-Time Streaming"></button>
+    <button class="features-progress__dot" data-feature="providers" aria-label="Multiple Providers"></button>
     <button class="features-progress__dot" data-feature="loading" aria-label="Optimized Loading"></button>
     <button class="features-progress__dot" data-feature="caching" aria-label="Smart Caching"></button>
     <button class="features-progress__dot" data-feature="prefetch" aria-label="Predictive Prefetch"></button>
@@ -63,10 +56,17 @@
 
   <!-- Feature panels (left side) -->
   <div class="features-scroll__content">
-    <div class="features-scroll__header">
-      <h2>Download Only What You Need</h2>
-      <p>XEarthLayer streams satellite imagery just-in-time as you fly. Only the scenery you see gets downloaded.</p>
-    </div>
+    <article class="feature-panel" data-feature="streaming">
+      <div class="feature-panel__icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </div>
+      <h3>Download Only What You Need</h3>
+      <p>XEarthLayer streams satellite imagery just-in-time as you fly. Only the scenery you see gets downloaded - no massive pre-downloads required.</p>
+    </article>
 
     <article class="feature-panel" data-feature="providers">
       <div class="feature-panel__icon">
@@ -138,17 +138,24 @@
 
   <!-- Sticky monitor (right side) -->
   <div class="features-scroll__monitor" id="features-monitor">
-    <div class="monitor-glow"></div>
-    <div class="monitor-frame">
-      <img class="monitor-screen active" data-feature="providers" src="/images/features/providers.svg" alt="Multiple imagery providers">
-      <img class="monitor-screen" data-feature="loading" src="/images/features/loading.svg" alt="Fast initial loading">
-      <img class="monitor-screen" data-feature="caching" src="/images/features/caching.svg" alt="Smart caching system">
-      <img class="monitor-screen" data-feature="prefetch" src="/images/features/prefetch.svg" alt="Predictive prefetching">
-      <img class="monitor-screen" data-feature="dashboard" src="/images/features/dashboard.svg" alt="Real-time dashboard">
-      <img class="monitor-screen" data-feature="packages" src="/images/features/packages.svg" alt="Package management">
+    <div class="monitor-sticky">
+      <div class="monitor-frame">
+        <img class="monitor-screen active" data-feature="streaming" src="/images/features/streaming.svg" alt="Just-in-time streaming">
+        <img class="monitor-screen" data-feature="providers" src="/images/features/providers.svg" alt="Multiple imagery providers">
+        <img class="monitor-screen" data-feature="loading" src="/images/features/loading.svg" alt="Fast initial loading">
+        <img class="monitor-screen" data-feature="caching" src="/images/features/caching.svg" alt="Smart caching system">
+        <img class="monitor-screen" data-feature="prefetch" src="/images/features/prefetch.svg" alt="Predictive prefetching">
+        <img class="monitor-screen" data-feature="dashboard" src="/images/features/dashboard.svg" alt="Real-time dashboard">
+        <img class="monitor-screen" data-feature="packages" src="/images/features/packages.svg" alt="Package management">
+      </div>
     </div>
   </div>
 </section>
+
+<!-- Features section end marker -->
+<div class="features-end">
+  <div class="features-end__line"></div>
+</div>
 
 <!-- Fallback features grid for no-JS -->
 <noscript>
@@ -158,7 +165,6 @@
     .features-scroll__monitor { display: none !important; }
     .features-progress { display: none !important; }
     .feature-panel { min-height: auto !important; opacity: 1 !important; }
-    .hero-video__monitor { display: none !important; }
   </style>
 </noscript>
 
@@ -218,7 +224,8 @@
   <div class="container">
     <div class="section-header">
       <h2>System Requirements</h2>
-      <p class="base-requirements">Linux (x86_64) &bull; X-Plane 12</p>
+      <p class="base-requirements">Linux (amd64)</p>
+      <p class="base-requirements">X-Plane 12.3 or later</p>
     </div>
 
     <div class="requirements-columns">
@@ -252,7 +259,6 @@
           <li>GPU with 24GB Video Memory</li>
           <li>100GB Storage Space</li>
           <li>1Gbit Internet</li>
-          <li class="optional"><a href="https://simheaven.com/xp12-sceneries/" target="_blank" rel="noopener">SimHeaven X-World</a> (optional)</li>
         </ul>
       </div>
     </div>

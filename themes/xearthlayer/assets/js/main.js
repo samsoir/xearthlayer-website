@@ -96,6 +96,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Activate feature function
     function activateFeature(featureName) {
+      // Update section background color
+      featuresSection.dataset.activeFeature = featureName;
+
       // Update panels
       featurePanels.forEach(panel => {
         if (panel.dataset.feature === featureName) {
@@ -123,6 +126,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     }
+
+    // Set initial active feature
+    activateFeature('streaming');
 
     // Progress dot click handlers
     progressDots.forEach(dot => {
