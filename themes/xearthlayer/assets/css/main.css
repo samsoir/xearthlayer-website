@@ -653,6 +653,27 @@ section {
   background: var(--ctp-mauve);
 }
 
+.base-requirements {
+  color: var(--ctp-overlay1);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.requirement-card li.optional {
+  font-style: italic;
+  color: var(--ctp-overlay0);
+}
+
+.requirement-card li.optional a {
+  color: var(--ctp-mauve);
+  text-decoration: none;
+}
+
+.requirement-card li.optional a:hover {
+  text-decoration: underline;
+}
+
 /* Community Section */
 .community {
   background: var(--color-bg-alt);
