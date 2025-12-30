@@ -624,33 +624,11 @@ section {
 .requirement-card li {
   color: var(--color-text-muted);
   padding: var(--space-sm) 0;
-  padding-left: var(--space-lg);
-  position: relative;
   border-bottom: 1px solid var(--ctp-surface0);
 }
 
 .requirement-card li:last-child {
   border-bottom: none;
-}
-
-.requirement-card li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  background: var(--ctp-overlay0);
-  border-radius: 50%;
-}
-
-.requirement-card.recommended li::before {
-  background: var(--ctp-blue);
-}
-
-.requirement-card.ultimate li::before {
-  background: var(--ctp-mauve);
 }
 
 .base-requirements {
