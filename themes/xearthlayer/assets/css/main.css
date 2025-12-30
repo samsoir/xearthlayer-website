@@ -321,6 +321,20 @@ pre code {
   gap: var(--space-md);
   justify-content: center;
   flex-wrap: nowrap;
+  align-items: flex-start;
+}
+
+.hero-video__download-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-video__platform {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: var(--space-xs) 0 0 0;
+  opacity: 0.8;
 }
 
 /* Responsive hero card - landscape on smaller screens */
