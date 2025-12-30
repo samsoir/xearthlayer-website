@@ -8,7 +8,7 @@ theme = 'xearthlayer'
   tagline = "Stunning photoreal scenery for X-Plane 12"
   author = "XEarthLayer Contributors"
   github = "https://github.com/samsoir/xearthlayer"
-  discord = ""  # Add Discord invite link
+  discord = "https://discord.gg/XVUmMWYS"
   kofi = ""     # Add Ko-fi page URL
 
   # Latest release info (update on each release)
