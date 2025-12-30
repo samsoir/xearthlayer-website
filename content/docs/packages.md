@@ -4,7 +4,7 @@ description: "Install, update, and manage regional scenery packages."
 weight: 30
 ---
 
-XEarthLayer uses a package system to manage regional scenery. Packages contain tile indices that tell XEarthLayer which areas have satellite imagery available.
+XEarthLayer uses a package system to manage regional scenery from across the globe. Packages contain tile indices that tell XEarthLayer which areas have satellite imagery and what resources to download.
 
 ## Listing Packages
 
