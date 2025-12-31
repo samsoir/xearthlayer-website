@@ -172,9 +172,9 @@ pre code {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-md) var(--space-lg);
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: var(--space-md) var(--space-2xl);
+  padding-left: 5%;
+  margin: 0;
 }
 
 .nav-logo {
@@ -243,6 +243,144 @@ pre code {
 
 .nav-kofi svg {
   flex-shrink: 0;
+}
+
+/* Mobile hamburger button */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10001;
+  position: relative;
+}
+
+.nav-hamburger__line {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 1px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hamburger animation when open */
+.nav-hamburger.open .nav-hamburger__line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.nav-hamburger.open .nav-hamburger__line:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-hamburger.open .nav-hamburger__line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile menu container */
+.nav-mobile {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.nav-mobile.open {
+  pointer-events: auto;
+}
+
+/* Semi-transparent backdrop */
+.nav-mobile__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 27, 0.9);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.nav-mobile.open .nav-mobile__backdrop {
+  opacity: 1;
+}
+
+/* Slide-out panel */
+.nav-mobile__panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  max-width: 80vw;
+  height: 100vh;
+  min-height: 100%;
+  background: var(--ctp-mantle);
+  border-left: 1px solid var(--ctp-surface0);
+  padding: calc(60px + var(--space-xl)) var(--space-lg) var(--space-lg);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+}
+
+.nav-mobile.open .nav-mobile__panel {
+  transform: translateX(0);
+}
+
+/* Mobile menu links */
+.nav-mobile__links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.nav-mobile__links li a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  color: var(--color-text);
+  font-size: 1.125rem;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-mobile__links li a:hover {
+  background: var(--ctp-surface0);
+  color: var(--color-primary);
+}
+
+.nav-mobile__links .nav-kofi {
+  color: var(--color-text-muted);
+}
+
+.nav-mobile__links .nav-kofi:hover {
+  color: var(--ctp-rosewater);
+}
+
+/* Show hamburger on mobile */
+@media (max-width: 768px) {
+  .nav {
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+
+  .nav-hamburger {
+    display: flex;
+  }
+
+  .nav-mobile {
+    display: block;
+  }
 }
 
 /* ==========================================
@@ -428,6 +566,7 @@ pre code {
   display: flex;
   flex-direction: column;
   padding: 0 var(--space-xl);
+  padding-left: 10%;
 }
 
 .feature-panel {
@@ -559,7 +698,7 @@ pre code {
   top: 50%;
   transform: translateY(-50%);
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
 }
 
 /* Simple 16:9 monitor with thin dark bezel, no rounding */
