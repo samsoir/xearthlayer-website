@@ -255,8 +255,9 @@ pre code {
   min-height: 600px;
   overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding-top: 10%;
 }
 
 /* Video background */
@@ -300,7 +301,7 @@ pre code {
 }
 
 .hero-video__card h1 {
-  font-size: clamp(1.75rem, 4vw, 3.5rem);
+  font-size: clamp(1.75rem, 2.5vw + 1rem, 3.5rem);
   font-weight: 800;
   margin-bottom: var(--space-sm);
   background: linear-gradient(135deg, var(--color-text) 0%, var(--ctp-lavender) 50%, var(--ctp-mauve) 100%);
