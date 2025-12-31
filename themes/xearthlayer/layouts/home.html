@@ -3,7 +3,7 @@
 <!-- Video Hero Section -->
 <section class="hero-video" id="hero">
   <!-- Video background (placeholder: shows poster image) -->
-  <video class="hero-video__bg" autoplay muted loop playsinline poster="/images/hero-poster.svg">
+  <video class="hero-video__bg" autoplay muted loop playsinline poster="/images/hero-poster.jpg">
     <source src="/video/hero.webm" type="video/webm">
     <source src="/video/hero.mp4" type="video/mp4">
   </video>
@@ -11,6 +11,29 @@
   <!-- Glassmorphism card overlay -->
   <div class="hero-video__overlay">
     <div class="hero-video__card" id="hero-card">
+      <div class="hero-video__logo">
+        <svg viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Three stacked isometric tile layers: DSF, TER, Ortho -->
+          <!-- DSF (bottom) -->
+          <g transform="translate(2, 18)">
+            <polygon points="0,7 14,0 28,7 14,14" fill="#313244"/>
+            <polygon points="0,7 0,10 14,17 14,14" fill="#1e1e2e"/>
+            <polygon points="14,14 14,17 28,10 28,7" fill="#181825"/>
+          </g>
+          <!-- TER (middle) -->
+          <g transform="translate(2, 12)">
+            <polygon points="0,7 14,0 28,7 14,14" fill="#45475a"/>
+            <polygon points="0,7 0,10 14,17 14,14" fill="#313244"/>
+            <polygon points="14,14 14,17 28,10 28,7" fill="#313244"/>
+          </g>
+          <!-- Ortho (top) with brown earth -->
+          <g transform="translate(2, 6)">
+            <polygon points="0,7 14,0 28,7 14,14" fill="#a6e3a1"/>
+            <polygon points="0,7 0,10 14,17 14,14" fill="#7c5c3e"/>
+            <polygon points="14,14 14,17 28,10 28,7" fill="#5c4030"/>
+          </g>
+        </svg>
+      </div>
       <h1>XEarthLayer</h1>
       <p class="hero-video__tagline">{{ site.Params.tagline }}</p>
       <div class="hero-video__buttons">
