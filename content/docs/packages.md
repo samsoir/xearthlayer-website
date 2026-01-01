@@ -8,6 +8,10 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 
 ## Available Regions
 
+![Coverage Map](/images/coverage.png)
+
+*NA tiles in blue, EU tiles in orange, SA tiles in green, OC tiles in purple.*
+
 | Code | Region | Version | Coverage |
 |------|--------|---------|----------|
 | EU | Europe | 0.1.0 | Western and Central Europe |
