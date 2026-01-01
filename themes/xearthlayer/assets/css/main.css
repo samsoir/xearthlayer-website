@@ -1238,11 +1238,13 @@ section {
 .docs-sidebar {
   background: var(--color-bg-alt);
   padding: var(--space-lg);
+  padding-top: calc(80px + var(--space-lg));
   border-right: 1px solid var(--ctp-surface0);
   position: sticky;
-  top: 80px;
-  height: calc(100vh - 80px);
+  top: 0;
+  height: 100vh;
   overflow-y: auto;
+  margin-top: -80px;
 }
 
 .docs-nav {

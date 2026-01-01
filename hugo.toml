@@ -42,8 +42,8 @@ theme = 'xearthlayer'
       unsafe = true
   [markup.highlight]
     style = "catppuccin-mocha"
-    lineNos = true
-    lineNumbersInTable = true
+    lineNos = false
+    lineNumbersInTable = false
 
 [outputs]
   home = ["HTML"]
