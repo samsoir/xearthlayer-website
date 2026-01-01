@@ -19,17 +19,24 @@ jobs:
       - name: Checkout website
         uses: actions/checkout@v4
 
-      - name: Fetch package library
+      - name: Fetch package library and metadata
         run: |
+          # Fetch package library
           curl -sSL \
             https://raw.githubusercontent.com/samsoir/xearthlayer-regional-scenery/main/xearthlayer_package_library.txt \
             -o static/packages/xearthlayer_package_library.txt
+
+          # Fetch region metadata (contains names and coverage descriptions)
+          curl -sSL \
+            https://raw.githubusercontent.com/samsoir/xearthlayer-regional-scenery/main/region_metadata.json \
+            -o /tmp/region_metadata.json
 
       - name: Update packages documentation
         run: |
           # Parse library file and generate region table
           LIBRARY_FILE="static/packages/xearthlayer_package_library.txt"
           PACKAGES_MD="content/docs/packages.md"
+          METADATA_FILE="/tmp/region_metadata.json"
 
           # Extract unique regions with their versions (Y=overlay, Z=ortho)
           # Format: CHECKSUM TYPE REGION VERSION URL
@@ -50,23 +57,16 @@ jobs:
             fi
           done < "$LIBRARY_FILE"
 
-          # Define region names
+          # Load region metadata from JSON file
+          # This allows descriptions to be updated in the regional-scenery repo
+          # without needing to modify this workflow
           declare -A region_names
-          region_names["EU"]="Europe"
-          region_names["NA"]="North America"
-          region_names["SA"]="South America"
-          region_names["AS"]="Asia"
-          region_names["OC"]="Oceania"
-          region_names["AF"]="Africa"
-
-          # Define region coverage descriptions
           declare -A region_coverage
-          region_coverage["EU"]="Western and Central Europe"
-          region_coverage["NA"]="United States, Canada, Caribbean"
-          region_coverage["SA"]="Brazil (more coming)"
-          region_coverage["AS"]="Coming soon"
-          region_coverage["OC"]="Australia, New Zealand, Pacific Islands"
-          region_coverage["AF"]="Coming soon"
+
+          for code in $(jq -r '.regions | keys[]' "$METADATA_FILE"); do
+            region_names["$code"]=$(jq -r ".regions.\"$code\".name" "$METADATA_FILE")
+            region_coverage["$code"]=$(jq -r ".regions.\"$code\".coverage" "$METADATA_FILE")
+          done
 
           # Build the table
           TABLE="| Code | Region | Version | Coverage |\n"
