@@ -70,12 +70,76 @@ Push to main          ──────────────►    sync-pack
 
 ### Files Updated
 
-- `static/packages/xearthlayer_package_library.txt` - Package index
-- `content/docs/packages.md` - Available Regions table auto-generated
+| File | Source | Description |
+|------|--------|-------------|
+| `static/packages/xearthlayer_package_library.txt` | Regional scenery repo | Package index for CLI |
+| `static/images/coverage.png` | Regional scenery repo | Coverage map image |
+| `content/docs/packages.md` | Auto-generated | Regions table, coverage map, legend |
 
-### Required Secrets
+### Data Files
 
-The regional-scenery repo requires a `WEBSITE_DISPATCH_TOKEN` (fine-grained PAT with `contents: write` for this repo) to trigger syncs. Token expires every 90 days.
+The sync workflow uses these files from the regional-scenery repo:
+
+- **`xearthlayer_package_library.txt`** - Package index with versions and download URLs
+- **`region_metadata.json`** - Region names, coverage descriptions, and colors
+- **`coverage.png`** - Coverage map image
+
+The legend (e.g., "NA in blue, EU in orange") is generated dynamically from `region_metadata.json`.
+
+## App Version Sync
+
+Download links on the Getting Started page are automatically updated when new XEarthLayer versions are released.
+
+### How It Works
+
+```
+XEarthLayer Main Repo                   Website Repo
+─────────────────────                   ────────────
+Release v0.x.x        ──────────────►   sync-version.yml
+(tag pushed)          repository_dispatch     │
+                                              ▼
+                                         Fetch version.json
+                                         Update getting-started.md
+                                         Commit changes
+                                              │
+                                              ▼
+                                         deploy.yml
+                                              │
+                                              ▼
+                                         Live at xearthlayer.app
+```
+
+### Files Updated
+
+- `content/docs/getting-started.md` - Download links with correct version numbers
+
+### Data File
+
+The main xearthlayer repo contains `version.json` with current release info:
+
+```json
+{
+  "version": "0.2.9",
+  "tag": "v0.2.9",
+  "assets": {
+    "deb": { "filename": "xearthlayer_0.2.9-1_amd64.deb" },
+    "rpm": { "filename": "xearthlayer-0.2.9-1.fc43.x86_64.rpm" }
+  }
+}
+```
+
+## Required Secrets
+
+Both the regional-scenery repo and the main xearthlayer repo need `WEBSITE_DISPATCH_TOKEN` to trigger website updates:
+
+| Secret | Source Repo | Purpose |
+|--------|-------------|---------|
+| `WEBSITE_DISPATCH_TOKEN` | xearthlayer-regional-scenery | Trigger package sync |
+| `WEBSITE_DISPATCH_TOKEN` | xearthlayer | Trigger version sync |
+
+**Token Configuration:**
+- Fine-grained PAT with `contents: write` for this repo
+- Expires every 90 days (set calendar reminder)
 
 ## Custom Domain
 
