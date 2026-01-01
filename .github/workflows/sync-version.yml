@@ -1,0 +1,100 @@
+name: Sync App Version
+
+on:
+  schedule:
+    # Run daily at 01:00 UTC as fallback
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+  repository_dispatch:
+    types: [app-version-updated]
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout website
+        uses: actions/checkout@v4
+
+      - name: Fetch version.json
+        run: |
+          curl -sSL \
+            https://raw.githubusercontent.com/samsoir/xearthlayer/main/version.json \
+            -o /tmp/version.json
+
+          echo "Fetched version.json:"
+          cat /tmp/version.json
+
+      - name: Update getting-started documentation
+        run: |
+          VERSION_FILE="/tmp/version.json"
+          GETTING_STARTED="content/docs/getting-started.md"
+
+          # Extract version info using jq
+          VERSION=$(jq -r '.version' "$VERSION_FILE")
+          TAG=$(jq -r '.tag' "$VERSION_FILE")
+          DEB_FILE=$(jq -r '.assets.deb.filename' "$VERSION_FILE")
+          RPM_FILE=$(jq -r '.assets.rpm.filename' "$VERSION_FILE")
+          TARBALL_FILE=$(jq -r '.assets.tarball.filename' "$VERSION_FILE")
+          BASE_URL=$(jq -r '.download_base_url' "$VERSION_FILE")
+
+          echo "Version: $VERSION"
+          echo "Tag: $TAG"
+          echo "DEB: $DEB_FILE"
+          echo "RPM: $RPM_FILE"
+          echo "Tarball: $TARBALL_FILE"
+          echo "Base URL: $BASE_URL"
+
+          # Update version references in getting-started.md
+          # Handle both old format (0.2.9) and new format (0.2.9-1) for deb/rpm
+
+          # DEB: xearthlayer_0.2.9_amd64.deb -> xearthlayer_0.2.10-1_amd64.deb
+          sed -i -E "s/xearthlayer_[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?_amd64\.deb/${DEB_FILE}/g" "$GETTING_STARTED"
+
+          # RPM: xearthlayer-0.2.9.x86_64.rpm or xearthlayer-0.2.9-1.fc43.x86_64.rpm
+          sed -i -E "s/xearthlayer-[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?(\.fc[0-9]+)?\.x86_64\.rpm/${RPM_FILE}/g" "$GETTING_STARTED"
+
+          # Tarball: xearthlayer-v0.2.9-x86_64-linux.tar.gz
+          sed -i -E "s/xearthlayer-v[0-9]+\.[0-9]+\.[0-9]+-x86_64-linux\.tar\.gz/${TARBALL_FILE}/g" "$GETTING_STARTED"
+
+          echo "Updated getting-started.md"
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Files changed:"
+            git diff --name-only
+            echo "Diff:"
+            git diff
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add content/docs/getting-started.md
+          VERSION=$(jq -r '.version' /tmp/version.json)
+          git commit -m "chore: update download links to v${VERSION}
+
+          Automatically synced from xearthlayer release."
+          git push
+
+      - name: Trigger deploy
+        if: steps.changes.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy.yml',
+              ref: 'main'
+            })
