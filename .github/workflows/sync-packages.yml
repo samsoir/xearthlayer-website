@@ -31,6 +31,12 @@ jobs:
             https://raw.githubusercontent.com/samsoir/xearthlayer-regional-scenery/main/region_metadata.json \
             -o /tmp/region_metadata.json
 
+          # Fetch coverage map image
+          mkdir -p static/images
+          curl -sSL \
+            https://raw.githubusercontent.com/samsoir/xearthlayer-regional-scenery/main/coverage.png \
+            -o static/images/coverage.png
+
       - name: Update packages documentation
         run: |
           # Parse library file and generate region table
@@ -80,11 +86,15 @@ jobs:
             TABLE+="| $region | $name | $version | $coverage |\n"
           done
 
-          # Update packages.md - replace the Available Regions table
-          # Use awk to replace content between markers
+          # Update packages.md - replace the Available Regions section
+          # Use awk to replace content between markers, including coverage map
           awk -v table="$TABLE" '
             /^## Available Regions/ {
               print;
+              print "";
+              print "![Coverage Map](/images/coverage.png)";
+              print "";
+              print "*NA tiles in blue, EU tiles in orange, SA tiles in green, OC tiles in purple.*";
               print "";
               printf "%s", table;
               # Skip until next ## or end of file
@@ -116,7 +126,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add static/packages/xearthlayer_package_library.txt content/docs/packages.md
+          git add static/packages/xearthlayer_package_library.txt static/images/coverage.png content/docs/packages.md
           git commit -m "chore: sync package library and update docs
 
           Automatically synced from xearthlayer-regional-scenery repository."
