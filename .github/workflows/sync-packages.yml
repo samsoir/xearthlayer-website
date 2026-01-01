@@ -65,7 +65,7 @@ jobs:
           region_coverage["NA"]="United States, Canada, Caribbean"
           region_coverage["SA"]="Brazil (more coming)"
           region_coverage["AS"]="Coming soon"
-          region_coverage["OC"]="Coming soon"
+          region_coverage["OC"]="Australia, New Zealand, Pacific Islands"
           region_coverage["AF"]="Coming soon"
 
           # Build the table
