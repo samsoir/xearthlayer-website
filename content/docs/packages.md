@@ -8,11 +8,11 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 
 ## Available Regions
 
-| Code | Region | Coverage |
-|------|--------|----------|
-| EU | Europe | Western and Central Europe |
-| NA | North America | United States and Canada |
-| *More coming* | | |
+| Code | Region | Version | Coverage |
+|------|--------|---------|----------|
+| EU | Europe | 0.1.0 | Western and Central Europe |
+| NA | North America | 0.2.1 | United States, Canada, Caribbean |
+| SA | South America | 0.1.0 | Brazil (more coming) |
 
 ## Listing Packages
 
