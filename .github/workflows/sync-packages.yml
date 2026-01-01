@@ -68,10 +68,22 @@ jobs:
           # without needing to modify this workflow
           declare -A region_names
           declare -A region_coverage
+          declare -A region_colors
 
           for code in $(jq -r '.regions | keys[]' "$METADATA_FILE"); do
             region_names["$code"]=$(jq -r ".regions.\"$code\".name" "$METADATA_FILE")
             region_coverage["$code"]=$(jq -r ".regions.\"$code\".coverage" "$METADATA_FILE")
+            region_colors["$code"]=$(jq -r ".regions.\"$code\".color" "$METADATA_FILE")
+          done
+
+          # Build the legend dynamically from regions in the library
+          LEGEND=""
+          for region in $(echo "${!regions[@]}" | tr ' ' '\n' | sort); do
+            color="${region_colors[$region]:-gray}"
+            if [[ -n "$LEGEND" ]]; then
+              LEGEND+=", "
+            fi
+            LEGEND+="$region in $color"
           done
 
           # Build the table
@@ -88,13 +100,13 @@ jobs:
 
           # Update packages.md - replace the Available Regions section
           # Use awk to replace content between markers, including coverage map
-          awk -v table="$TABLE" '
+          awk -v table="$TABLE" -v legend="$LEGEND" '
             /^## Available Regions/ {
               print;
               print "";
               print "![Coverage Map](/images/coverage.png)";
               print "";
-              print "*NA tiles in blue, EU tiles in orange, SA tiles in green, OC tiles in purple.*";
+              print "*" legend ".*";
               print "";
               printf "%s", table;
               # Skip until next ## or end of file
