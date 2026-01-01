@@ -2,7 +2,7 @@ name: Sync Package Library
 
 on:
   schedule:
-    # Run daily at 00:00 UTC
+    # Run daily at 00:00 UTC as fallback
     - cron: '0 0 * * *'
   workflow_dispatch:
   repository_dispatch:
@@ -24,13 +24,90 @@ jobs:
             https://raw.githubusercontent.com/samsoir/xearthlayer-regional-scenery/main/xearthlayer_package_library.txt \
             -o static/packages/xearthlayer_package_library.txt
 
+      - name: Update packages documentation
+        run: |
+          # Parse library file and generate region table
+          LIBRARY_FILE="static/packages/xearthlayer_package_library.txt"
+          PACKAGES_MD="content/docs/packages.md"
+
+          # Extract unique regions with their versions (Y=overlay, Z=ortho)
+          # Format: CHECKSUM TYPE REGION VERSION URL
+          declare -A regions
+          declare -A ortho_versions
+          declare -A overlay_versions
+
+          while IFS=' ' read -r checksum type region version url; do
+            # Skip header lines (first 8 lines) and empty lines
+            [[ -z "$checksum" || "$checksum" == "XEARTHLAYER" || "$checksum" =~ ^[0-9]+$ ]] && continue
+            [[ ${#checksum} -ne 64 ]] && continue  # Skip non-checksum lines
+
+            regions["$region"]=1
+            if [[ "$type" == "Z" ]]; then
+              ortho_versions["$region"]="$version"
+            elif [[ "$type" == "Y" ]]; then
+              overlay_versions["$region"]="$version"
+            fi
+          done < "$LIBRARY_FILE"
+
+          # Define region names
+          declare -A region_names
+          region_names["EU"]="Europe"
+          region_names["NA"]="North America"
+          region_names["SA"]="South America"
+          region_names["AS"]="Asia"
+          region_names["OC"]="Oceania"
+          region_names["AF"]="Africa"
+
+          # Define region coverage descriptions
+          declare -A region_coverage
+          region_coverage["EU"]="Western and Central Europe"
+          region_coverage["NA"]="United States, Canada, Caribbean"
+          region_coverage["SA"]="Brazil (more coming)"
+          region_coverage["AS"]="Coming soon"
+          region_coverage["OC"]="Coming soon"
+          region_coverage["AF"]="Coming soon"
+
+          # Build the table
+          TABLE="| Code | Region | Version | Coverage |\n"
+          TABLE+="|------|--------|---------|----------|\n"
+
+          # Sort regions and build rows
+          for region in $(echo "${!regions[@]}" | tr ' ' '\n' | sort); do
+            name="${region_names[$region]:-$region}"
+            version="${ortho_versions[$region]:-${overlay_versions[$region]:-?}}"
+            coverage="${region_coverage[$region]:-Available}"
+            TABLE+="| $region | $name | $version | $coverage |\n"
+          done
+
+          # Update packages.md - replace the Available Regions table
+          # Use awk to replace content between markers
+          awk -v table="$TABLE" '
+            /^## Available Regions/ {
+              print;
+              print "";
+              printf "%s", table;
+              # Skip until next ## or end of file
+              while ((getline line) > 0) {
+                if (line ~ /^## /) {
+                  print "";
+                  print line;
+                  break;
+                }
+              }
+              next;
+            }
+            { print }
+          ' "$PACKAGES_MD" > "${PACKAGES_MD}.tmp" && mv "${PACKAGES_MD}.tmp" "$PACKAGES_MD"
+
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet static/packages/xearthlayer_package_library.txt; then
+          if git diff --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Files changed:"
+            git diff --name-only
           fi
 
       - name: Commit and push
@@ -38,6 +115,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add static/packages/xearthlayer_package_library.txt
-          git commit -m "chore: sync package library from regional-scenery repo"
+          git add static/packages/xearthlayer_package_library.txt content/docs/packages.md
+          git commit -m "chore: sync package library and update docs
+
+          Automatically synced from xearthlayer-regional-scenery repository."
           git push
