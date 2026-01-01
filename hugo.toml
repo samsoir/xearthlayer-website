@@ -41,7 +41,8 @@ theme = 'xearthlayer'
     [markup.goldmark.renderer]
       unsafe = true
   [markup.highlight]
-    style = "catppuccin-mocha"
+    codeFences = true
+    guessSyntax = false
     lineNos = false
     lineNumbersInTable = false
 

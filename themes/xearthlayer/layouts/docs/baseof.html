@@ -3,7 +3,7 @@
 <head>
   {{ partial "head.html" . }}
 </head>
-<body>
+<body class="docs-page">
   <header class="site-header">
     {{ partial "header.html" . }}
   </header>
@@ -29,5 +29,91 @@
   <footer class="site-footer">
     {{ partial "footer.html" . }}
   </footer>
+
+  <!-- Syntax highlighting with Shadow DOM isolation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ini.min.js"></script>
+  <script>
+  (function() {
+    // Catppuccin Mocha theme CSS
+    var themeCSS = `
+      :host {
+        display: block;
+        width: 100%;
+      }
+      pre[class*="language-"] {
+        margin: 0;
+        padding: 1rem;
+        overflow-x: auto;
+        background: #11111b;
+        border-radius: 0.5rem;
+      }
+      code[class*="language-"] {
+        color: #cdd6f4;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        white-space: pre;
+        word-spacing: normal;
+        word-break: normal;
+        word-wrap: normal;
+        tab-size: 2;
+      }
+      .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #6c7086; }
+      .token.punctuation { color: #cdd6f4; }
+      .token.property, .token.tag, .token.function { color: #89b4fa; }
+      .token.boolean, .token.number, .token.constant { color: #fab387; }
+      .token.symbol, .token.deleted { color: #f38ba8; }
+      .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin, .token.inserted { color: #a6e3a1; }
+      .token.operator, .token.entity, .token.url { color: #89dceb; }
+      .token.atrule, .token.attr-value, .token.keyword { color: #cba6f7; }
+      .token.class-name { color: #f9e2af; }
+      .token.regex { color: #f5c2e7; }
+      .token.important, .token.variable { color: #fab387; }
+      .token.shebang { color: #a6e3a1; font-weight: bold; }
+      .token.assign-left { color: #cdd6f4; }
+      .token.environment { color: #f9e2af; }
+    `;
+
+    document.querySelectorAll('.highlight').forEach(function(highlight) {
+      var code = highlight.querySelector('code');
+      if (!code) return;
+
+      var text = code.textContent;
+      // Detect language from data-lang attribute or class
+      var lang = code.getAttribute('data-lang') || 'bash';
+      var langClass = 'language-' + lang;
+
+      // Create shadow host
+      var shadowHost = document.createElement('div');
+      shadowHost.className = 'syntax-shadow-host';
+
+      // Attach shadow DOM
+      var shadow = shadowHost.attachShadow({ mode: 'open' });
+
+      // Add theme styles to shadow
+      var style = document.createElement('style');
+      style.textContent = themeCSS;
+      shadow.appendChild(style);
+
+      // Create code structure inside shadow
+      var pre = document.createElement('pre');
+      pre.className = langClass;
+      var codeEl = document.createElement('code');
+      codeEl.className = langClass;
+      codeEl.textContent = text;
+      pre.appendChild(codeEl);
+      shadow.appendChild(pre);
+
+      // Highlight inside shadow DOM
+      Prism.highlightElement(codeEl);
+
+      // Replace original highlight with shadow host
+      highlight.innerHTML = '';
+      highlight.appendChild(shadowHost);
+    });
+  })();
+  </script>
 </body>
 </html>

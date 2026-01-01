@@ -1,0 +1,36 @@
+{{- $id := .Get "id" | default (printf "tabs-%d" .Ordinal) -}}
+{{- $page := .Page -}}
+<div class="tabs" data-tabs-id="{{ $id }}">
+  <div class="tabs__nav" role="tablist">
+    {{- $content := .Inner -}}
+    {{- $tabs := findRE `<!--tab:([^>]+)-->` $content -}}
+    {{- range $index, $tab := $tabs -}}
+      {{- $name := replaceRE `<!--tab:([^>]+)-->` "$1" $tab -}}
+      <button
+        class="tabs__button{{ if eq $index 0 }} active{{ end }}"
+        role="tab"
+        aria-selected="{{ if eq $index 0 }}true{{ else }}false{{ end }}"
+        aria-controls="{{ $id }}-panel-{{ $index }}"
+        data-tab="{{ $index }}"
+      >{{ $name }}</button>
+    {{- end -}}
+  </div>
+  <div class="tabs__content">
+    {{- $panels := split $content "<!--tab:" -}}
+    {{- range $index, $panel := $panels -}}
+      {{- if gt $index 0 -}}
+        {{- $parts := split $panel "-->" -}}
+        {{- $panelContent := index $parts 1 -}}
+        <div
+          class="tabs__panel{{ if eq $index 1 }} active{{ end }}"
+          role="tabpanel"
+          id="{{ $id }}-panel-{{ sub $index 1 }}"
+          data-tab="{{ sub $index 1 }}"
+          {{ if ne $index 1 }}hidden{{ end }}
+        >
+          {{ $panelContent | $page.RenderString }}
+        </div>
+      {{- end -}}
+    {{- end -}}
+  </div>
+</div>

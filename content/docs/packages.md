@@ -6,6 +6,14 @@ weight: 30
 
 XEarthLayer uses a package system to manage regional scenery from across the globe. Packages contain tile indices that tell XEarthLayer which areas have satellite imagery and what resources to download.
 
+## Available Regions
+
+| Code | Region | Coverage |
+|------|--------|----------|
+| EU | Europe | Western and Central Europe |
+| NA | North America | United States and Canada |
+| *More coming* | | |
+
 ## Listing Packages
 
 View installed and available packages:
@@ -51,14 +59,6 @@ Remove a package you no longer need:
 ```bash
 xearthlayer packages remove EU
 ```
-
-## Available Regions
-
-| Code | Region | Coverage |
-|------|--------|----------|
-| EU | Europe | Western and Central Europe |
-| NA | North America | United States and Canada |
-| *More coming* | | |
 
 ## Package Library
 

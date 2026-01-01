@@ -216,4 +216,39 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
+  // ==========================================
+  // TABS COMPONENT
+  // ==========================================
+  const tabContainers = document.querySelectorAll('.tabs');
+
+  tabContainers.forEach(container => {
+    const buttons = container.querySelectorAll('.tabs__button');
+    const panels = container.querySelectorAll('.tabs__panel');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', function() {
+        const tabIndex = this.dataset.tab;
+
+        // Update buttons
+        buttons.forEach(btn => {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-selected', 'false');
+        });
+        this.classList.add('active');
+        this.setAttribute('aria-selected', 'true');
+
+        // Update panels
+        panels.forEach(panel => {
+          if (panel.dataset.tab === tabIndex) {
+            panel.classList.add('active');
+            panel.removeAttribute('hidden');
+          } else {
+            panel.classList.remove('active');
+            panel.setAttribute('hidden', '');
+          }
+        });
+      });
+    });
+  });
 });

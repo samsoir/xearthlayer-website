@@ -15,28 +15,8 @@ This guide will help you install XEarthLayer and get flying with photoreal scene
 
 ## Installation
 
-### Debian / Ubuntu
-
-```bash
-# Download the latest .deb package from GitHub releases
-wget https://github.com/samsoir/xearthlayer/releases/latest/download/xearthlayer_0.2.9_amd64.deb
-
-# Install with dpkg
-sudo dpkg -i xearthlayer_0.2.9_amd64.deb
-```
-
-### Fedora / RHEL
-
-```bash
-# Download the latest .rpm package
-wget https://github.com/samsoir/xearthlayer/releases/latest/download/xearthlayer-0.2.9.x86_64.rpm
-
-# Install with rpm
-sudo rpm -i xearthlayer-0.2.9.x86_64.rpm
-```
-
-### Arch Linux (AUR)
-
+{{< tabs >}}
+<!--tab:Arch Linux-->
 ```bash
 # Using yay
 yay -S xearthlayer-bin
@@ -44,6 +24,35 @@ yay -S xearthlayer-bin
 # Or using paru
 paru -S xearthlayer-bin
 ```
+<!--tab:Fedora/RHEL-->
+```bash
+# Download the latest .rpm package
+wget https://github.com/samsoir/xearthlayer/releases/latest/download/xearthlayer-0.2.9.x86_64.rpm
+
+# Install with rpm
+sudo rpm -i xearthlayer-0.2.9.x86_64.rpm
+```
+<!--tab:Debian/Ubuntu-->
+```bash
+# Download the latest .deb package from GitHub releases
+wget https://github.com/samsoir/xearthlayer/releases/latest/download/xearthlayer_0.2.9_amd64.deb
+
+# Install with dpkg
+sudo dpkg -i xearthlayer_0.2.9_amd64.deb
+```
+<!--tab:Build from Source-->
+```bash
+# Clone the repository
+git clone https://github.com/samsoir/xearthlayer.git
+cd xearthlayer
+
+# Build with cargo
+cargo build --release
+
+# Install the binary
+sudo cp target/release/xearthlayer /usr/local/bin/
+```
+{{< /tabs >}}
 
 ## Initial Setup
 
