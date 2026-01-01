@@ -37,9 +37,45 @@ The built site will be in the `public/` directory.
 
 The site is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
 
-## Package Library
+## Package Library Sync
 
-The package library file at `/packages/xearthlayer_package_library.txt` is synced daily from the [xearthlayer-regional-scenery](https://github.com/samsoir/xearthlayer-regional-scenery) repository.
+The package library and documentation are automatically synced from [xearthlayer-regional-scenery](https://github.com/samsoir/xearthlayer-regional-scenery).
+
+### How It Works
+
+```
+Regional Scenery Repo                    Website Repo
+─────────────────────                    ────────────
+Push to main          ──────────────►    sync-packages.yml
+(library updated)     repository_dispatch     │
+                                              ▼
+                                         Fetch library
+                                         Update packages.md
+                                         Commit changes
+                                              │
+                                              ▼
+                                         deploy.yml
+                                              │
+                                              ▼
+                                         Live at xearthlayer.app
+```
+
+### Sync Triggers
+
+| Trigger | Description |
+|---------|-------------|
+| `repository_dispatch` | Immediate sync when regional-scenery pushes updates |
+| `schedule` | Daily at 00:00 UTC (fallback) |
+| `workflow_dispatch` | Manual trigger via GitHub Actions |
+
+### Files Updated
+
+- `static/packages/xearthlayer_package_library.txt` - Package index
+- `content/docs/packages.md` - Available Regions table auto-generated
+
+### Required Secrets
+
+The regional-scenery repo requires a `WEBSITE_DISPATCH_TOKEN` (fine-grained PAT with `contents: write` for this repo) to trigger syncs. Token expires every 90 days.
 
 ## Custom Domain
 
