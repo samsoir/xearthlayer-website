@@ -28,45 +28,33 @@ jobs:
           echo "Fetched version.json:"
           cat /tmp/version.json
 
-      - name: Update getting-started documentation
+      - name: Update Hugo config
         run: |
           VERSION_FILE="/tmp/version.json"
-          GETTING_STARTED="content/docs/getting-started.md"
+          HUGO_CONFIG="hugo.toml"
 
           # Extract version info using jq
           VERSION=$(jq -r '.version' "$VERSION_FILE")
-          TAG=$(jq -r '.tag' "$VERSION_FILE")
-          DEB_FILE=$(jq -r '.assets.deb.filename' "$VERSION_FILE")
-          RPM_FILE=$(jq -r '.assets.rpm.filename' "$VERSION_FILE")
-          TARBALL_FILE=$(jq -r '.assets.tarball.filename' "$VERSION_FILE")
-          BASE_URL=$(jq -r '.download_base_url' "$VERSION_FILE")
+          RELEASE_DATE=$(jq -r '.release_date' "$VERSION_FILE")
 
           echo "Version: $VERSION"
-          echo "Tag: $TAG"
-          echo "DEB: $DEB_FILE"
-          echo "RPM: $RPM_FILE"
-          echo "Tarball: $TARBALL_FILE"
-          echo "Base URL: $BASE_URL"
+          echo "Release Date: $RELEASE_DATE"
 
-          # Update version references in getting-started.md
-          # Handle both old format (0.2.9) and new format (0.2.9-1) for deb/rpm
+          # Update latestVersion in hugo.toml
+          sed -i -E "s/latestVersion = \"[0-9]+\.[0-9]+\.[0-9]+\"/latestVersion = \"${VERSION}\"/" "$HUGO_CONFIG"
 
-          # DEB: xearthlayer_0.2.9_amd64.deb -> xearthlayer_0.2.10-1_amd64.deb
-          sed -i -E "s/xearthlayer_[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?_amd64\.deb/${DEB_FILE}/g" "$GETTING_STARTED"
+          # Update releaseDate in hugo.toml
+          sed -i -E "s/releaseDate = \"[0-9]{4}-[0-9]{2}-[0-9]{2}\"/releaseDate = \"${RELEASE_DATE}\"/" "$HUGO_CONFIG"
 
-          # RPM: xearthlayer-0.2.9.x86_64.rpm or xearthlayer-0.2.9-1.fc43.x86_64.rpm
-          sed -i -E "s/xearthlayer-[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?(\.fc[0-9]+)?\.x86_64\.rpm/${RPM_FILE}/g" "$GETTING_STARTED"
-
-          # Tarball: xearthlayer-v0.2.9-x86_64-linux.tar.gz
-          sed -i -E "s/xearthlayer-v[0-9]+\.[0-9]+\.[0-9]+-x86_64-linux\.tar\.gz/${TARBALL_FILE}/g" "$GETTING_STARTED"
-
-          echo "Updated getting-started.md"
+          echo "Updated hugo.toml:"
+          grep -E "(latestVersion|releaseDate)" "$HUGO_CONFIG"
 
       - name: Check for changes
         id: changes
         run: |
           if git diff --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No changes detected"
           else
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "Files changed:"
@@ -80,9 +68,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add content/docs/getting-started.md
+          git add hugo.toml
           VERSION=$(jq -r '.version' /tmp/version.json)
-          git commit -m "chore: update download links to v${VERSION}
+          git commit -m "chore: update to v${VERSION}
 
           Automatically synced from xearthlayer release."
           git push
