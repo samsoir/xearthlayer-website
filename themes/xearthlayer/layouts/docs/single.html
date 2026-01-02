@@ -1,6 +1,13 @@
 {{ define "main" }}
 <article>
   <h1>{{ .Title }}</h1>
+  {{ with .Description }}<p class="docs-description">{{ . }}</p>{{ end }}
+  {{ if .Params.toc }}
+  <nav class="docs-toc">
+    <h4>On this page</h4>
+    {{ .TableOfContents }}
+  </nav>
+  {{ end }}
   {{ .Content }}
 </article>
 {{ end }}

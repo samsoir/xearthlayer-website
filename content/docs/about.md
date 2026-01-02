@@ -36,10 +36,6 @@ After starting work on XEarthLayer, Sam discovered that AutoOrtho has been forke
 
 XEarthLayer wouldn't be possible without the contributions and support of many people.
 
-### Contributors
-
-<!-- List key contributors and their contributions -->
-
 ### Special Thanks
 
 <!-- Acknowledge people who helped, inspired, or supported the project -->

@@ -1,10 +1,9 @@
 ---
 title: "Frequently Asked Questions"
-description: "Common questions and answers about XEarthLayer."
+description: "Find answers to common questions about XEarthLayer."
 weight: 50
+toc: true
 ---
-
-Find answers to common questions about XEarthLayer.
 
 ## General
 
@@ -177,7 +176,16 @@ If your system memory is less than 4GB, consider increasing swap space or upgrad
 
 First, check the [XEarthLayer GitHub issues](https://github.com/samsoir/xearthlayer/issues) to see if the bug has already been reported. If so, add your details to the existing issue. If it's a new issue, follow the issue template to create a new report.
 
-> **Note:** Issues submitted without the required logs and system diagnostics will be closed automatically.
+<div class="callout callout--info">
+  <svg class="callout__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"></circle>
+    <path d="M12 16v-4"></path>
+    <path d="M12 8h.01"></path>
+  </svg>
+  <div class="callout__content">
+    <p>Issues submitted without the required logs and system diagnostics will be closed automatically.</p>
+  </div>
+</div>
 
 ---
 
@@ -215,4 +223,13 @@ disk_size = 100 GB
 
 **Low memory systems:** If system memory is limited (less than 32GB total), consider creating swap space to provide additional virtual memory for both XEarthLayer and X-Plane. This is particularly important if your GPU has less than 8GB of VRAM, as the system may need to accommodate texture overflow.
 
-> **Warning:** Heavy swap usage on SSDs or NVMe drives can significantly reduce drive lifespan due to the high volume of write operations. If possible, place swap on a separate, less critical drive or consider upgrading system RAM instead.
+<div class="callout callout--warning">
+  <svg class="callout__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+    <path d="M12 9v4"></path>
+    <path d="M12 17h.01"></path>
+  </svg>
+  <div class="callout__content">
+    <p>Heavy swap usage on SSDs or NVMe drives can significantly reduce drive lifespan due to the high volume of write operations. If possible, place swap on a separate, less critical drive or consider upgrading system RAM instead.</p>
+  </div>
+</div>

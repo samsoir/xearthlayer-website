@@ -3,12 +3,17 @@
   <h1>{{ .Title }}</h1>
   {{ .Content }}
 
+  {{/* Pages featured in quicklinks - exclude from auto-generated list */}}
+  {{ $featured := slice "getting-started" "configuration" "packages" "how-it-works" }}
+
   <div class="docs-index">
     {{ range (where site.RegularPages "Section" "docs").ByWeight }}
+      {{ if not (in $featured .File.ContentBaseName) }}
     <div class="docs-index-item">
       <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
       {{ with .Description }}<p>{{ . }}</p>{{ end }}
     </div>
+      {{ end }}
     {{ end }}
   </div>
 </article>

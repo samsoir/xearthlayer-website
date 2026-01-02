@@ -45,6 +45,10 @@ theme = 'xearthlayer'
     guessSyntax = false
     lineNos = false
     lineNumbersInTable = false
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 3
+    ordered = false
 
 [outputs]
   home = ["HTML"]

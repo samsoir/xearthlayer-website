@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 420" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif">
+  <defs>
+    <!-- Catppuccin Mocha colors -->
+    <linearGradient id="xelOverlayGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1e3a5f"/>
+      <stop offset="100%" style="stop-color:#2d4a6f"/>
+    </linearGradient>
+    <linearGradient id="xelOrthoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3d2a5c"/>
+      <stop offset="100%" style="stop-color:#4d3a6c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="550" height="420" fill="#1e1e2e"/>
+
+  <!-- Priority arrow on left -->
+  <g transform="translate(35, 40)">
+    <text x="0" y="-18" text-anchor="middle" fill="#a6adc8" font-size="11">Higher</text>
+    <text x="0" y="-5" text-anchor="middle" fill="#a6adc8" font-size="11">Priority</text>
+    <line x1="0" y1="12" x2="0" y2="310" stroke="#6c7086" stroke-width="2"/>
+    <polygon points="-8,12 8,12 0,0" fill="#6c7086"/>
+    <text x="0" y="328" text-anchor="middle" fill="#6c7086" font-size="11">Lower</text>
+    <text x="0" y="341" text-anchor="middle" fill="#6c7086" font-size="11">Priority</text>
+  </g>
+
+  <!-- Layer stack -->
+  <g transform="translate(70, 25)">
+    <!-- Layer 1: Airports & Landmarks -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="450" height="36" rx="6" fill="#1e1e2e" stroke="#585b70" stroke-width="1"/>
+      <text x="20" y="23" fill="#cdd6f4" font-size="13" font-weight="500">Airports, Landmarks &amp; Objects</text>
+    </g>
+
+    <!-- Layer 2: Airport Overlays -->
+    <g transform="translate(0, 42)">
+      <rect x="0" y="0" width="450" height="36" rx="6" fill="#1e1e2e" stroke="#585b70" stroke-width="1"/>
+      <text x="20" y="23" fill="#cdd6f4" font-size="13" font-weight="500">Airport Overlays</text>
+    </g>
+
+    <!-- Layer 3: Airport Mesh -->
+    <g transform="translate(0, 84)">
+      <rect x="0" y="0" width="450" height="36" rx="6" fill="#1e1e2e" stroke="#585b70" stroke-width="1"/>
+      <text x="20" y="23" fill="#cdd6f4" font-size="13" font-weight="500">Airport Mesh</text>
+    </g>
+
+    <!-- Layer 4: Sim Heaven / World Scenery -->
+    <g transform="translate(0, 126)">
+      <rect x="0" y="0" width="450" height="36" rx="6" fill="#1e1e2e" stroke="#585b70" stroke-width="1"/>
+      <text x="20" y="23" fill="#cdd6f4" font-size="13" font-weight="500">World Scenery (Sim Heaven, SFP Global, etc.)</text>
+    </g>
+
+    <!-- Layer 5: X-Plane Airports -->
+    <g transform="translate(0, 168)">
+      <rect x="0" y="0" width="450" height="36" rx="6" fill="#1e1e2e" stroke="#585b70" stroke-width="1"/>
+      <text x="20" y="23" fill="#cdd6f4" font-size="13" font-weight="500">X-Plane Airports &amp; Global Airports</text>
+    </g>
+
+    <!-- Layer 6: XEarthLayer Overlays -->
+    <g transform="translate(0, 210)">
+      <rect x="0" y="0" width="450" height="36" rx="6" fill="url(#xelOverlayGradient)" stroke="#89b4fa" stroke-width="2"/>
+      <text x="20" y="23" fill="#89dceb" font-size="13" font-weight="500">zyXEL_*_Overlay</text>
+      <text x="225" y="23" fill="#89b4fa" font-size="11">(Road networks, forests, buildings)</text>
+    </g>
+
+    <!-- Layer 7: XEarthLayer Ortho -->
+    <g transform="translate(0, 252)">
+      <rect x="0" y="0" width="450" height="36" rx="6" fill="url(#xelOrthoGradient)" stroke="#cba6f7" stroke-width="2"/>
+      <text x="20" y="23" fill="#f5c2e7" font-size="13" font-weight="500">zzXEL_*_Ortho</text>
+      <text x="225" y="23" fill="#cba6f7" font-size="11">(Satellite imagery textures)</text>
+    </g>
+
+    <!-- Layer 8: Libraries -->
+    <g transform="translate(0, 294)">
+      <rect x="0" y="0" width="450" height="36" rx="6" fill="#1e1e2e" stroke="#585b70" stroke-width="1"/>
+      <text x="20" y="23" fill="#cdd6f4" font-size="13" font-weight="500">Libraries</text>
+    </g>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(70, 385)">
+    <rect x="0" y="0" width="16" height="16" rx="3" fill="#1e1e2e" stroke="#585b70" stroke-width="1"/>
+    <text x="24" y="13" fill="#a6adc8" font-size="12">Other scenery</text>
+
+    <rect x="150" y="0" width="16" height="16" rx="3" fill="url(#xelOverlayGradient)" stroke="#89b4fa" stroke-width="2"/>
+    <text x="174" y="13" fill="#a6adc8" font-size="12">XEarthLayer overlay</text>
+
+    <rect x="320" y="0" width="16" height="16" rx="3" fill="url(#xelOrthoGradient)" stroke="#cba6f7" stroke-width="2"/>
+    <text x="344" y="13" fill="#a6adc8" font-size="12">XEarthLayer ortho</text>
+  </g>
+</svg>
