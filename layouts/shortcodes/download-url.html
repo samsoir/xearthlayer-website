@@ -1,0 +1,5 @@
+{{- $asset := .Get 0 -}}
+{{- $release := .Site.Data.release -}}
+{{- $baseUrl := $release.download_base_url -}}
+{{- $filename := index $release.assets $asset -}}
+{{- printf "%s/%s" $baseUrl $filename -}}

@@ -27,18 +27,18 @@ paru -S xearthlayer-bin
 <!--tab:Fedora/RHEL-->
 ```bash
 # Download the latest .rpm package
-wget https://github.com/samsoir/xearthlayer/releases/latest/download/xearthlayer-{version}-1.fc43.x86_64.rpm
+wget {{< download-url "rpm" >}}
 
 # Install with rpm
-sudo rpm -i xearthlayer-{version}-1.fc43.x86_64.rpm
+sudo rpm -i {{< download-file "rpm" >}}
 ```
 <!--tab:Debian/Ubuntu-->
 ```bash
 # Download the latest .deb package from GitHub releases
-wget https://github.com/samsoir/xearthlayer/releases/latest/download/xearthlayer_{version}-1_amd64.deb
+wget {{< download-url "deb" >}}
 
 # Install with dpkg
-sudo dpkg -i xearthlayer_{version}-1_amd64.deb
+sudo dpkg -i {{< download-file "deb" >}}
 ```
 <!--tab:Build from Source-->
 ```bash
@@ -56,13 +56,16 @@ sudo cp target/release/xearthlayer /usr/local/bin/
 
 ## Initial Setup
 
-1. **Initialize configuration**:
+1. **Run the setup wizard** (recommended for first-time users):
 
    ```bash
-   xearthlayer init
+   xearthlayer setup
    ```
 
-   This creates a configuration file at `~/.xearthlayer/config.ini`.
+   The wizard will guide you through:
+   - Detecting your X-Plane 12 installation
+   - Choosing package and cache locations
+   - Configuring optimal settings for your hardware
 
 2. **Install a regional scenery package**:
 
@@ -75,7 +78,7 @@ sudo cp target/release/xearthlayer /usr/local/bin/
 3. **Start XEarthLayer**:
 
    ```bash
-   xearthlayer run
+   xearthlayer
    ```
 
    Leave this terminal running while you fly in X-Plane.

@@ -28,26 +28,51 @@ jobs:
           echo "Fetched version.json:"
           cat /tmp/version.json
 
-      - name: Update Hugo config
+      - name: Update release data
         run: |
           VERSION_FILE="/tmp/version.json"
-          HUGO_CONFIG="hugo.toml"
 
           # Extract version info using jq
           VERSION=$(jq -r '.version' "$VERSION_FILE")
+          TAG=$(jq -r '.tag' "$VERSION_FILE")
           RELEASE_DATE=$(jq -r '.release_date' "$VERSION_FILE")
+          DEB_FILE=$(jq -r '.assets.deb.filename' "$VERSION_FILE")
+          RPM_FILE=$(jq -r '.assets.rpm.filename' "$VERSION_FILE")
+          TARBALL_FILE=$(jq -r '.assets.tarball.filename' "$VERSION_FILE")
+          BASE_URL=$(jq -r '.download_base_url' "$VERSION_FILE")
 
           echo "Version: $VERSION"
+          echo "Tag: $TAG"
           echo "Release Date: $RELEASE_DATE"
+          echo "DEB: $DEB_FILE"
+          echo "RPM: $RPM_FILE"
+          echo "Tarball: $TARBALL_FILE"
+          echo "Base URL: $BASE_URL"
 
-          # Update latestVersion in hugo.toml
-          sed -i -E "s/latestVersion = \"[0-9]+\.[0-9]+\.[0-9]+\"/latestVersion = \"${VERSION}\"/" "$HUGO_CONFIG"
+          # Update hugo.toml
+          sed -i -E "s/latestVersion = \"[0-9]+\.[0-9]+\.[0-9]+\"/latestVersion = \"${VERSION}\"/" hugo.toml
+          sed -i -E "s/releaseDate = \"[0-9]{4}-[0-9]{2}-[0-9]{2}\"/releaseDate = \"${RELEASE_DATE}\"/" hugo.toml
 
-          # Update releaseDate in hugo.toml
-          sed -i -E "s/releaseDate = \"[0-9]{4}-[0-9]{2}-[0-9]{2}\"/releaseDate = \"${RELEASE_DATE}\"/" "$HUGO_CONFIG"
+          # Update data/release.json for shortcodes
+          cat > data/release.json << EOF
+          {
+            "version": "${VERSION}",
+            "tag": "${TAG}",
+            "release_date": "${RELEASE_DATE}",
+            "assets": {
+              "deb": "${DEB_FILE}",
+              "rpm": "${RPM_FILE}",
+              "tarball": "${TARBALL_FILE}"
+            },
+            "download_base_url": "${BASE_URL}"
+          }
+          EOF
 
           echo "Updated hugo.toml:"
-          grep -E "(latestVersion|releaseDate)" "$HUGO_CONFIG"
+          grep -E "(latestVersion|releaseDate)" hugo.toml
+
+          echo "Updated data/release.json:"
+          cat data/release.json
 
       - name: Check for changes
         id: changes
@@ -59,8 +84,6 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "Files changed:"
             git diff --name-only
-            echo "Diff:"
-            git diff
           fi
 
       - name: Commit and push
@@ -68,7 +91,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add hugo.toml
+          git add hugo.toml data/release.json
           VERSION=$(jq -r '.version' /tmp/version.json)
           git commit -m "chore: update to v${VERSION}
 

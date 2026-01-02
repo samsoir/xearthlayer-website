@@ -1,0 +1,3 @@
+{{- $asset := .Get 0 -}}
+{{- $release := .Site.Data.release -}}
+{{- index $release.assets $asset -}}

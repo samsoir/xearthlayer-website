@@ -217,11 +217,11 @@
         </button>
 
         <div class="download-menu" id="download-menu">
-          <a href="{{ site.Params.github }}/releases/download/v{{ site.Params.latestVersion }}/xearthlayer_{{ site.Params.latestVersion }}_amd64.deb" class="download-option">
+          <a href="{{ .Site.Data.release.download_base_url }}/{{ .Site.Data.release.assets.deb }}" class="download-option">
             <span class="download-option-title">Debian / Ubuntu</span>
             <span class="download-option-file">.deb package</span>
           </a>
-          <a href="{{ site.Params.github }}/releases/download/v{{ site.Params.latestVersion }}/xearthlayer-{{ site.Params.latestVersion }}-1.x86_64.rpm" class="download-option">
+          <a href="{{ .Site.Data.release.download_base_url }}/{{ .Site.Data.release.assets.rpm }}" class="download-option">
             <span class="download-option-title">Fedora / RHEL</span>
             <span class="download-option-file">.rpm package</span>
           </a>
@@ -229,7 +229,7 @@
             <span class="download-option-title">Arch Linux</span>
             <span class="download-option-file">AUR package</span>
           </a>
-          <a href="{{ site.Params.github }}/releases/download/v{{ site.Params.latestVersion }}/xearthlayer-{{ site.Params.latestVersion }}-x86_64-unknown-linux-gnu.tar.gz" class="download-option">
+          <a href="{{ .Site.Data.release.download_base_url }}/{{ .Site.Data.release.assets.tarball }}" class="download-option">
             <span class="download-option-title">Static Binary</span>
             <span class="download-option-file">.tar.gz archive</span>
           </a>
@@ -237,8 +237,8 @@
       </div>
 
       <p class="download-meta">
-        <a href="{{ site.Params.github }}/releases/tag/v{{ site.Params.latestVersion }}" target="_blank" rel="noopener">
-          v{{ site.Params.latestVersion }} Release Notes
+        <a href="{{ site.Params.github }}/releases/tag/{{ .Site.Data.release.tag }}" target="_blank" rel="noopener">
+          v{{ .Site.Data.release.version }} Release Notes
         </a>
       </p>
     </div>
