@@ -1195,6 +1195,10 @@ section {
   background: var(--color-bg-alt);
 }
 
+.community .container {
+  max-width: 1400px;
+}
+
 .community-links {
   display: flex;
   flex-wrap: wrap;
@@ -1209,6 +1213,7 @@ section {
   border: 1px solid var(--ctp-surface0);
   text-align: center;
   transition: all 0.2s ease;
+  width: 280px;
 }
 
 .community-card:hover {
