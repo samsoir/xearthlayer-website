@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 496" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif">
+  <defs>
+    <!-- Catppuccin Mocha colors -->
+    <linearGradient id="fuseGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1e3a5f"/>
+      <stop offset="100%" style="stop-color:#2d4a6f"/>
+    </linearGradient>
+    <linearGradient id="cacheGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3d2a5c"/>
+      <stop offset="100%" style="stop-color:#4d3a6c"/>
+    </linearGradient>
+    <linearGradient id="processingGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2d3a5c"/>
+      <stop offset="100%" style="stop-color:#3d4a6c"/>
+    </linearGradient>
+    <linearGradient id="configGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4a2d4a"/>
+      <stop offset="100%" style="stop-color:#5a3d5a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="275" y="28" text-anchor="middle" fill="#cdd6f4" font-size="16" font-weight="500">XEarthLayer Architecture</text>
+
+  <!-- Layer stack -->
+  <g transform="translate(50, 48)">
+    <!-- Layer 1: X-Plane (External) -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="450" height="44" rx="6" fill="#1e1e2e" stroke="#585b70" stroke-width="1"/>
+      <text x="225" y="20" text-anchor="middle" fill="#cdd6f4" font-size="14" font-weight="500">X-Plane</text>
+      <text x="225" y="36" text-anchor="middle" fill="#6c7086" font-size="11">Flight simulator requesting scenery tiles</text>
+    </g>
+
+    <!-- Arrow down -->
+    <g transform="translate(225, 48)">
+      <line x1="0" y1="0" x2="0" y2="12" stroke="#6c7086" stroke-width="2"/>
+      <polygon points="-5,12 5,12 0,20" fill="#6c7086"/>
+    </g>
+
+    <!-- Layer 2: FUSE Interface (XEarthLayer) -->
+    <g transform="translate(0, 72)">
+      <rect x="0" y="0" width="450" height="44" rx="6" fill="url(#fuseGradient)" stroke="#89b4fa" stroke-width="2"/>
+      <text x="225" y="20" text-anchor="middle" fill="#89dceb" font-size="14" font-weight="500">FUSE Virtual Filesystem</text>
+      <text x="225" y="36" text-anchor="middle" fill="#89b4fa" font-size="11">Intercepts X-Plane file requests via fuse3</text>
+    </g>
+
+    <!-- Bidirectional arrow -->
+    <g transform="translate(225, 120)">
+      <line x1="0" y1="0" x2="0" y2="12" stroke="#6c7086" stroke-width="2"/>
+      <polygon points="-5,12 5,12 0,20" fill="#6c7086"/>
+    </g>
+
+    <!-- Layer 3: Cache Layer (XEarthLayer) -->
+    <g transform="translate(0, 144)">
+      <rect x="0" y="0" width="450" height="44" rx="6" fill="url(#cacheGradient)" stroke="#cba6f7" stroke-width="2"/>
+      <text x="225" y="20" text-anchor="middle" fill="#f5c2e7" font-size="14" font-weight="500">Cache Layer</text>
+      <text x="225" y="36" text-anchor="middle" fill="#cba6f7" font-size="11">Memory cache (DDS) + Disk cache (image chunks)</text>
+    </g>
+
+    <!-- Arrow down -->
+    <g transform="translate(225, 192)">
+      <line x1="0" y1="0" x2="0" y2="12" stroke="#6c7086" stroke-width="2"/>
+      <polygon points="-5,12 5,12 0,20" fill="#6c7086"/>
+    </g>
+
+    <!-- Layer 4: Image Processing Layer (XEarthLayer) -->
+    <g transform="translate(0, 216)">
+      <rect x="0" y="0" width="450" height="44" rx="6" fill="url(#processingGradient)" stroke="#b4befe" stroke-width="2"/>
+      <text x="225" y="20" text-anchor="middle" fill="#b4befe" font-size="14" font-weight="500">Image Processing Layer</text>
+      <text x="225" y="36" text-anchor="middle" fill="#89b4fa" font-size="11">Assembles chunks into 4096x4096 DDS textures</text>
+    </g>
+
+    <!-- Arrow down -->
+    <g transform="translate(225, 264)">
+      <line x1="0" y1="0" x2="0" y2="12" stroke="#6c7086" stroke-width="2"/>
+      <polygon points="-5,12 5,12 0,20" fill="#6c7086"/>
+    </g>
+
+    <!-- Layer 5: Mapping Provider (External) -->
+    <g transform="translate(0, 288)">
+      <rect x="0" y="0" width="450" height="44" rx="6" fill="#1e1e2e" stroke="#585b70" stroke-width="1"/>
+      <text x="225" y="20" text-anchor="middle" fill="#cdd6f4" font-size="14" font-weight="500">Mapping Provider</text>
+      <text x="225" y="36" text-anchor="middle" fill="#6c7086" font-size="11">External satellite imagery source (Bing, Google, etc.)</text>
+    </g>
+  </g>
+
+  <!-- Arrow down to Configuration -->
+  <g transform="translate(275, 384)">
+    <line x1="0" y1="0" x2="0" y2="12" stroke="#6c7086" stroke-width="2"/>
+    <polygon points="-5,12 5,12 0,20" fill="#6c7086"/>
+  </g>
+
+  <!-- Configuration Layer -->
+  <g transform="translate(50, 408)">
+    <rect x="0" y="0" width="450" height="44" rx="6" fill="url(#configGradient)" stroke="#f5c2e7" stroke-width="2"/>
+    <text x="225" y="20" text-anchor="middle" fill="#f5c2e7" font-size="14" font-weight="500">Configuration Layer</text>
+    <text x="225" y="36" text-anchor="middle" fill="#f2cdcd" font-size="11">Provider settings, cache paths, zoom levels, prefetch behavior</text>
+  </g>
+
+  <!-- Dashed lines showing Configuration spans XEarthLayer layers -->
+  <line x1="42" y1="120" x2="42" y2="452" stroke="#f5c2e7" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="508" y1="120" x2="508" y2="452" stroke="#f5c2e7" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Legend -->
+  <g transform="translate(70, 472)">
+    <rect x="0" y="0" width="14" height="14" rx="3" fill="#1e1e2e" stroke="#585b70" stroke-width="1"/>
+    <text x="20" y="11" fill="#a6adc8" font-size="11">External</text>
+
+    <rect x="100" y="0" width="14" height="14" rx="3" fill="url(#fuseGradient)" stroke="#89b4fa" stroke-width="2"/>
+    <text x="120" y="11" fill="#a6adc8" font-size="11">XEarthLayer</text>
+  </g>
+</svg>

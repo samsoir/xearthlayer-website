@@ -23,47 +23,49 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 
 View installed and available packages:
 
-```bash
+{{< code lang="bash" copy="true" >}}
 xearthlayer packages list
-```
+{{< /code >}}
 
 ## Installing Packages
 
 Install a regional package by its code:
 
-```bash
-# Europe
+{{< code lang="bash" copy="true" >}}
 xearthlayer packages install EU
+{{< /code >}}
 
-# North America
+{{< code lang="bash" copy="true" >}}
 xearthlayer packages install NA
-
-# Or install multiple
-xearthlayer packages install EU NA
-```
+{{< /code >}}
 
 ## Updating Packages
 
-Check for and install updates:
+Check for updates:
 
-```bash
-# Check for updates
+{{< code lang="bash" copy="true" >}}
 xearthlayer packages check
+{{< /code >}}
 
-# Update all packages
+Update all packages:
+
+{{< code lang="bash" copy="true" >}}
 xearthlayer packages update
+{{< /code >}}
 
-# Update specific package
+Update a specific package:
+
+{{< code lang="bash" copy="true" >}}
 xearthlayer packages update EU
-```
+{{< /code >}}
 
 ## Removing Packages
 
 Remove a package you no longer need:
 
-```bash
+{{< code lang="bash" copy="true" >}}
 xearthlayer packages remove EU
-```
+{{< /code >}}
 
 ## Package Library
 
@@ -75,6 +77,6 @@ https://xearthlayer.app/packages/xearthlayer_package_library.txt
 
 You can configure a custom library URL:
 
-```bash
+{{< code lang="bash" copy="true" >}}
 xearthlayer config set packages.library_url https://example.com/library.txt
-```
+{{< /code >}}

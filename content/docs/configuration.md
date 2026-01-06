@@ -8,21 +8,36 @@ XEarthLayer is configured through an INI file located at `~/.xearthlayer/config.
 
 ## Configuration File
 
-Run `xearthlayer init` to create the default configuration file. You can view and modify settings using the CLI:
+Create the default configuration file:
+{{< code lang="bash" copy="true" >}}
+xearthlayer init
+{{< /code >}}
 
-```bash
-# Show config file path
+{{< callout type="tip" >}}
+For first-time users, running `xearthlayer setup` is recommended instead. The setup wizard will create the configuration file and guide you through detecting your X-Plane installation and configuring optimal settings for your hardware. See [Getting Started](../getting-started/) for details.
+{{< /callout >}}
+
+You can view and modify settings using the CLI:
+
+Show config file path:
+{{< code lang="bash" copy="true" >}}
 xearthlayer config path
+{{< /code >}}
 
-# List all settings
+List all settings:
+{{< code lang="bash" copy="true" >}}
 xearthlayer config list
+{{< /code >}}
 
-# Get a specific setting
+Get a specific setting:
+{{< code lang="bash" copy="true" >}}
 xearthlayer config get provider.name
+{{< /code >}}
 
-# Set a setting
+Set a setting:
+{{< code lang="bash" copy="true" >}}
 xearthlayer config set provider.name bing
-```
+{{< /code >}}
 
 ## Imagery Providers
 
@@ -39,7 +54,7 @@ XEarthLayer supports multiple satellite imagery providers:
 
 ```ini
 [provider]
-name = apple
+name = bing
 ```
 
 ## Cache Settings

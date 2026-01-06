@@ -7,7 +7,7 @@
   <header class="site-header">
     {{ partial "header.html" . }}
   </header>
-  <div class="docs-layout">
+  <div class="docs-layout{{ if .Params.toc }} docs-layout--with-toc{{ end }}">
     <aside class="docs-sidebar">
       <nav>
         <ul class="docs-nav">
@@ -22,6 +22,13 @@
         </ul>
       </nav>
     </aside>
+    {{ if .Params.toc }}
+    <aside class="docs-toc-sidebar">
+      <nav class="docs-toc docs-toc--sticky">
+        {{ .TableOfContents }}
+      </nav>
+    </aside>
+    {{ end }}
     <main class="docs-content">
       {{ block "main" . }}{{ end }}
     </main>
@@ -36,29 +43,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ini.min.js"></script>
   <script>
   (function() {
-    // Catppuccin Mocha theme CSS
-    var themeCSS = `
-      :host {
-        display: block;
-        width: 100%;
-      }
+    // Detect if user prefers light mode
+    var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+
+    // Catppuccin Mocha theme CSS (dark)
+    var darkThemeCSS = `
       pre[class*="language-"] {
-        margin: 0;
-        padding: 1rem;
-        overflow-x: auto;
         background: #11111b;
-        border-radius: 0.5rem;
       }
       code[class*="language-"] {
         color: #cdd6f4;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.9rem;
-        line-height: 1.6;
-        white-space: pre;
-        word-spacing: normal;
-        word-break: normal;
-        word-wrap: normal;
-        tab-size: 2;
       }
       .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #6c7086; }
       .token.punctuation { color: #cdd6f4; }
@@ -74,15 +68,120 @@
       .token.shebang { color: #a6e3a1; font-weight: bold; }
       .token.assign-left { color: #cdd6f4; }
       .token.environment { color: #f9e2af; }
+      .copy-btn {
+        background: #313244;
+        border: 1px solid #45475a;
+        color: #a6adc8;
+      }
+      .copy-btn:hover {
+        background: #cba6f7;
+        border-color: #cba6f7;
+        color: #11111b;
+      }
+      .copy-btn.copied {
+        background: #a6e3a1;
+        border-color: #a6e3a1;
+        color: #11111b;
+      }
     `;
+
+    // Catppuccin Latte theme CSS (light)
+    var lightThemeCSS = `
+      pre[class*="language-"] {
+        background: #dce0e8;
+      }
+      code[class*="language-"] {
+        color: #4c4f69;
+      }
+      .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #9ca0b0; }
+      .token.punctuation { color: #4c4f69; }
+      .token.property, .token.tag, .token.function { color: #1e66f5; }
+      .token.boolean, .token.number, .token.constant { color: #fe640b; }
+      .token.symbol, .token.deleted { color: #d20f39; }
+      .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin, .token.inserted { color: #40a02b; }
+      .token.operator, .token.entity, .token.url { color: #209fb5; }
+      .token.atrule, .token.attr-value, .token.keyword { color: #8839ef; }
+      .token.class-name { color: #df8e1d; }
+      .token.regex { color: #ea76cb; }
+      .token.important, .token.variable { color: #fe640b; }
+      .token.shebang { color: #40a02b; font-weight: bold; }
+      .token.assign-left { color: #4c4f69; }
+      .token.environment { color: #df8e1d; }
+      .copy-btn {
+        background: #ccd0da;
+        border: 1px solid #bcc0cc;
+        color: #6c6f85;
+      }
+      .copy-btn:hover {
+        background: #8839ef;
+        border-color: #8839ef;
+        color: #eff1f5;
+      }
+      .copy-btn.copied {
+        background: #40a02b;
+        border-color: #40a02b;
+        color: #eff1f5;
+      }
+    `;
+
+    // Base CSS (shared between themes)
+    var baseCSS = `
+      :host {
+        display: block;
+        width: 100%;
+      }
+      .code-wrapper {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        line-height: 0;
+      }
+      .code-wrapper pre {
+        line-height: 1.6;
+      }
+      pre[class*="language-"] {
+        margin: 0;
+        padding: 1rem;
+        overflow-x: auto;
+        border-radius: 0.5rem;
+      }
+      code[class*="language-"] {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        white-space: pre;
+        word-spacing: normal;
+        word-break: normal;
+        word-wrap: normal;
+        tab-size: 2;
+      }
+      .copy-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        opacity: 0;
+      }
+      .code-wrapper:hover .copy-btn {
+        opacity: 1;
+      }
+    `;
+
+    var themeCSS = baseCSS + (prefersLight ? lightThemeCSS : darkThemeCSS);
 
     document.querySelectorAll('.highlight').forEach(function(highlight) {
       var code = highlight.querySelector('code');
       if (!code) return;
 
       var text = code.textContent;
+      var showCopy = highlight.getAttribute('data-copy') === 'true';
       // Detect language from data-lang attribute or class
-      var lang = code.getAttribute('data-lang') || 'bash';
+      var lang = highlight.getAttribute('data-lang') || code.getAttribute('data-lang') || 'bash';
       var langClass = 'language-' + lang;
 
       // Create shadow host
@@ -97,6 +196,10 @@
       style.textContent = themeCSS;
       shadow.appendChild(style);
 
+      // Create wrapper for positioning
+      var wrapper = document.createElement('div');
+      wrapper.className = 'code-wrapper';
+
       // Create code structure inside shadow
       var pre = document.createElement('pre');
       pre.className = langClass;
@@ -104,7 +207,27 @@
       codeEl.className = langClass;
       codeEl.textContent = text;
       pre.appendChild(codeEl);
-      shadow.appendChild(pre);
+      wrapper.appendChild(pre);
+
+      // Add copy button if enabled
+      if (showCopy) {
+        var copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'Copy';
+        copyBtn.addEventListener('click', function() {
+          navigator.clipboard.writeText(text).then(function() {
+            copyBtn.textContent = 'Copied!';
+            copyBtn.classList.add('copied');
+            setTimeout(function() {
+              copyBtn.textContent = 'Copy';
+              copyBtn.classList.remove('copied');
+            }, 2000);
+          });
+        });
+        wrapper.appendChild(copyBtn);
+      }
+
+      shadow.appendChild(wrapper);
 
       // Highlight inside shadow DOM
       Prism.highlightElement(codeEl);

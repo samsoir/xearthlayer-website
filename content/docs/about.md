@@ -12,25 +12,27 @@ XEarthLayer takes a different approach—streaming satellite imagery on-demand, 
 
 ## The Author
 
-XEarthLayer was created by Sam de Freyssinet in 2025. Sam has been a flight simulator enthusiast for much of his life, following his first encounter with Microsoft Flight Simulator 2.0.
+XEarthLayer was created by Sam de Freyssinet in 2025. Sam has been a flight simulator enthusiast for much of his life, ever since his first encounter with Microsoft Flight Simulator 2.0.
 
-After a small hiatus from flight sim between 2000 and 2013, Sam returned to his passion. After a couple of years in the Prepar3d ecosystem, he migrated to X-Plane at the tail end of version 10.
+After an extended hiatus from flight simulation between 2000 and 2013, Sam returned to his passion. After a couple of years in the Prepar3D ecosystem, he migrated to X-Plane at the tail end of version 10.
 
-Since rediscovering his passion for flying virtually, Sam started flight training for his real private pilots license in 2016.
+Since rediscovering his passion for flying virtually, Sam started flight training for his real private pilot's license in 2016.
 
-When not piloting virtual or real aircraft, Sam spends his time as a Software Engineering Director at a well known tech company in the San Francisco Bay Area. He likes to snowboard with his children, cycle and travel.
+When not piloting virtual or real aircraft, Sam works as a Software Engineering Director at a well-known tech company in the San Francisco Bay Area. He likes to snowboard with his children, cycle, and travel.
 
 ## Motivation
 
-In the summer of 2025 after many years of running his flight simulator on Microsoft Windows, Sam decided to migrate to Linux. There are many factors that drove this decision, but the biggest influence was due to Windows 11 killing the main system NVMe drive after a system update.
+In the summer of 2025, after many years of running his flight simulator on Microsoft Windows, Sam decided to migrate to Linux. Many factors drove this decision, but the catalyst was Windows 11 corrupting his main system NVMe drive after a routine update.
 
-After successfully rebuilding his flight simulator on Linux and installing X-Plane 12, Sam was horrified to find that both tools he had used previously for streaming orthophoto scenery into X-Plane were not available; one only supports Windows; the other, AutoOrtho, was no longer maintained.
+After successfully rebuilding his flight simulator on Linux and installing X-Plane 12, Sam was disappointed to find that the tools he had previously used for streaming orthophoto scenery into X-Plane were not available on the platform. One only supported Windows, while the other, AutoOrtho, was no longer maintained.
 
-Given the situation, Sam decided to try and fix [AuthOrtho](https://kubilus1.github.io/autoortho/latest/) on his own system but did not make much progress. Taking a step back, Sam asked the fatal question; _how hard would it be to port AutoOrtho to Rust?_ Turns out it is quite hard, but not impossible.
+Given the situation, Sam decided to try and fix [AutoOrtho](https://kubilus1.github.io/autoortho/latest/) on his own system but did not make much progress. Taking a step back, he asked the fateful question: _how hard would it be to port AutoOrtho to Rust?_ As it turns out, quite hard—but not impossible.
 
-XEarthLayer shares no code with AutoOrtho and there have been many [design decisions](https://github.com/samsoir/xearthlayer/tree/main/docs/dev) that resulted in significant changes to how scenery tiles are managed internally by the system. With that being said it would be a disservice to not credit AutoOrtho as the inspiration for this project.
+XEarthLayer shares no code with AutoOrtho, and there have been many [design decisions](https://github.com/samsoir/xearthlayer/tree/main/docs/dev) that resulted in significant changes to how scenery tiles are managed internally. With that said, it would be a disservice not to credit AutoOrtho as the inspiration for this project.
 
-After starting work on XEarthLayer, Sam discovered that AutoOrtho has been forked by the community into [AutoOrtho Continued](https://programmingdinosaur.github.io/autoortho4xplane/). Definitely check that out if XEarthLayer is not for you.
+After starting work on XEarthLayer, Sam discovered that AutoOrtho had been forked by the community into [AutoOrtho Continued](https://programmingdinosaur.github.io/autoortho4xplane/). Definitely check that out if XEarthLayer is not for you.
+
+Three months later, XEarthLayer was ready for its first public release.
 
 ## Acknowledgments
 
@@ -38,15 +40,17 @@ XEarthLayer wouldn't be possible without the contributions and support of many p
 
 ### Special Thanks
 
-<!-- Acknowledge people who helped, inspired, or supported the project -->
+- [kubilus1](https://github.com/kubilus1/autoortho) for creating AutoOrtho, the original inspiration for this project
+- [xjs36uk](https://forums.x-plane.org/profile/1171657-xjs36uk/) for their testing and feedback on low specification systems that significantly improved the performance of XEarthLayer on memory constrained systems
 
 ### Technologies
 
 XEarthLayer is built with:
 
 - [Rust](https://www.rust-lang.org/) — Systems programming language
-- [X-Plane SDK](https://developer.x-plane.com/) — X-Plane plugin development
-<!-- Add other key technologies/libraries -->
+- [Claude Code](https://claude.com/product/claude-code) — AI assisted pair programming and documentation
+- [GitHub](https://github.com) — Source code repository, CI/CD and hosting services
+- [Ortho4XP, Shred86](https://github.com/shred86/Ortho4XP) fork used to create regional scenery packages
 
 ### Imagery Providers
 

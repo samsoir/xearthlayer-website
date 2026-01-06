@@ -1,0 +1,3 @@
+{{- $lang := .Get "lang" | default "bash" -}}
+{{- $copy := .Get "copy" | default false -}}
+<div class="highlight" data-lang="{{ $lang }}"{{ if $copy }} data-copy="true"{{ end }}><pre><code class="language-{{ $lang }}" data-lang="{{ $lang }}">{{ .Inner | strings.TrimSpace }}</code></pre></div>

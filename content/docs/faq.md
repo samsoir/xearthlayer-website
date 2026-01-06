@@ -187,6 +187,14 @@ First, check the [XEarthLayer GitHub issues](https://github.com/samsoir/xearthla
   </div>
 </div>
 
+### Where can I get help?
+
+The XEarthLayer community is active and happy to help with questions, troubleshooting, and general discussion:
+
+- **Discord** — Join the [XEarthLayer Discord server](https://discord.gg/XVUmMWYS) for real-time chat with other users and the developer
+- **GitHub Discussions** — Post questions and share ideas on [GitHub Discussions](https://github.com/samsoir/xearthlayer/discussions)
+- **GitHub Issues** — Report bugs or request features via [GitHub Issues](https://github.com/samsoir/xearthlayer/issues)
+
 ---
 
 ## Performance

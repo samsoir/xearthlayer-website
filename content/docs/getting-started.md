@@ -16,51 +16,37 @@ This guide will help you install XEarthLayer and get flying with photoreal scene
 ## Installation
 
 {{< tabs >}}
-<!--tab:Arch Linux-->
-```bash
-# Using yay
-yay -S xearthlayer-bin
-
-# Or using paru
-paru -S xearthlayer-bin
-```
-<!--tab:Fedora/RHEL-->
-```bash
-# Download the latest .rpm package
-wget {{< download-url "rpm" >}}
-
-# Install with rpm
-sudo rpm -i {{< download-file "rpm" >}}
-```
-<!--tab:Debian/Ubuntu-->
-```bash
-# Download the latest .deb package from GitHub releases
-wget {{< download-url "deb" >}}
-
-# Install with dpkg
-sudo dpkg -i {{< download-file "deb" >}}
-```
 <!--tab:Build from Source-->
-```bash
-# Clone the repository
-git clone https://github.com/samsoir/xearthlayer.git
-cd xearthlayer
+{{< code lang="bash" copy="true" >}}
+git clone https://github.com/samsoir/xearthlayer.git && cd xearthlayer && make install
+{{< /code >}}
+<!--tab:Fedora/RHEL-->
+{{< code lang="bash" copy="true" >}}
+wget {{< download-url "rpm" >}} && sudo rpm -i {{< download-file "rpm" >}}
+{{< /code >}}
+<!--tab:Debian/Ubuntu-->
+{{< code lang="bash" copy="true" >}}
+wget {{< download-url "deb" >}} && sudo dpkg -i {{< download-file "deb" >}}
+{{< /code >}}
+<!--tab:Arch Linux-->
+Using yay:
+{{< code lang="bash" copy="true" >}}
+yay -S xearthlayer-bin
+{{< /code >}}
 
-# Build with cargo
-cargo build --release
-
-# Install the binary
-sudo cp target/release/xearthlayer /usr/local/bin/
-```
+Or using paru:
+{{< code lang="bash" copy="true" >}}
+paru -S xearthlayer-bin
+{{< /code >}}
 {{< /tabs >}}
 
 ## Initial Setup
 
 1. **Run the setup wizard** (recommended for first-time users):
 
-   ```bash
-   xearthlayer setup
-   ```
+   {{< code lang="bash" copy="true" >}}
+xearthlayer setup
+{{< /code >}}
 
    The wizard will guide you through:
    - Detecting your X-Plane 12 installation
@@ -69,17 +55,29 @@ sudo cp target/release/xearthlayer /usr/local/bin/
 
 2. **Install a regional scenery package**:
 
-   ```bash
-   xearthlayer packages install EU  # Europe
-   # or
-   xearthlayer packages install NA  # North America
-   ```
+   List available regional scenery packages:
+
+   {{< code lang="bash" copy="true" >}}
+xearthlayer packages check
+{{< /code >}}
+
+   Install a package (e.g., Europe):
+
+   {{< code lang="bash" copy="true" >}}
+xearthlayer packages install EU
+{{< /code >}}
+
+   Or North America:
+
+   {{< code lang="bash" copy="true" >}}
+xearthlayer packages install NA
+{{< /code >}}
 
 3. **Start XEarthLayer**:
 
-   ```bash
-   xearthlayer
-   ```
+   {{< code lang="bash" copy="true" >}}
+xearthlayer
+{{< /code >}}
 
    Leave this terminal running while you fly in X-Plane.
 
@@ -98,6 +96,7 @@ If you see tiles being downloaded and cache hits increasing, XEarthLayer is work
 
 ## Next Steps
 
+- [Configure X-Plane 12 for optimal performance](../x-plane-configuration/)
 - [Configure providers and caching](../configuration/)
 - [Install more regional packages](../packages/)
 - [Learn how XEarthLayer works](../how-it-works/)
