@@ -29,14 +29,8 @@ wget {{< download-url "rpm" >}} && sudo rpm -i {{< download-file "rpm" >}}
 wget {{< download-url "deb" >}} && sudo dpkg -i {{< download-file "deb" >}}
 {{< /code >}}
 <!--tab:Arch Linux-->
-Using yay:
 {{< code lang="bash" copy="true" >}}
-yay -S xearthlayer-bin
-{{< /code >}}
-
-Or using paru:
-{{< code lang="bash" copy="true" >}}
-paru -S xearthlayer-bin
+curl -sL https://github.com/samsoir/xearthlayer/releases/download/v0.2.12/aur-package.zip | bsdtar -xf- -C /tmp && cd /tmp && makepkg -si
 {{< /code >}}
 {{< /tabs >}}
 
