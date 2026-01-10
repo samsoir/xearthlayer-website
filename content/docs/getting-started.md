@@ -30,7 +30,7 @@ wget {{< download-url "deb" >}} && sudo dpkg -i {{< download-file "deb" >}}
 {{< /code >}}
 <!--tab:Arch Linux-->
 {{< code lang="bash" copy="true" >}}
-curl -sL https://github.com/samsoir/xearthlayer/releases/download/v0.2.12/aur-package.zip | bsdtar -xf- -C /tmp && cd /tmp && makepkg -si
+curl -sL {{< download-url "aur" >}} | bsdtar -xf- -C /tmp && cd /tmp && makepkg -si
 {{< /code >}}
 {{< /tabs >}}
 
