@@ -16,7 +16,7 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 |------|--------|---------|----------|
 | EU | Europe | 0.1.1 | Western and Central Europe |
 | NA | North America | 0.2.3 | United States, Canada, Caribbean |
-| OC | Oceania | 0.1.0 | Australia, New Zealand, Pacific Islands |
+| OC | Oceania | 0.2.0 | Australia, New Zealand, Fiji, French Polynesia, Papua New Guinea, Vanuatu, Solomon Islands |
 | SA | South America | 0.2.0 | Complete continent including Falkland Islands |
 
 ## Listing Packages
