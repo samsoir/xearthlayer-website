@@ -10,10 +10,11 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 
 ![Coverage Map](/images/coverage.png)
 
-*AS3 in red, EU in orange, NA in blue, OC in purple, SA in green.*
+*AF2 in yellowgreen, AS3 in red, EU in orange, NA in blue, OC in purple, SA in green.*
 
 | Code | Region | Version | Coverage |
 |------|--------|---------|----------|
+| AF2 | Africa - Part 2 | 0.1.0 | Southern Africa including South Africa, Namibia, Botswana, Zimbabwe, Zambia, Mozambique, Madagascar, Tanzania, Kenya, DRC |
 | AS3 | Asia - Part 3 | 0.1.0 | Indonesia, Malaysia, Philippines, Vietnam, Thailand, Japan, South Korea, Taiwan, Eastern Russia |
 | EU | Europe | 0.1.1 | Western and Central Europe |
 | NA | North America | 0.2.3 | United States, Canada, Caribbean |
