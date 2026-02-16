@@ -1,11 +1,13 @@
 XEARTHLAYER REGIONAL SCENERY PACKAGE LIBRARY
 1.0.0
 EARTH
-26
-2026-01-25T08:54:59Z
-12
+28
+2026-02-16T18:33:10Z
+14
 
 
+c007ff6e1d3a52532a3beda6c927ead3385933febfdd3b059145a6625232ecec  Y  AF1  0.1.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/af1-v0.1.0/yzXEL_af1_overlay-metadata.txt
+ee59a34d568bf17ea0d01bef44912d4e962c7ffd132e40670a08b2480739d4d7  Z  AF1  0.1.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/af1-v0.1.0/zzXEL_af1_ortho-metadata.txt
 7912631c7d9be6d27b56203565b8b2cbbf5adf875ae2b7578ccf78fb3a883215  Y  AF2  0.1.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/af2-v0.1.0/yzXEL_af2_overlay-metadata.txt
 23791e544456c970a75729fd7f59094463e3576d2fc7fb3af4fad15e72212359  Z  AF2  0.1.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/af2-v0.1.0/zzXEL_af2_ortho-metadata.txt
 04848a5e56159e34d3d8e24b875d541fa240e6b2414fb97021fb22f61da9ad1a  Y  AS3  0.1.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/as3-v0.1.0/yzXEL_as3_overlay-metadata.txt
