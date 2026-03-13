@@ -1,11 +1,11 @@
 {
-  "version": "0.3.0",
-  "tag": "v0.3.0",
-  "release_date": "2026-02-03",
+  "version": "0.3.1",
+  "tag": "v0.3.1",
+  "release_date": "2026-03-13",
   "assets": {
-    "deb": "xearthlayer_0.3.0-1_amd64.deb",
-    "rpm": "xearthlayer-0.3.0-1.fc43.x86_64.rpm",
-    "tarball": "xearthlayer-v0.3.0-x86_64-linux.tar.gz"
+    "deb": "xearthlayer_0.3.1-1_amd64.deb",
+    "rpm": "xearthlayer-0.3.1-1.fc43.x86_64.rpm",
+    "tarball": "xearthlayer-v0.3.1-x86_64-linux.tar.gz"
   },
-  "download_base_url": "https://github.com/samsoir/xearthlayer/releases/download/v0.3.0"
+  "download_base_url": "https://github.com/samsoir/xearthlayer/releases/download/v0.3.1"
 }
