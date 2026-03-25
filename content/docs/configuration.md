@@ -1,7 +1,7 @@
 ---
 title: "Configuration"
 description: "Configure imagery providers, caching behavior, and performance settings."
-weight: 20
+weight: 30
 ---
 
 XEarthLayer is configured through an INI file located at `~/.xearthlayer/config.ini`. This page covers the essential settings to get flying, followed by advanced tuning sections for users who want more control.
