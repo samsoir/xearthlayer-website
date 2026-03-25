@@ -1,7 +1,7 @@
 ---
 title: "How It Works"
 description: "Understand the technology behind XEarthLayer's on-demand satellite imagery streaming."
-weight: 40
+weight: 10
 ---
 
 XEarthLayer uses a combination of technologies to stream satellite imagery directly into X-Plane, downloading only what you need, when you need it.
@@ -35,17 +35,23 @@ You only download the scenery you actually fly over. No wasted bandwidth or disk
 2. **Cache Check**: XEarthLayer first checks memory cache for completed tile DDS image, then disk cache for image chunks required to create DDS image. If either is found they are returned to X-Plane
 3. **Download**: If not cached, XEarthLayer downloads requires tile chunks from the provider to prepare for assembly
 4. **Assembly**: Combine 256 small image chunks into a 4096×4096 DDS image
-5. **Encode**: Compress 4096*4096 image into to DDS format (BC1/BC3)
+5. **Encode**: Compress 4096×4096 image into DDS format (BC1/BC3) using one of three backends — Software (pure Rust), ISPC SIMD (default, 5–10× faster), or GPU compute shaders (fastest, requires a separate GPU build)
 6. **Cache**: Store completed DDS image in memory and cache image chunks to disk
 7. **Serve**: Return the DDS texture to X-Plane
 
-### Predictive Prefetching
+### Adaptive Prefetching
 
-XEarthLayer can receive telemetry from X-Plane via the XGPS2 protocol. Using your aircraft's position and heading, it prefetches tiles ahead of you, reducing rendering performance issues and stuttering during flight.
+XEarthLayer reads your aircraft's position and heading directly from X-Plane's built-in Web API — no configuration required. On X-Plane 12.1.1 and later, the Web API is enabled by default, so prefetching works out of the box.
 
-When X-Plane is not configured to broadcast the aircraft position over XGPS2, XEarthLayer uses an inferred radial perimeter to prefetch tiles in every direction from from the loaded area. The inference algorithm uses the recent requested tiles from X-Plane to execute a best-guess (dead-reckoning) position of the aircraft. This enables XEarthLayer to pre-cache tiles that X-Plane will request, but is less efficient than the heading aware system as it preloads more resources than required.
+Using this telemetry, XEarthLayer maintains a **sliding prefetch box** around your aircraft. The box biases toward your heading — up to 80% of the prefetch area is loaded ahead of you, so tiles are ready before X-Plane needs them. This virtually eliminates scenery loading stutters during flight.
+
+The prefetch system is also **flight-phase aware**. On the ground, it loads a ring of tiles around your position. During cruise, the sliding box tracks your heading and speed. Transitions between phases (such as after takeoff) ramp up gradually to avoid overloading the pipeline.
 
 ![Predictive Prefetch Zones](/images/docs/prefetch-zones.svg)
+
+### Consolidated Mounting
+
+XEarthLayer uses a single FUSE mount point (`zzXEL_ortho`) for all of your installed scenery packages. Whether you have one region or a dozen, they are all merged into one virtual folder that X-Plane reads from. Custom tile patches (for airport add-ons, for example) are included in the same mount and automatically take priority over regional package tiles. This means your `scenery_packs.ini` only needs one ortho entry, and resource usage stays low regardless of how many regions you have installed.
 
 ## Performance
 
