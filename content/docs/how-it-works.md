@@ -45,7 +45,7 @@ XEarthLayer reads your aircraft's position and heading directly from X-Plane's b
 
 Using this telemetry, XEarthLayer maintains a **sliding prefetch box** around your aircraft. The box biases toward your heading — up to 80% of the prefetch area is loaded ahead of you, so tiles are ready before X-Plane needs them. This virtually eliminates scenery loading stutters during flight.
 
-The prefetch system is also **flight-phase aware**. On the ground, it loads a ring of tiles around your position. During cruise, the sliding box tracks your heading and speed. Transitions between phases (such as after takeoff) ramp up gradually to avoid overloading the pipeline.
+The prefetch system is also **flight-phase aware**. On the ground, it loads a ring of tiles around your position. During cruise, the sliding box tracks your heading and speed. On approach, the box narrows and shortens to focus on your landing area. Transitions between phases (such as after takeoff or beginning a descent) ramp up gradually to avoid overloading the pipeline.
 
 ![Predictive Prefetch Zones](/images/docs/prefetch-zones.svg)
 
