@@ -1,7 +1,7 @@
 ---
 title: "Frequently Asked Questions"
 description: "Find answers to common questions about XEarthLayer."
-weight: 50
+weight: 60
 toc: true
 ---
 
@@ -37,12 +37,12 @@ Ultimately, all of these systems provide the same in-simulator experience, so wh
 
 | Photo Scenery System | Open Source | X-Plane Interface | Programming Language | OS | Maintained |
 |----------------------|-------------|-------------------|--------------------|---|------------|
-| XEarthLayer | Yes | Fuse / XGPS2 | Rust | Linux | Yes |
+| XEarthLayer | Yes | Fuse / Web API | Rust | Linux | Yes |
 | AutoOrtho | Yes | Fuse | Python | Windows, macOS, Linux | No |
 | AutoOrtho Continued | Yes | Fuse | Python | Windows, macOS, Linux | Yes |
-| X-Plane Map Enhancement | No | Fuse |  Unknown | Windows | Yes|
+| X-Plane Map Enhancement | No | Fuse | Unknown | Windows, macOS | Yes |
 
-_As of January 1, 2026_
+_As of March 2026_
 
 ### Can XEarthLayer be used with Microsoft Flight Simulator?
 
@@ -142,17 +142,14 @@ format = bc1
 
 [download]
 timeout = 30
-retries = 5
+retries = 3
 
-[generation]
-timeout = 20
-threads = 16              # Try half your CPU core count
-
-[performance]
-max_http_concurrent = 64  # Reduce by 50% from default
-max_cpu_concurrent = 1
-max_prefetch_in_flight = 8
-coalesce_channel_capacity = 8
+[executor]
+network_concurrent = 64       # Default 128, reduce by 50%
+cpu_concurrent = 4            # Default is ~num_cpus * 1.25, try half
+disk_io_concurrent = 32       # Default 64, reduce by 50%
+request_timeout_secs = 10
+max_retries = 3
 ```
 
 ### Help! I am seeing white tiles on the scenery when I fly.
@@ -172,20 +169,35 @@ journalctl --since "1 hour ago" | grep -iE "fuse|xearthlayer"
 
 If your system memory is less than 4GB, consider increasing swap space or upgrading RAM. See the [Performance](#performance) section for cache tuning recommendations.
 
+### GPU encoding is not working or the wrong GPU is selected
+
+If you have configured `texture.compressor = gpu` and are experiencing issues, here are some common causes and solutions.
+
+**GPU not detected:** Run `xearthlayer diagnostics` to list available GPU adapters on your system. If no GPUs are listed, ensure your GPU drivers are installed correctly and that Vulkan support is available. See the [CLI Reference](/docs/cli-reference/) for more on the `diagnostics` command.
+
+**Wrong GPU selected (integrated vs discrete):** On systems with both an integrated GPU (iGPU) and a discrete GPU (dGPU), XEarthLayer may select the wrong adapter. Configure the `texture.gpu_device` setting to target the correct GPU:
+
+```ini
+[texture]
+compressor = gpu
+gpu_device = integrated  ; Use iGPU for encoding while dGPU runs X-Plane
+```
+
+Valid values are `integrated`, `discrete`, or an adapter name substring (e.g., `Radeon`, `RTX 5090`). Run `xearthlayer diagnostics` to see available adapters.
+
+{{< callout type="warning" >}}
+When using the same GPU for both X-Plane rendering and XEarthLayer texture encoding, GPU memory pressure can cause instability or performance degradation. For best results, use the integrated GPU for encoding and leave the discrete GPU dedicated to X-Plane.
+{{< /callout >}}
+
+**Fallback options:** If GPU encoding is not available or causes issues, you can always fall back to CPU-based compression. Set `texture.compressor = ispc` for SIMD-accelerated encoding, or `texture.compressor = software` for a portable fallback that works on any system.
+
 ### I found a bug! How do I report it?
 
 First, check the [XEarthLayer GitHub issues](https://github.com/samsoir/xearthlayer/issues) to see if the bug has already been reported. If so, add your details to the existing issue. If it's a new issue, follow the issue template to create a new report.
 
-<div class="callout callout--info">
-  <svg class="callout__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="10"></circle>
-    <path d="M12 16v-4"></path>
-    <path d="M12 8h.01"></path>
-  </svg>
-  <div class="callout__content">
-    <p>Issues submitted without the required logs and system diagnostics will be closed automatically.</p>
-  </div>
-</div>
+{{< callout type="info" >}}
+Issues submitted without the required logs and system diagnostics will be closed automatically.
+{{< /callout >}}
 
 ### Where can I get help?
 
@@ -213,31 +225,24 @@ Performance optimization is a broad topic that extends well beyond XEarthLayer i
 - Ensure adequate disk cache to minimize network downloads during flight
 - Use `bc1` texture format instead of `bc3` if you don't need alpha transparency (smaller files, faster encoding)
 - Monitor the XEarthLayer log for timeout warnings that may indicate bottlenecks
-- If running on limited hardware, reduce `max_http_concurrent` and `threads` settings
+- If running on limited hardware, reduce `executor.network_concurrent` and `executor.cpu_concurrent` settings
 
 For detailed configuration guidance, see the [Configuration](/docs/configuration/) page.
 
 ### What are the recommended cache settings?
 
-**Disk cache:** Use as much space as you can reasonably allocate. Larger disk caches reduce network traffic and improve load times for previously visited areas. A minimum of 50GB is recommended, with 100GB+ being ideal for frequent flyers.
+**Disk cache:** Use as much space as you can reasonably allocate. Larger disk caches reduce network traffic and improve load times for previously visited areas. The default is 20GB; a minimum of 50GB is recommended, with 100GB+ being ideal for frequent flyers. For best results, place the cache on a fast NVMe or SSD that is not the primary system volume.
 
-**Memory cache:** A value of approximately 15GB works well for most scenarios. X-Plane typically requires around 15GB of system memory during initial scene loading, so this aligns well with typical usage patterns. Adjust based on your available system memory.
+**Memory cache:** The default is 2GB. A value of 4-8GB works well for most systems. Adjust based on your available system memory, keeping in mind that X-Plane itself requires around 15GB during initial scene loading.
 
 ```ini
 [cache]
-memory_size = 15 GB
-disk_size = 100 GB
+memory_size = 8GB
+disk_size = 50GB
 ```
 
 **Low memory systems:** If system memory is limited (less than 32GB total), consider creating swap space to provide additional virtual memory for both XEarthLayer and X-Plane. This is particularly important if your GPU has less than 8GB of VRAM, as the system may need to accommodate texture overflow.
 
-<div class="callout callout--warning">
-  <svg class="callout__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
-    <path d="M12 9v4"></path>
-    <path d="M12 17h.01"></path>
-  </svg>
-  <div class="callout__content">
-    <p>Heavy swap usage on SSDs or NVMe drives can significantly reduce drive lifespan due to the high volume of write operations. If possible, place swap on a separate, less critical drive or consider upgrading system RAM instead.</p>
-  </div>
-</div>
+{{< callout type="warning" >}}
+Heavy swap usage on SSDs or NVMe drives can significantly reduce drive lifespan due to the high volume of write operations. If possible, place swap on a separate, less critical drive or consider upgrading system RAM instead.
+{{< /callout >}}
