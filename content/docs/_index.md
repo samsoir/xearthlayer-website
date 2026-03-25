@@ -7,13 +7,21 @@ Welcome to the XEarthLayer documentation. Here you'll find guides to help you ge
 
 <div class="docs-quicklinks">
 
+- [How It Works](how-it-works/)
+
 - [Getting Started](getting-started/)
 
 - [Configuration](configuration/)
 
+- [CLI Reference](cli-reference/)
+
 - [Package Management](packages/)
 
-- [How It Works](how-it-works/)
+- [X-Plane 12 Setup](x-plane-configuration/)
+
+- [Custom Ortho Tiles](custom-ortho-tiles/)
+
+- [FAQ / Troubleshooting](faq/)
 
 </div>
 
