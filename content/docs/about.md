@@ -1,7 +1,7 @@
 ---
 title: "About"
 description: "The story behind XEarthLayer and the people who made it possible."
-weight: 60
+weight: 70
 ---
 
 ## The Project
@@ -32,7 +32,7 @@ XEarthLayer shares no code with AutoOrtho, and there have been many [design deci
 
 After starting work on XEarthLayer, Sam discovered that AutoOrtho had been forked by the community into [AutoOrtho Continued](https://programmingdinosaur.github.io/autoortho4xplane/). Definitely check that out if XEarthLayer is not for you.
 
-Three months later, XEarthLayer was ready for its first public release.
+Five months later, XEarthLayer was ready for its first public release.
 
 ## Acknowledgments
 

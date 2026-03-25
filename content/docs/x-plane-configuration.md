@@ -1,7 +1,7 @@
 ---
 title: "X-Plane 12 Configuration"
 description: "How to configure X-Plane 12 for the best results"
-weight: 30
+weight: 50
 ---
 
 Ensure your X-Plane configuration is setup correctly for XEarthLayer to operate optimally. For most users with an existing well tuned X-Plane system, XEarthLayer should not impact framerates significantly.
@@ -14,7 +14,7 @@ Setting the scenery pack order in your `X-Plane 12/Custom Scenery/scenery-packs.
 
 ![Scenery pack loading order](/images/docs/scenery-layers.svg)
 
-XEarthLayer uses a best effort attempt by using a specific naming convention to ensure scenery is ordered correctly in X-Plane's scenery pack file. XEarthLayer scenery files are all prefixed `zzXEL_<ortho>` or `zyXEL_<overlay>`.
+XEarthLayer uses a best effort attempt by using a specific naming convention to ensure scenery is ordered correctly in X-Plane's scenery pack file. XEarthLayer scenery files are all prefixed `zzXEL_<ortho>` or `yzXEL_<overlay>`.
 
 When X-Plane launches for the first time after any change to the Custom Scenery folder, it rebuilds the scenery-packs.ini file based on the scenery packs available. It is likely that this process will result in incorrect ordering of the scenery packs installed. 
 
@@ -34,10 +34,8 @@ SCENERY_PACK *GLOBAL_AIRPORTS*
 SCENERY_PACK Custom Scenery/X-Plane Landmarks
 
 # XEarthLayer Start
-SCENERY_PACK Custom Scenery/zyXEL_<region>_<overlay>
-{...}
-SCENERY_PACK Custom Scenery/zzXEL_<region>_<ortho>
-{...}
+SCENERY_PACK Custom Scenery/yzXEL_overlay/
+SCENERY_PACK Custom Scenery/zzXEL_ortho/
 # XEarthLayer End
 
 SCENERY_PACK Custom Scenery/{Libraries}
@@ -76,38 +74,8 @@ Start with X-Plane's default settings for your hardware tier, then adjust indivi
   </div>
 </div>
 
-## XGPS2 Telemetry Broadcasting
-
-XEarthLayer supports two prefetching modes: radial and heading-aware. By default, XEarthLayer uses radial prefetching, which preloads tiles in all directions around your aircraft. While effective, this approach downloads more data than necessary.
-
-For optimal performance, enable XGPS2 telemetry broadcasting in X-Plane. This allows XEarthLayer to receive your aircraft's position and heading in real-time, enabling intelligent heading-aware prefetching that focuses on tiles along your flight path.
-
-### Enabling XGPS2 in X-Plane
-
-1. Open X-Plane 12 and go to **Settings**
-2. Select the **Network** panel
-3. On the right side, enable **Broadcast to all third-party apps on the network**
-
-X-Plane will broadcast position data on UDP port `49002` by default.
-
-### XEarthLayer Configuration
-
-XEarthLayer listens for XGPS2 broadcasts automatically. If X-Plane is configured to use a different port, update your XEarthLayer configuration:
-
-{{< code lang="bash" copy="true" >}}
-xearthlayer config set telemetry.port 49002
-{{< /code >}}
-
-### Verifying Telemetry
-
-When telemetry is working, the XEarthLayer dashboard will display:
-
-- **GPS position** updating in real-time
-- **Heading indicator** showing aircraft direction
-- **Prefetch mode** showing "Heading-aware" instead of "Radial"
-
-{{< callout type="tip" >}}
-Heading-aware prefetching significantly reduces bandwidth usage and improves tile loading times during flight, especially on longer routes.
+{{< callout type="info" >}}
+XEarthLayer automatically reads aircraft telemetry from X-Plane 12.1.1+ via the Web API. No configuration is required — prefetching works out of the box.
 {{< /callout >}}
 
 ## Recommended Add-ons
