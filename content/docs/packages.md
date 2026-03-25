@@ -1,7 +1,7 @@
 ---
 title: "Package Management"
 description: "Install, update, and manage regional scenery packages."
-weight: 30
+weight: 40
 ---
 
 XEarthLayer uses a package system to manage regional scenery from across the globe. Packages contain tile indices that tell XEarthLayer which areas have satellite imagery and what resources to download.
@@ -22,64 +22,12 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 | OC | Oceania | 0.2.0 | Australia, New Zealand, Fiji, French Polynesia, Papua New Guinea, Vanuatu, Solomon Islands |
 | SA | South America | 0.2.0 | Complete continent including Falkland Islands |
 
-## Listing Packages
+## Managing Packages
 
-View installed and available packages:
-
-{{< code lang="bash" copy="true" >}}
-xearthlayer packages list
-{{< /code >}}
-
-## Installing Packages
-
-Install a regional package by its code:
+Use the `xearthlayer packages` command to list, install, update, and remove regional packages. For example, to install the Europe region:
 
 {{< code lang="bash" copy="true" >}}
 xearthlayer packages install EU
 {{< /code >}}
 
-{{< code lang="bash" copy="true" >}}
-xearthlayer packages install NA
-{{< /code >}}
-
-## Updating Packages
-
-Check for updates:
-
-{{< code lang="bash" copy="true" >}}
-xearthlayer packages check
-{{< /code >}}
-
-Update all packages:
-
-{{< code lang="bash" copy="true" >}}
-xearthlayer packages update
-{{< /code >}}
-
-Update a specific package:
-
-{{< code lang="bash" copy="true" >}}
-xearthlayer packages update EU
-{{< /code >}}
-
-## Removing Packages
-
-Remove a package you no longer need:
-
-{{< code lang="bash" copy="true" >}}
-xearthlayer packages remove EU
-{{< /code >}}
-
-## Package Library
-
-XEarthLayer fetches package information from a library URL. The default library is hosted at:
-
-```
-https://xearthlayer.app/packages/xearthlayer_package_library.txt
-```
-
-You can configure a custom library URL:
-
-{{< code lang="bash" copy="true" >}}
-xearthlayer config set packages.library_url https://example.com/library.txt
-{{< /code >}}
+See the [CLI Reference](/docs/cli-reference/) for all package commands and options.
