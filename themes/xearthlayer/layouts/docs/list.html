@@ -4,7 +4,7 @@
   {{ .Content }}
 
   {{/* Pages featured in quicklinks - exclude from auto-generated list */}}
-  {{ $featured := slice "getting-started" "configuration" "packages" "how-it-works" }}
+  {{ $featured := slice "how-it-works" "getting-started" "configuration" "cli-reference" "packages" "x-plane-configuration" "custom-ortho-tiles" "faq" "about" }}
 
   <div class="docs-index">
     {{ range (where site.RegularPages "Section" "docs").ByWeight }}
@@ -15,6 +15,18 @@
     </div>
       {{ end }}
     {{ end }}
+    <div class="docs-index-item">
+      <h3><a href="{{ relref . "docs/about" }}">About XEarthLayer</a></h3>
+      <p>Project background, goals, and credits</p>
+    </div>
+    <div class="docs-index-item">
+      <h3><a href="/#community">Community</a></h3>
+      <p>Join the Discord, contribute on GitHub, or report issues</p>
+    </div>
+    <div class="docs-index-item">
+      <h3><a href="{{ site.Params.kofi }}" target="_blank" rel="noopener">Support Development</a></h3>
+      <p>Help keep XEarthLayer free and actively developed with a donation</p>
+    </div>
   </div>
 </article>
 {{ end }}

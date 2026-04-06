@@ -151,7 +151,6 @@ Controls the Adaptive Prefetch System, which pre-loads tiles ahead of the aircra
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `enabled` | `true` | Enable or disable predictive tile prefetching |
-| `strategy` | `adaptive` | Strategy selection: `auto` or `adaptive` (both use adaptive prefetch) |
 | `mode` | `auto` | Mode selection: `auto` (recommended), `aggressive`, `opportunistic`, or `disabled` |
 | `web_api_port` | `8086` | X-Plane Web API port for telemetry (position, heading, speed, altitude). Change only if X-Plane uses a non-default port |
 | `max_tiles_per_cycle` | `200` | Maximum tiles to submit per prefetch cycle. Lower values reduce bandwidth competition with on-demand requests |
@@ -194,7 +193,6 @@ Telemetry is automatic. XEarthLayer connects to X-Plane's built-in Web API (port
 {{< code lang="ini" copy="true" >}}
 [prefetch]
 enabled = true
-strategy = adaptive
 mode = auto
 {{< /code >}}
 

@@ -39,15 +39,16 @@ You only download the scenery you actually fly over. No wasted bandwidth or disk
 6. **Cache**: Store completed DDS image in memory and cache image chunks to disk
 7. **Serve**: Return the DDS texture to X-Plane
 
-### Adaptive Prefetching
+### Prefetching
 
 XEarthLayer reads your aircraft's position and heading directly from X-Plane's built-in Web API — no configuration required. On X-Plane 12.1.1 and later, the Web API is enabled by default, so prefetching works out of the box.
 
-Using this telemetry, XEarthLayer maintains a **sliding prefetch box** around your aircraft. The box biases toward your heading — up to 80% of the prefetch area is loaded ahead of you, so tiles are ready before X-Plane needs them. This virtually eliminates scenery loading stutters during flight.
+The prefetch system uses two strategies, selected automatically based on flight phase:
 
-The prefetch system is also **flight-phase aware**. On the ground, it loads a ring of tiles around your position. During cruise, the sliding box tracks your heading and speed. On approach, the box narrows and shortens to focus on your landing area. Transitions between phases (such as after takeoff or beginning a descent) ramp up gradually to avoid overloading the pipeline.
+- **Ground** (ground speed < 40 kt): Loads a **ring of tiles** around the perimeter of X-Plane's already-loaded scenery area. Since the aircraft could taxi in any direction, the ring is symmetric — no heading bias.
+- **Cruise** (airborne): Maintains a **sliding prefetch box** biased in the direction of travel. The box covers roughly 9° per axis, overlapping X-Plane's ~6×6 DSF load area so tiles are ready before the simulator crosses into the next region. The forward bias slides proportionally with heading — at cardinal headings the primary axis gets up to 80/20 bias, while at diagonals both axes share equal bias.
 
-![Predictive Prefetch Zones](/images/docs/prefetch-zones.svg)
+A brief **transition** phase bridges the two: when a takeoff is detected (ground speed exceeds 40 kt), prefetching is suppressed until the aircraft climbs 1,000 ft above the departure elevation (or a 90-second timeout elapses). This reserves system resources for X-Plane while it loads departure scenery. Once cruise is confirmed, prefetching ramps up gradually from 25% to full rate over 30 seconds to avoid flooding the pipeline.
 
 ### Consolidated Mounting
 
