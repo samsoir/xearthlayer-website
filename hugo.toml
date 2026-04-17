@@ -13,8 +13,8 @@ theme = 'xearthlayer'
   kofi = "https://ko-fi.com/samsoir"
 
   # Latest release info (update on each release)
-  latestVersion = "0.4.3"
-  releaseDate = "2026-04-07"
+  latestVersion = "0.4.4"
+  releaseDate = "2026-04-16"
 
   # Package library
   packageLibraryUrl = "/packages/xearthlayer_package_library.txt"
