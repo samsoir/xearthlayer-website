@@ -1,0 +1,48 @@
+{{ define "main" }}
+<div class="news-wrap">
+  <header class="news-masthead">
+    <p class="news-eyebrow">XEarthLayer News</p>
+    <h1 class="news-masthead__title">{{ .Title }}</h1>
+    {{ with .Description }}
+    <p class="news-masthead__lede">{{ . }}</p>
+    {{ end }}
+    {{ with .Content }}
+    <div class="news-masthead__intro">{{ . }}</div>
+    {{ end }}
+  </header>
+
+  {{ $posts := where .Pages "Draft" false }}
+  {{ if $posts }}
+  <ol class="news-list" reversed>
+    {{ range $posts.ByDate.Reverse }}
+    <li class="news-list__item">
+      <a class="news-list__link" href="{{ .RelPermalink }}">
+        <div class="news-list__meta">
+          <time class="news-list__date" datetime="{{ .Date | time.Format "2006-01-02" }}">
+            {{ .Date | time.Format "January 2, 2006" }}
+          </time>
+          <span class="news-list__dot" aria-hidden="true">·</span>
+          <span class="news-list__reading-time">{{ .ReadingTime }} min read</span>
+          {{ with .Params.tags }}
+          <span class="news-list__dot" aria-hidden="true">·</span>
+          <span class="news-list__tags">
+            {{ range $i, $t := . }}{{ if $i }}, {{ end }}{{ $t }}{{ end }}
+          </span>
+          {{ end }}
+        </div>
+        <h2 class="news-list__title">{{ .Title }}</h2>
+        {{ with .Description }}
+        <p class="news-list__summary">{{ . }}</p>
+        {{ else }}
+        <p class="news-list__summary">{{ .Summary | plainify | truncate 220 }}</p>
+        {{ end }}
+        <span class="news-list__cta" aria-hidden="true">Read article →</span>
+      </a>
+    </li>
+    {{ end }}
+  </ol>
+  {{ else }}
+  <p class="news-empty">No articles yet — check back soon.</p>
+  {{ end }}
+</div>
+{{ end }}

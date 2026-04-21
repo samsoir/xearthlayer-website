@@ -1,0 +1,72 @@
+{{ define "main" }}
+<article class="news-post">
+  <div class="news-post__back">
+    <a href="{{ "/news/" | relURL }}">← All articles</a>
+  </div>
+
+  <header class="news-post__header">
+    <div class="news-post__meta">
+      <time datetime="{{ .Date | time.Format "2006-01-02" }}">
+        {{ .Date | time.Format "January 2, 2006" }}
+      </time>
+      <span class="news-post__dot" aria-hidden="true">·</span>
+      <span>{{ .ReadingTime }} min read</span>
+      {{ with .Params.author }}
+      <span class="news-post__dot" aria-hidden="true">·</span>
+      <span>by {{ . }}</span>
+      {{ end }}
+    </div>
+    <h1 class="news-post__title">{{ .Title }}</h1>
+    {{ with .Description }}
+    <p class="news-post__lede">{{ . }}</p>
+    {{ end }}
+  </header>
+
+  {{ if .Params.toc }}
+  <aside class="news-post__toc">
+    <h4>On this page</h4>
+    {{ .TableOfContents }}
+  </aside>
+  {{ end }}
+
+  <div class="news-post__body">
+    {{ .Content }}
+  </div>
+
+  {{ with .Params.tags }}
+  <footer class="news-post__footer">
+    <p class="news-post__tags">
+      {{ range . }}<span class="news-post__tag">#{{ . }}</span>{{ end }}
+    </p>
+  </footer>
+  {{ end }}
+
+  {{ $posts := where site.RegularPages "Section" "news" }}
+  {{ $sorted := $posts.ByDate.Reverse }}
+  {{ $current := . }}
+  {{ $newer := "" }}
+  {{ $older := "" }}
+  {{ range $i, $p := $sorted }}
+    {{ if eq $p.RelPermalink $current.RelPermalink }}
+      {{ if gt $i 0 }}{{ $newer = index $sorted (sub $i 1) }}{{ end }}
+      {{ if lt (add $i 1) (len $sorted) }}{{ $older = index $sorted (add $i 1) }}{{ end }}
+    {{ end }}
+  {{ end }}
+  {{ if or $newer $older }}
+  <nav class="news-post__nav" aria-label="More articles">
+    {{ with $newer }}
+    <a class="news-post__nav-link news-post__nav-link--newer" href="{{ .RelPermalink }}">
+      <span class="news-post__nav-label">Newer article</span>
+      <span class="news-post__nav-title">{{ .Title }}</span>
+    </a>
+    {{ end }}
+    {{ with $older }}
+    <a class="news-post__nav-link news-post__nav-link--older" href="{{ .RelPermalink }}">
+      <span class="news-post__nav-label">Older article</span>
+      <span class="news-post__nav-title">{{ .Title }}</span>
+    </a>
+    {{ end }}
+  </nav>
+  {{ end }}
+</article>
+{{ end }}
