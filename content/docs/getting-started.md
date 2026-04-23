@@ -38,20 +38,6 @@ curl -sL {{< download-url "aur" >}} | bsdtar -xf- -C /tmp && cd /tmp && makepkg 
 {{< /code >}}
 {{< /tabs >}}
 
-### GPU-Accelerated Build (Optional)
-
-If you have a spare GPU (such as an integrated AMD or Intel GPU) alongside your discrete GPU running X-Plane, you can build XEarthLayer with GPU-accelerated DDS texture compression. This offloads encoding to the GPU via wgpu compute shaders, freeing CPU resources for X-Plane.
-
-{{< code lang="bash" copy="true" >}}
-git clone https://github.com/samsoir/xearthlayer.git && cd xearthlayer && make release-gpu && make install-gpu
-{{< /code >}}
-
-After installing, run `xearthlayer diagnostics` to verify your GPU is detected. Any modern wgpu-compatible GPU from AMD, NVIDIA, or Intel will work. See the [Configuration guide](../configuration/) for compressor selection.
-
-{{< callout type="tip" >}}
-The GPU build is most beneficial when you have an idle integrated GPU handling texture compression while your discrete GPU handles X-Plane rendering. If you only have a single GPU, the standard build with ISPC compression is recommended.
-{{< /callout >}}
-
 ## Initial Setup
 
 1. **Run the setup wizard** (recommended for first-time users):

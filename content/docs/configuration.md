@@ -127,7 +127,7 @@ Controls the compression backend used to encode satellite imagery into DDS textu
 |---------|-------|-----------|-------------|
 | `software` | Slowest | High | Fallback when ISPC or GPU are unavailable |
 | `ispc` | Fast (5-10x) | High | Default. Best overall performance for most users |
-| `gpu` | Fast | Low | When an idle GPU is available for encoding (requires `gpu-encode` build) |
+| `gpu` | Fast | Low | When an idle wgpu-compatible GPU is available for encoding |
 
 The `gpu` backend is ideal for systems with both an integrated and discrete GPU. Set `gpu_device = integrated` to use the iGPU for encoding while the discrete GPU handles X-Plane rendering. This eliminates CPU contention between encoding and the simulator.
 

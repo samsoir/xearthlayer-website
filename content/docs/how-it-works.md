@@ -35,7 +35,7 @@ You only download the scenery you actually fly over. No wasted bandwidth or disk
 2. **Cache Check**: XEarthLayer first checks memory cache for completed tile DDS image, then disk cache for image chunks required to create DDS image. If either is found they are returned to X-Plane
 3. **Download**: If not cached, XEarthLayer downloads requires tile chunks from the provider to prepare for assembly
 4. **Assembly**: Combine 256 small image chunks into a 4096×4096 DDS image
-5. **Encode**: Compress 4096×4096 image into DDS format (BC1/BC3) using one of three backends — Software (pure Rust), ISPC SIMD (default, 5–10× faster), or GPU compute shaders (fastest, requires a separate GPU build)
+5. **Encode**: Compress 4096×4096 image into DDS format (BC1/BC3) using one of three backends — Software (pure Rust), ISPC SIMD (default, 5–10× faster), or GPU compute shaders (fastest, requires a wgpu-compatible GPU)
 6. **Cache**: Store completed DDS image in memory and cache image chunks to disk
 7. **Serve**: Return the DDS texture to X-Plane
 
