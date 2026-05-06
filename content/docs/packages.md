@@ -10,7 +10,7 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 
 ![Coverage Map](/images/coverage.png)
 
-*AF1 in cyan, AF2 in yellowgreen, AS3 in red, EU in orange, NA in blue, OC in purple, SA in green.*
+*AF1 in cyan, AF2 in yellowgreen, AS3 in red, EU in orange, EU2 in tangerine, NA in blue, OC in purple, SA in green.*
 
 | Code | Region | Version | Coverage |
 |------|--------|---------|----------|
@@ -18,6 +18,7 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 | AF2 | Africa - Part 2 | 0.1.0 | Southern Africa including South Africa, Namibia, Botswana, Zimbabwe, Zambia, Mozambique, Madagascar, Tanzania, Kenya, DRC |
 | AS3 | Asia - Part 3 | 0.1.0 | Indonesia, Malaysia, Philippines, Vietnam, Thailand, Japan, South Korea, Taiwan, Eastern Russia |
 | EU | Europe | 0.1.1 | Western and Central Europe |
+| EU2 | Europe - Part 2 | 0.1.0 | Eastern Europe, Scandinavia, Caucasus, and European Russia including Greece, Bulgaria, Romania, Moldova, Ukraine, Belarus, Baltic States, Finland, Sweden, Norway, Turkey, Cyprus, Georgia, Armenia, Azerbaijan, and European Russia extending to the Ural Mountains |
 | NA | North America | 0.2.3 | United States, Canada, Caribbean |
 | OC | Oceania | 0.2.0 | Australia, New Zealand, Fiji, French Polynesia, Papua New Guinea, Vanuatu, Solomon Islands |
 | SA | South America | 0.2.0 | Complete continent including Falkland Islands |
