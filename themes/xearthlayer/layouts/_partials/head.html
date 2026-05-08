@@ -29,6 +29,21 @@
 <!-- Canonical -->
 <link rel="canonical" href="{{ .Permalink }}">
 
+<!-- RSS auto-discovery: links to the section's feed when one exists,
+     so feed readers visiting any page in /news/ can auto-subscribe. -->
+{{ if .IsHome }}
+  {{ with .OutputFormats.Get "rss" }}
+<link rel="alternate" type="{{ .MediaType.Type }}" title="{{ site.Title }}" href="{{ .Permalink }}">
+  {{ end }}
+{{ else if .Section }}
+  {{ with site.GetPage (printf "/%s" .Section) }}
+    {{ $title := .Title }}
+    {{ with .OutputFormats.Get "rss" }}
+<link rel="alternate" type="{{ .MediaType.Type }}" title="{{ site.Title }} {{ $title }}" href="{{ .Permalink }}">
+    {{ end }}
+  {{ end }}
+{{ end }}
+
 {{ partialCached "head/css.html" . }}
 
 {{ partialCached "head/js.html" . }}

@@ -2214,6 +2214,33 @@ section {
   color: var(--color-link-hover);
 }
 
+/* RSS subscribe link on the news index masthead. */
+.news-masthead__subscribe {
+  margin: var(--space-md) 0 0;
+}
+
+.news-rss-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  border: 1px solid var(--ctp-surface0);
+  padding: 0.35em 0.75em;
+  border-radius: 999px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.news-rss-link:hover {
+  color: var(--ctp-peach);
+  border-color: var(--ctp-peach);
+}
+
+.news-rss-link svg {
+  flex-shrink: 0;
+}
+
 /* Post list */
 .news-list {
   list-style: none;
