@@ -2180,6 +2180,29 @@ section {
   line-height: 1.6;
 }
 
+/* In-body lede: an editorial leader paragraph used at the top of an
+   article via the {{< lead >}} shortcode. Larger and lighter than body
+   copy to set it apart, while sharing the article's margins. */
+.news-lede {
+  font-size: 1.65rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-xl);
+  letter-spacing: -0.005em;
+}
+
+.news-lede p {
+  margin: 0 0 0.75em;
+}
+
+.news-lede p:last-child {
+  margin-bottom: 0;
+}
+
+.news-lede strong {
+  color: var(--color-text);
+}
+
 .news-masthead__intro a {
   color: var(--color-link);
   text-decoration: underline;
