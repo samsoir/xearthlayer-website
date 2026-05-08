@@ -24,7 +24,7 @@ Readers familiar with this project will know that [XEarthLayer intercepts](/docs
 X-Plane loads these tiles into the simulator using a relatively simple sliding window model. When the sim loads into a location in the world for the first time, X-Plane loads a large area around the starting position for the aircraft, usually around four by three tiles in size. Once the current twelve tile area is loaded, the simulator then waits until the aircraft reaches an invisible boundary that is approximately one degree from the edge of the loaded area in either latitude or longitude. 
 
 {{< callout type="info" >}}
-**Fun side note:** X-Plane currently does not always position the aircraft into a centrally located one by one DSF tile for reasons that remain a mystery.
+**Fun side note:** On first load into the simulation, X-Plane currently does not always position the aircraft into a centrally located one by one DSF tile for reasons that remain a mystery.
 {{< /callout >}}
 
 Once that boundary has been crossed X-Plane begins loading in the next set of rows (latitude) or columns (longitude), consisting of one degree square tiles. X-Plane usually loads three of the next rows or columns of tiles ahead of the aircraft. 
