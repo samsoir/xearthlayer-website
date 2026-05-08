@@ -4,7 +4,7 @@ draft = false
 title = "XEarthLayer and X-Plane's Raster Scenery Future"
 description = "Laminar are rebuilding X-Plane's scenery around Raster Data Tiles. Here is what is coming, and why XEarthLayer is well-placed for the transition."
 author = 'XEarthLayer Team'
-tags = ['xplane','scenery','future']
+tags = ['dev diary','xplane','scenery','roadmap']
 +++
 
 {{< lead >}}

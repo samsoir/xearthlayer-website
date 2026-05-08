@@ -1273,6 +1273,16 @@ section {
   color: var(--color-primary);
 }
 
+.footer-links a.footer-rss {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.footer-links a.footer-rss svg {
+  flex-shrink: 0;
+}
+
 .footer-bottom {
   margin-top: var(--space-lg);
   padding-top: var(--space-lg);
