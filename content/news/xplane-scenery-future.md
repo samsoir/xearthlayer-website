@@ -35,7 +35,7 @@ As part of the development of XEarthLayer, we were able to understand this loadi
 
 The current system X-Plane uses to load scenery in blocks of rows or columns (or both in some edge cases) was not designed with streaming orthophoto scenery in mind. It clearly assumes that the resources it needs are going to be on a local disk, and of moderate size.
 
-Orthophoto scenery, even at modest zoom levels, requires a lot of data. At zoom level 16, X-Plane will load in the order of 12-15 gigabytes of image data in DDS BCS1 encoding to populate the world. That is a lot of data to load from disk into VRAM in a short amount of time, while flying. If the streaming orthophoto provider is slow to provide the data, or stalls then X-Plane will start to stutter and can even freeze until the data necessary to paint the scene ahead of the aircraft is available.
+Orthophoto scenery, even at modest zoom levels, requires a lot of data. At zoom level 16, X-Plane will load in the order of 12-15 gigabytes of image data in DDS BC1 encoding to populate the world. That is a lot of data to load from disk into VRAM in a short amount of time, while flying. If the streaming orthophoto provider is slow to provide the data, or stalls then X-Plane will start to stutter and can even freeze until the data necessary to paint the scene ahead of the aircraft is available.
 
 This is something I have experienced in the sim when using AutoOrtho and Map Enhancer. XEarthLayer has received a lot of engineering focus on eliminating these stutters and freezes, and even we experience them on occasion when the cache has not been able to warm itself fully in time.
 
