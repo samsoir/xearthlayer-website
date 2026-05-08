@@ -41,7 +41,7 @@ Single-zoom packages also remove the striping artifact as a side effect, because
 
 ## SimHeaven X-World Pro
 
-Finally, [SimHeaven X-World Pro](https://simheaven.com/x-world-pro/) is on the way, and XEarthLayer is getting first-class support for it. Concretely, that means a configuration option to suppress XEarthLayer's own overlays in scenarios where X-World Pro is providing them — cities, landmarks, national parks, monuments — so the two products complement rather than fight each other.
+Finally, [SimHeaven X-World Pro](https://simheaven.com/x-world-pro/) is on the way, and XEarthLayer is preparing support for it. Concretely, that means a configuration option to suppress XEarthLayer's own overlays in scenarios where X-World Pro is providing them — cities, landmarks, national parks, monuments — so the two products complement rather than fight each other.
 
 That is the day-one shape of the integration. Once X-World Pro actually ships and we have hands on it, the goal is tighter coordination beyond just "stay out of each other's way", but it is hard to predict what that looks like in detail until it is in front of us. The headline is that XEarthLayer and X-World Pro are designed to be **complementary** upgrades to X-Plane, not competing ones, and the configuration plumbing will be there from the moment X-World Pro is available.
 
