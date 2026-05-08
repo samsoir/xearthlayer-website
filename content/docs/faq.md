@@ -108,7 +108,7 @@ This is usually because XEarthLayer's FUSE mounts are not listed in X-Plane's `C
 1. Ensure XEarthLayer is fully started and running *before* launching X-Plane. X-Plane indexes scenery at startup, so starting XEarthLayer afterward means its scenery won't be detected.
 2. Verify that `zz_XEL_*_Ortho` and `zy_XEL_*_Overlay` packs are listed in your `scenery_packs.ini` file. They typically appear at the bottom but can be anywhere in the file.
 
-If the above doesn't resolve the issue, ask for help on [Discord](https://discord.gg/XVUmMWYS), the X-Plane.org forums, or [create a GitHub issue](https://github.com/samsoir/xearthlayer/issues).
+If the above doesn't resolve the issue, ask for help on [Discord](https://discord.gg/RPEWQZdxm2), the X-Plane.org forums, or [create a GitHub issue](https://github.com/samsoir/xearthlayer/issues).
 
 ### Tiles are downloading but not appearing in X-Plane
 
@@ -203,7 +203,7 @@ Issues submitted without the required logs and system diagnostics will be closed
 
 The XEarthLayer community is active and happy to help with questions, troubleshooting, and general discussion:
 
-- **Discord** — Join the [XEarthLayer Discord server](https://discord.gg/XVUmMWYS) for real-time chat with other users and the developer
+- **Discord** — Join the [XEarthLayer Discord server](https://discord.gg/RPEWQZdxm2) for real-time chat with other users and the developer
 - **GitHub Discussions** — Post questions and share ideas on [GitHub Discussions](https://github.com/samsoir/xearthlayer/discussions)
 - **GitHub Issues** — Report bugs or request features via [GitHub Issues](https://github.com/samsoir/xearthlayer/issues)
 

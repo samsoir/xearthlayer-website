@@ -66,7 +66,7 @@ Satellite imagery is sourced from various providers including:
 ## Contact
 
 - **GitHub**: [samsoir/xearthlayer](https://github.com/samsoir/xearthlayer)
-- **Discord**: [Join the community](https://discord.gg/XVUmMWYS)
+- **Discord**: [Join the community](https://discord.gg/RPEWQZdxm2)
 
 ## License
 

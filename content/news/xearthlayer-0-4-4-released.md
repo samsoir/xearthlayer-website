@@ -47,6 +47,6 @@ Another small interface fix; the queue column in the TUI now shows oldest jobs a
 
 ## Upgrading
 
-Binaries are on the [downloads page](/#download). Configuration files remain compatible; there is nothing you need to change on your end. If you hit anything unexpected, the [Discord](https://discord.gg/XVUmMWYS) and [GitHub issues](https://github.com/samsoir/xearthlayer/issues) are the fastest way to reach us.
+Binaries are on the [downloads page](/#download). Configuration files remain compatible; there is nothing you need to change on your end. If you hit anything unexpected, the [Discord](https://discord.gg/RPEWQZdxm2) and [GitHub issues](https://github.com/samsoir/xearthlayer/issues) are the fastest way to reach us.
 
 Thanks to everyone who flew the pre-release builds and shared logs.
