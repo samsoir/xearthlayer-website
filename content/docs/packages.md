@@ -10,12 +10,13 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 
 ![Coverage Map](/images/coverage.png)
 
-*AF1 in cyan, AF2 in yellowgreen, AS2 in crimson, AS3 in red, EU in orange, EU2 in tangerine, NA in blue, OC in purple, SA in green.*
+*AF1 in cyan, AF2 in yellowgreen, AS1 in firebrick, AS2 in crimson, AS3 in red, EU in orange, EU2 in tangerine, NA in blue, OC in purple, SA in green.*
 
 | Code | Region | Version | Coverage |
 |------|--------|---------|----------|
 | AF1 | Africa - Part 1 | 0.1.0 | North Africa including Morocco, Algeria, Tunisia, Libya, Egypt, Sudan, South Sudan, Ethiopia, Somalia, Djibouti, Chad, Niger, Nigeria, Cameroon, Central African Republic, Mali, Senegal, Gambia, Guinea, Sierra Leone, Liberia, Ivory Coast, Ghana, Benin, Mauritania, Western Sahara |
 | AF2 | Africa - Part 2 | 0.1.0 | Southern Africa including South Africa, Namibia, Botswana, Zimbabwe, Zambia, Mozambique, Madagascar, Tanzania, Kenya, DRC |
+| AS1 | Asia - Part 1 | 0.1.0 | China and Mongolia |
 | AS2 | Asia - Part 2 | 0.1.0 | Middle East, South Asia, and Central Asia including Saudi Arabia, UAE, Oman, Yemen, Iran, Iraq, Syria, Jordan, Israel, Lebanon, eastern Turkey, Afghanistan, Pakistan, India, Nepal, Bhutan, Bangladesh, Sri Lanka, Maldives, Kazakhstan, Uzbekistan, Turkmenistan, Kyrgyzstan, Tajikistan, western China, western Mongolia, southern Russia, and Indian Ocean islands |
 | AS3 | Asia - Part 3 | 0.1.0 | Indonesia, Malaysia, Philippines, Vietnam, Thailand, Japan, South Korea, Taiwan, Eastern Russia |
 | EU | Europe | 0.1.1 | Western and Central Europe |
