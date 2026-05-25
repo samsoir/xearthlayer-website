@@ -10,7 +10,7 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 
 ![Coverage Map](/images/coverage.png)
 
-*AF1 in cyan, AF2 in yellowgreen, AS1 in firebrick, AS2 in crimson, AS3 in red, EU in orange, EU2 in tangerine, NA in blue, OC in purple, SA in green.*
+*AF1 in cyan, AF2 in yellowgreen, AS1 in firebrick, AS2 in crimson, AS3 in red, AS4 in palevioletred, EU in orange, EU2 in tangerine, NA in blue, OC in purple, SA in green.*
 
 | Code | Region | Version | Coverage |
 |------|--------|---------|----------|
@@ -19,6 +19,7 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 | AS1 | Asia - Part 1 | 0.1.0 | China and Mongolia |
 | AS2 | Asia - Part 2 | 0.1.0 | Middle East, South Asia, and Central Asia including Saudi Arabia, UAE, Oman, Yemen, Iran, Iraq, Syria, Jordan, Israel, Lebanon, eastern Turkey, Afghanistan, Pakistan, India, Nepal, Bhutan, Bangladesh, Sri Lanka, Maldives, Kazakhstan, Uzbekistan, Turkmenistan, Kyrgyzstan, Tajikistan, western China, western Mongolia, southern Russia, and Indian Ocean islands |
 | AS3 | Asia - Part 3 | 0.1.0 | Indonesia, Malaysia, Philippines, Vietnam, Thailand, Japan, South Korea, Taiwan, Eastern Russia |
+| AS4 | Asia - Part 4 | 0.1.0 | Russia east of the Ural Mountains extending to the Pacific peninsula |
 | EU | Europe | 0.1.1 | Western and Central Europe |
 | EU2 | Europe - Part 2 | 0.1.0 | Eastern Europe, Scandinavia, Caucasus, and European Russia including Greece, Bulgaria, Romania, Moldova, Ukraine, Belarus, Baltic States, Finland, Sweden, Norway, Turkey, Cyprus, Georgia, Armenia, Azerbaijan, and European Russia extending to the Ural Mountains |
 | NA | North America | 0.2.3 | United States, Canada, Caribbean |
