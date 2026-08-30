@@ -20,7 +20,7 @@ XEarthLayer takes a just-in-time streaming approach:
 
 1. **Virtual Filesystem**: Creates a FUSE file system that X-Plane uses to read scenery tiles
 2. **Just-In-Time Fetching**: When X-Plane requests tile resources, XEarthLayer fetches it from satellite providers in real-time and then returns the tile dependencies
-3. **Two Tier Caching**: Downloaded tiles are cached to memory as X-Plane can request the same tile multiple times in succession. The map image chunks that are used to construct tiles are cached to disk, saving time when revisiting the same location multiple times.
+3. **Layered Caching**: Three cache layers work together. Completed tiles are held in a small **memory cache**, because X-Plane requests the same tile several times in quick succession. Those completed tiles are also written to the **DDS disk cache**, which is the retention layer — it is what makes a second visit to the same place load from disk instead of the network. Underneath both, the **raw chunk disk cache** keeps the source image chunks that tiles are built from, so an interrupted tile only has to re-fetch the chunks that actually failed.
 
 You only download the scenery you actually fly over. No wasted bandwidth or disk space on areas you'll never visit.
 
@@ -32,12 +32,14 @@ You only download the scenery you actually fly over. No wasted bandwidth or disk
 
 1. **Request**: X-Plane requests a DSF from XEarthLayer
 2. **Image Resource**: X-Plane decodes DSF and creates requests for textures
-2. **Cache Check**: XEarthLayer first checks memory cache for completed tile DDS image, then disk cache for image chunks required to create DDS image. If either is found they are returned to X-Plane
-3. **Download**: If not cached, XEarthLayer downloads requires tile chunks from the provider to prepare for assembly
-4. **Assembly**: Combine 256 small image chunks into a 4096×4096 DDS image
-5. **Encode**: Compress 4096×4096 image into DDS format (BC1/BC3) using one of three backends — Software (pure Rust), ISPC SIMD (default, 5–10× faster), or GPU compute shaders (fastest, requires a wgpu-compatible GPU)
-6. **Cache**: Store completed DDS image in memory and cache image chunks to disk
-7. **Serve**: Return the DDS texture to X-Plane
+3. **Cache Check**: XEarthLayer first checks the memory cache for the completed tile, then the DDS disk cache. A hit in either is served straight back to X-Plane. Failing both, it checks the raw chunk disk cache for the source chunks the tile is built from
+4. **Download**: Any chunks still missing are downloaded from the imagery provider
+5. **Assembly**: Combine 256 small image chunks into a 4096×4096 image
+6. **Encode**: Compress the 4096×4096 image into DDS format (BC1/BC3) using one of three backends — Software (pure Rust), ISPC SIMD (default, 5–10× faster), or GPU compute shaders (fastest, requires a wgpu-compatible GPU)
+7. **Cache**: Store the completed DDS tile in the memory cache and the DDS disk cache, and keep the source chunks in the chunk disk cache
+8. **Serve**: Return the DDS texture to X-Plane
+
+Every generated tile carries a **complete mipmap chain** — 13 levels for a 4096×4096 texture, down to a single pixel. X-Plane clamps its texture sampling at the last level a file declares, so a truncated chain leaves distant terrain undersampled rather than filtered, which shows up as regular banding along terrain contours at shallow viewing angles. Earlier releases emitted only five levels; XEarthLayer 0.4.7 emits the full chain ([#212](https://github.com/samsoir/xearthlayer/issues/212)).
 
 ### Prefetching
 
@@ -46,9 +48,34 @@ XEarthLayer reads your aircraft's position and heading directly from X-Plane's b
 The prefetch system uses two strategies, selected automatically based on flight phase:
 
 - **Ground** (ground speed < 40 kt): Loads a **ring of tiles** around the perimeter of X-Plane's already-loaded scenery area. Since the aircraft could taxi in any direction, the ring is symmetric — no heading bias.
-- **Cruise** (airborne): Maintains a **sliding prefetch box** biased in the direction of travel. The box covers roughly 9° per axis, overlapping X-Plane's ~6×6 DSF load area so tiles are ready before the simulator crosses into the next region. The forward bias slides proportionally with heading — at cardinal headings the primary axis gets up to 80/20 bias, while at diagonals both axes share equal bias.
+- **Cruise** (airborne): Maintains a **sliding prefetch box** biased in the direction of travel. The box sizes itself to your speed, growing from 3.5° per axis at 40 kt or below to 7° per axis at 450 kt or above, so a fast jet looks further ahead than a light aircraft on approach. At its full extent it comfortably overlaps X-Plane's scenery window, so tiles are ready before the simulator crosses into the next region. The forward bias slides proportionally with heading — at cardinal headings the primary axis gets up to 80/20 bias, while at diagonals both axes share equal bias.
 
 A brief **transition** phase bridges the two: when a takeoff is detected (ground speed exceeds 40 kt), prefetching is suppressed until the aircraft climbs 1,000 ft above the departure elevation (or a 90-second timeout elapses). This reserves system resources for X-Plane while it loads departure scenery. Once cruise is confirmed, prefetching ramps up gradually from 25% to full rate over 30 seconds to avoid flooding the pipeline.
+
+#### Region Tracking
+
+Prefetching works a 1°×1° DSF region at a time, and remembers what it has already done with each one so it does not repeat work. A region is in one of four states, or in none of them at all — a region XEarthLayer has never evaluated is simply eligible for prefetch:
+
+| State | Meaning |
+|-------|---------|
+| **InProgress** | Tiles for this region have been submitted and are being fetched |
+| **Prefetched** | Every tile the region needs is present |
+| **Deferred** | The region has scenery coverage but has not finished yet — retry shortly |
+| **NoCoverage** | The scenery index attributes no tiles to this region, so there is nothing to fetch |
+
+The distinction between the last two matters, and getting it wrong was a real bug before 0.4.7. "This region has no scenery" and "this region's tiles have not arrived yet" are opposite conclusions, but they used to share one retirement path: a region that was merely slow got written off after three attempts and was never retried for the rest of the flight ([#226](https://github.com/samsoir/xearthlayer/issues/226)).
+
+From 0.4.7, **NoCoverage** is reachable only when the scenery index genuinely attributes zero tiles to a region. A region that stalls with tiles still outstanding is **Deferred** instead — a temporary state that expires on its own after 20 seconds, then 30, 40 and 60 on repeated stalls, so its tiles stay retryable. If X-Plane asks for a tile in a deferred region, the deferral is cleared immediately and prefetch picks it up again.
+
+A related fix ([#228](https://github.com/samsoir/xearthlayer/issues/228)) separates "the index found nothing here" from "there was no index to consult". Previously the two were indistinguishable, so anyone running without installed ortho packages had the entire world marked as uncovered. Only a genuine, answered lookup can now retire a region.
+
+Tiles that ship inside an installed scenery package also count toward a region's coverage. Prefetch deliberately never downloads those — they are already on your disk — but until 0.4.7 it did not count them either, so regions supplied by a package could never be confirmed complete and were eventually retired as having no coverage.
+
+#### Divergence Detection
+
+If X-Plane asks XEarthLayer to generate a tile on demand inside a region that prefetch has already marked complete, then the "complete" claim was wrong. XEarthLayer now notices that contradiction and clears the region's state so it is prefetched again ([#176](https://github.com/samsoir/xearthlayer/issues/176)).
+
+Ordinary cache eviction can produce the same signal — a tile that was fetched hours ago may simply have aged out — so a region is demoted at most once every 120 seconds. That keeps a long flight from churning between demotion and re-prefetching.
 
 ### Consolidated Mounting
 
@@ -59,6 +86,12 @@ XEarthLayer uses a single FUSE mount point (`zzXEL_ortho`) for all of your insta
 - **Scene load**: 1-2 minutes with cached data (down from 5+ minutes when downloading chunks)
 - **Cache hits**: <10ms response time
 - **Cold download**: 1-2 seconds per tile with 1 Gig+ internet connection
+
+### Serving a Tile
+
+The Linux kernel caps every FUSE read at 1 MiB regardless of how much the application asked for, so X-Plane reading one 11 MB texture arrives at XEarthLayer as a series of smaller ranged requests. Before 0.4.7 both read paths answered each of those requests by rebuilding the entire file or texture and then discarding everything except the window that was actually asked for.
+
+XEarthLayer 0.4.7 stops doing that ([#233](https://github.com/samsoir/xearthlayer/issues/233), [#234](https://github.com/samsoir/xearthlayer/issues/234)). Files served straight from an installed package now read only the range requested. A generated tile is resolved once when X-Plane opens the file and sliced for each read after that, and the tile data is shared from the cache to the kernel rather than copied along the way. Across a four-minute scene load this avoids roughly 24 GiB of pointless copying, which is memory bandwidth and CPU time returned to the simulator.
 
 ## Technical Details
 

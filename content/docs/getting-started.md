@@ -8,13 +8,21 @@ This guide will help you install XEarthLayer and get flying with photoreal scene
 
 ## Prerequisites
 
-- **X-Plane 12** installed on your system
-- **Linux** (Debian/Ubuntu, Fedora/RHEL, or Arch Linux) with FUSE support
-- At least **2GB free RAM** for the memory cache
-- **Internet connection** for streaming imagery
+- **X-Plane 12.3 or later** installed on your system
+- **Linux** (amd64) with FUSE support — Debian/Ubuntu, Fedora/RHEL, or Arch Linux
+- An **8 core CPU** and **8GB of system memory** (12 cores and 32GB recommended)
+- A **GPU with 4GB of video memory**
+- **100GB of free disk space** for the tile cache and scenery packages
+- A **100Mbit internet connection** for streaming imagery
+
+These are the minimum figures. See [System Requirements](/#requirements) for the recommended and ultimate tiers.
+
+{{< callout type="warning" >}}
+XEarthLayer and X-Plane compete for the same system memory, and X-Plane alone wants around 15GB while it loads a scene. On an 8GB machine you will need swap space and a small memory cache. If you are choosing hardware rather than working with what you have, treat 32GB as the real target.
+{{< /callout >}}
 
 {{< callout type="info" >}}
-**X-Plane 12.1.1 or later is recommended.** XEarthLayer connects to X-Plane automatically via the Web API (enabled by default since 12.1.1) to read aircraft position, heading, and speed. This powers adaptive prefetching so tiles are ready before you need them. If X-Plane is not running when XEarthLayer starts, it falls back to inferring position from file access patterns.
+XEarthLayer connects to X-Plane automatically via the Web API (enabled by default since X-Plane 12.1.1) to read aircraft position, heading, and speed. This powers adaptive prefetching so tiles are ready before you need them. No plugin or manual setup is required. If X-Plane is not running when XEarthLayer starts, it falls back to inferring position from file access patterns.
 {{< /callout >}}
 
 ## Installation
@@ -37,6 +45,37 @@ wget {{< download-url "deb" >}} && sudo dpkg -i {{< download-file "deb" >}}
 curl -sL {{< download-url "aur" >}} | bsdtar -xf- -C /tmp && cd /tmp && makepkg -si
 {{< /code >}}
 {{< /tabs >}}
+
+## Upgrading from 0.4.6
+
+If this is a fresh install, skip ahead to [Initial Setup](#initial-setup). If you are coming from 0.4.6, there are three things to know.
+
+### Run the config upgrade
+
+{{< code lang="bash" copy="true" >}}
+xearthlayer config upgrade
+{{< /code >}}
+
+0.4.7 removes four settings that were parsed, validated and echoed back by `config list` but never reached the runtime: `cache.disk_io_profile` ([#227](https://github.com/samsoir/xearthlayer/issues/227)), and `executor.network_concurrent`, `executor.cpu_concurrent` and `executor.disk_io_concurrent` ([#249](https://github.com/samsoir/xearthlayer/issues/249)). Pool capacities have always been sized from your CPU count by a separate, flight-tuned policy, so no value you had written for these described anything the software did.
+
+A configuration file that still contains them loads normally, so this is not urgent — but the upgrade strips them, and writes a timestamped backup of your existing file first. Use `--dry-run` to preview.
+
+### Expect one slower flight
+
+0.4.7 emits complete DDS mipmap chains ([#212](https://github.com/samsoir/xearthlayer/issues/212)), which fixes terrain banding at distance but makes every tile written by 0.4.6 the wrong size. Those tiles are now detected and replaced the first time they are used ([#253](https://github.com/samsoir/xearthlayer/issues/253)), so your first flight after upgrading will re-download more than usual while the cache refills. This is a one-off, and it repairs itself as you fly.
+
+{{< callout type="warning" >}}
+You do **not** need to run `xearthlayer cache clear`. That was the remedy for the unrelated magenta-tile issue in 0.4.5. Here it only throws away the chunk cache as well, making the refill considerably larger for no benefit — 0.4.7 replaces the stale tiles on its own.
+{{< /callout >}}
+
+### Two settings now do what they say
+
+Both were reported correctly but silently overridden before 0.4.7 ([#248](https://github.com/samsoir/xearthlayer/issues/248)):
+
+- **`generation.timeout`** now bounds a blocking FUSE read. The effective ceiling drops from 30 seconds to the documented default of 10 before a magenta placeholder is returned. On a marginal system you may see more placeholders than you did on 0.4.6 — raise this value if so.
+- **`cache.dds_disk_ratio`** now sizes the DDS and chunk disk budgets, which had always split 60/40 regardless of what you set. If you configured a non-default ratio, your disk cache will re-divide accordingly.
+
+See [Configuration](../configuration/) for both settings in full.
 
 ## Initial Setup
 
