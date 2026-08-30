@@ -43,7 +43,7 @@ Every generated tile carries a **complete mipmap chain** — 13 levels for a 409
 
 ### Prefetching
 
-XEarthLayer reads your aircraft's position and heading directly from X-Plane's built-in Web API — no configuration required. On X-Plane 12.1.1 and later, the Web API is enabled by default, so prefetching works out of the box.
+XEarthLayer reads your aircraft's position and heading directly from X-Plane's built-in Web API — no configuration required. The API is versioned, and XEarthLayer uses v3, which X-Plane added in **12.4.0**; on that release or later, prefetching works out of the box. Against an earlier sim the connection is never established and XEarthLayer falls back to inferring position from the pattern of scenery files X-Plane reads, which is workable but much less able to stay ahead of the aircraft.
 
 The prefetch system uses two strategies, selected automatically based on flight phase:
 

@@ -166,7 +166,7 @@ Controls the Adaptive Prefetch System, which pre-loads tiles ahead of the aircra
 |-----------|---------|-------------|
 | `enabled` | `true` | Enable or disable predictive tile prefetching |
 | `mode` | `auto` | Mode selection: `auto` (recommended), `aggressive`, `opportunistic`, or `disabled` |
-| `web_api_port` | `8086` | X-Plane Web API port for telemetry (position, heading, speed, altitude). Change only if X-Plane uses a non-default port |
+| `web_api_port` | `8086` | X-Plane Web API port for telemetry (position, heading, speed, altitude). Requires X-Plane 12.4.0 or later. Change only if X-Plane uses a non-default port |
 | `cycle_interval_ms` | `2000` | Interval between prefetch cycles in milliseconds |
 | `calibration_aggressive_threshold` | `30.0` | Tiles/sec throughput threshold for aggressive mode |
 | `calibration_opportunistic_threshold` | `10.0` | Tiles/sec throughput threshold for opportunistic mode. Below this, prefetch is disabled |

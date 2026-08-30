@@ -8,7 +8,7 @@ This guide will help you install XEarthLayer and get flying with photoreal scene
 
 ## Prerequisites
 
-- **X-Plane 12.3 or later** installed on your system
+- **X-Plane 12** installed on your system, and **12.4.0 or later** for adaptive prefetching (see below)
 - **Linux** (amd64) with FUSE support — Debian/Ubuntu, Fedora/RHEL, or Arch Linux
 - An **8 core CPU** and **8GB of system memory** (12 cores and 32GB recommended)
 - A **GPU with 4GB of video memory**
@@ -22,7 +22,9 @@ XEarthLayer and X-Plane compete for the same system memory, and X-Plane alone wa
 {{< /callout >}}
 
 {{< callout type="info" >}}
-XEarthLayer connects to X-Plane automatically via the Web API (enabled by default since X-Plane 12.1.1) to read aircraft position, heading, and speed. This powers adaptive prefetching so tiles are ready before you need them. No plugin or manual setup is required. If X-Plane is not running when XEarthLayer starts, it falls back to inferring position from file access patterns.
+XEarthLayer reads aircraft position, heading and speed from X-Plane's built-in Web API, which powers adaptive prefetching so tiles are ready before you need them. No plugin or manual setup is required.
+
+X-Plane has shipped the Web API since 12.1.1, but it is versioned, and XEarthLayer uses **v3** — which X-Plane added in **12.4.0**. On an earlier sim the connection is never established and XEarthLayer falls back to inferring your position from file access patterns. It still works, but prefetching is far less effective, so 12.4.0 is the version to be on. The same fallback applies whenever X-Plane simply is not running yet.
 {{< /callout >}}
 
 ## Installation
