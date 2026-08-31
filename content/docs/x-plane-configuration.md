@@ -75,7 +75,7 @@ Start with X-Plane's default settings for your hardware tier, then adjust indivi
 </div>
 
 {{< callout type="info" >}}
-XEarthLayer automatically reads aircraft telemetry from X-Plane 12.1.1+ via the Web API. No configuration is required — prefetching works out of the box.
+XEarthLayer automatically reads aircraft telemetry from X-Plane 12.4.0 or later via the Web API. No configuration is required — prefetching works out of the box. On earlier releases XEarthLayer falls back to inferring position from file access patterns; see [Getting Started](/docs/getting-started/) for why.
 {{< /callout >}}
 
 ## Recommended Add-ons

@@ -105,6 +105,10 @@ xearthlayer config upgrade             # Apply the upgrade
 |------|-------------|
 | `--dry-run` | Show what would change without modifying the file |
 
+{{< callout type="info" >}}
+Run this after upgrading to 0.4.7. This release removes four settings that were parsed and reported but never reached the runtime: `cache.disk_io_profile` ([#227](https://github.com/samsoir/xearthlayer/issues/227)) and `executor.network_concurrent`, `executor.cpu_concurrent` and `executor.disk_io_concurrent` ([#249](https://github.com/samsoir/xearthlayer/issues/249)). A configuration file that still contains them loads normally, and `config upgrade` strips them.
+{{< /callout >}}
+
 ## Package Management
 
 ### `xearthlayer packages list`
@@ -230,12 +234,34 @@ Show index cache status including version, package count, and tile counts.
 xearthlayer scenery-index status
 {{< /code >}}
 
+The report ends with a completeness line comparing the number of indexed tiles against the number of `.ter` files found across your installed packages:
+
+{{< code lang="text" copy="false" >}}
+  Indexed:   184320 of 184320 .ter files (100.0%)
+{{< /code >}}
+
+If fewer tiles were indexed than there are `.ter` files, a warning follows:
+
+{{< code lang="text" copy="false" >}}
+  Indexed:   184102 of 184320 .ter files (99.9%)
+  WARNING:   218 .ter files did not produce a tile
+{{< /code >}}
+
+A shortfall means those `.ter` files could not be parsed, so their tiles are absent from the index. Prefetch cannot see tiles it has no index entry for, and will not fetch them ahead of the aircraft — they are still generated on demand when X-Plane asks for them. Rebuild with `scenery-index update` to see which packages the failures came from; if the count persists, the package files themselves are likely damaged and worth reinstalling.
+
 ### `xearthlayer scenery-index update`
 
 Rebuild the scenery index from installed packages. Useful after manually adding or removing package files.
 
 {{< code lang="bash" copy="true" >}}
 xearthlayer scenery-index update
+{{< /code >}}
+
+Each package reports its tile count as it is indexed. Packages containing `.ter` files that failed to parse report the failure count alongside the tiles that succeeded, so a problem package can be identified by name:
+
+{{< code lang="text" copy="false" >}}
+  Indexing eu... 42196 tiles
+  Indexing na... 61840 tiles (218 .ter files failed to parse)
 {{< /code >}}
 
 ### `xearthlayer scenery-index clear`
@@ -288,6 +314,8 @@ Output system diagnostics including GPU detection, system information, and confi
 {{< code lang="bash" copy="true" >}}
 xearthlayer diagnostics
 {{< /code >}}
+
+The report includes the size of your cache directory. That measurement is bounded at five seconds: on a very large cache it stops and reports the size as unmeasured rather than delaying the rest of the report. Before 0.4.7 it walked the entire tree, which on a multi-terabyte cache could hang indefinitely and prevented the report from printing at all ([#251](https://github.com/samsoir/xearthlayer/issues/251)).
 
 {{< callout type="tip" >}}
 When filing a bug report, include the output of `xearthlayer diagnostics` to help with troubleshooting.
