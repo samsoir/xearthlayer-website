@@ -9,7 +9,8 @@ This guide will help you install XEarthLayer and get flying with photoreal scene
 ## Prerequisites
 
 - **X-Plane 12** installed on your system, and **12.4.0 or later** for adaptive prefetching (see below)
-- **Linux** (amd64) with FUSE support — Debian/Ubuntu, Fedora/RHEL, or Arch Linux
+- **Linux** (amd64) with FUSE support, on Debian/Ubuntu, Fedora/RHEL or Arch Linux
+- **glibc 2.34 or newer** for the prebuilt packages, which covers Ubuntu 22.04 LTS, Debian 12 and RHEL 9 onwards. Check with `ldd --version`. On anything older, build from source
 - An **8 core CPU** and **8GB of system memory** (12 cores and 32GB recommended)
 - A **GPU with 4GB of video memory**
 - **100GB of free disk space** for the tile cache and scenery packages
@@ -24,28 +25,51 @@ XEarthLayer and X-Plane compete for the same system memory, and X-Plane alone wa
 {{< callout type="info" >}}
 XEarthLayer reads aircraft position, heading and speed from X-Plane's built-in Web API, which powers adaptive prefetching so tiles are ready before you need them. No plugin or manual setup is required.
 
-X-Plane has shipped the Web API since 12.1.1, but it is versioned, and XEarthLayer uses **v3** — which X-Plane added in **12.4.0**. On an earlier sim the connection is never established and XEarthLayer falls back to inferring your position from file access patterns. It still works, but prefetching is far less effective, so 12.4.0 is the version to be on. The same fallback applies whenever X-Plane simply is not running yet.
+X-Plane has shipped the Web API since 12.1.1, but it is versioned, and XEarthLayer uses **v3**, which X-Plane added in **12.4.0**. On an earlier sim the connection is never established and XEarthLayer falls back to inferring your position from file access patterns. It still works, but prefetching is far less effective, so 12.4.0 is the version to be on. The same fallback applies whenever X-Plane simply is not running yet.
 {{< /callout >}}
 
 ## Installation
 
+Install the package for your distribution. Building from source is only
+necessary on a distribution older than the glibc requirement above, or if you
+want to run unreleased code.
+
 {{< tabs >}}
-<!--tab:Build from Source-->
+<!--tab:Debian/Ubuntu-->
 {{< code lang="bash" copy="true" >}}
-git clone https://github.com/samsoir/xearthlayer.git && cd xearthlayer && make install
+wget {{< download-url "deb" >}} && sudo dpkg -i {{< download-file "deb" >}}
 {{< /code >}}
 <!--tab:Fedora/RHEL-->
 {{< code lang="bash" copy="true" >}}
 wget {{< download-url "rpm" >}} && sudo rpm -i {{< download-file "rpm" >}}
 {{< /code >}}
-<!--tab:Debian/Ubuntu-->
-{{< code lang="bash" copy="true" >}}
-wget {{< download-url "deb" >}} && sudo dpkg -i {{< download-file "deb" >}}
-{{< /code >}}
 <!--tab:Arch Linux-->
 {{< code lang="bash" copy="true" >}}
 curl -sL {{< download-url "aur" >}} | bsdtar -xf- -C /tmp && cd /tmp && makepkg -si
 {{< /code >}}
+<!--tab:Build from Source-->
+Building needs **Rust 1.97.1 or newer** and the FUSE 3 development headers.
+
+Install Rust through [rustup](https://rustup.rs) rather than your
+distribution's package manager. Several dependencies require a recent
+compiler, and most distributions ship one too old to build XEarthLayer at all.
+rustup also reads the repository's toolchain file and selects the right
+version for you.
+
+{{< code lang="bash" copy="true" >}}
+# Rust toolchain
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# FUSE 3 headers: libfuse3-dev on Debian/Ubuntu, fuse3-devel on Fedora/RHEL
+sudo apt install libfuse3-dev
+
+# Build and install to ~/.local/bin
+git clone https://github.com/samsoir/xearthlayer.git && cd xearthlayer && make install
+{{< /code >}}
+
+If the build stops with `rustc <version> is not supported by the following
+packages`, your Rust is too old. Install rustup as above, then open a new
+shell so it takes precedence over the system compiler.
 {{< /tabs >}}
 
 ## Upgrading from an earlier release
