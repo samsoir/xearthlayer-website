@@ -1407,6 +1407,32 @@ section {
   margin-top: -80px;
 }
 
+/* Back to the docs index. RegularPages excludes _index.md, so the section
+   root never appears in the nav list below and needs its own way back. */
+.docs-home {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-lg);
+  color: var(--color-text);
+  font-weight: 600;
+  border: 1px solid var(--ctp-surface0);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.docs-home:hover,
+.docs-home.active {
+  background: var(--ctp-surface0);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.docs-home svg {
+  flex-shrink: 0;
+}
+
 .docs-nav {
   list-style: none;
   padding: 0;

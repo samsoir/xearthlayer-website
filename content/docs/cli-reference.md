@@ -106,7 +106,7 @@ xearthlayer config upgrade             # Apply the upgrade
 | `--dry-run` | Show what would change without modifying the file |
 
 {{< callout type="info" >}}
-Run this after upgrading to 0.4.7. This release removes four settings that were parsed and reported but never reached the runtime: `cache.disk_io_profile` ([#227](https://github.com/samsoir/xearthlayer/issues/227)) and `executor.network_concurrent`, `executor.cpu_concurrent` and `executor.disk_io_concurrent` ([#249](https://github.com/samsoir/xearthlayer/issues/249)). A configuration file that still contains them loads normally, and `config upgrade` strips them.
+Run this after upgrading. It removes settings XEarthLayer no longer uses and writes a timestamped backup of your existing file first. A configuration containing obsolete keys loads normally, so this is tidying rather than a requirement. See [Obsolete Settings](../configuration/#obsolete-settings).
 {{< /callout >}}
 
 ## Package Management
@@ -315,7 +315,7 @@ Output system diagnostics including GPU detection, system information, and confi
 xearthlayer diagnostics
 {{< /code >}}
 
-The report includes the size of your cache directory. That measurement is bounded at five seconds: on a very large cache it stops and reports the size as unmeasured rather than delaying the rest of the report. Before 0.4.7 it walked the entire tree, which on a multi-terabyte cache could hang indefinitely and prevented the report from printing at all ([#251](https://github.com/samsoir/xearthlayer/issues/251)).
+The report includes the size of your cache directory. That measurement is bounded at five seconds: on a very large cache it stops and reports the size as unmeasured rather than delaying the rest of the report.
 
 {{< callout type="tip" >}}
 When filing a bug report, include the output of `xearthlayer diagnostics` to help with troubleshooting.

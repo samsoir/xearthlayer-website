@@ -23,27 +23,6 @@ Windows is well supported by alternative products and likely will never be suppo
 
 Yes, XEarthLayer is free and open source software released under the MIT license.
 
-### How is XEarthLayer different from other software, like AutoOrtho for example?
-
-XEarthLayer, AutoOrtho, X-Plane Map Enhancement and similar tools all achieve the same objective: streaming satellite orthographic photo scenery into the X-Plane simulator. They all work in largely the same way.
-
-XEarthLayer was designed to be as lightweight and fast as possible, using minimal memory and CPU time to deliver scenery to X-Plane efficiently.
-
-For this reason, [Rust](https://rust-lang.org/) was chosen as the implementation language, given its core principles of Performance, Reliability and Productivity. AutoOrtho was implemented in Python, which is popular but not ideally suited for high-throughput runtime environments.
-
-The author of XEarthLayer had been using both AutoOrtho and X-Plane Map Enhancement on a Windows setup previously. When the simulator was migrated to Linux in 2025, the original AutoOrtho was unable to maintain a stable simulator session. XEarthLayer was created in response to not being able to use the alternatives.
-
-Ultimately, all of these systems provide the same in-simulator experience, so which one you use is completely up to you.
-
-| Photo Scenery System | Open Source | X-Plane Interface | Programming Language | OS | Maintained |
-|----------------------|-------------|-------------------|--------------------|---|------------|
-| XEarthLayer | Yes | Fuse / Web API | Rust | Linux | Yes |
-| AutoOrtho | Yes | Fuse | Python | Windows, macOS, Linux | No |
-| AutoOrtho Continued | Yes | Fuse | Python | Windows, macOS, Linux | Yes |
-| X-Plane Map Enhancement | No | Fuse | Unknown | Windows, macOS | Yes |
-
-_As of March 2026_
-
 ### Can XEarthLayer be used with Microsoft Flight Simulator?
 
 No.
@@ -70,10 +49,6 @@ These are some factors that could prevent XEarthLayer from launching:
 - System killing the process due to out of memory (OOM)
 - Failure to initialize `fuse` mounts
 
-{{< callout type="info" >}}
-**Fixed in 0.4.7.** If XEarthLayer aborted part-way through startup on an earlier release with no error message you could act on, a damaged index cache file was the likely cause ([#253](https://github.com/samsoir/xearthlayer/issues/253)). A single corrupt byte could be read as a field length of several exabytes; the allocation failed and terminated the process outright, and the only remedy was deleting a file most people do not know exists. Every cache now bounds what it reads by the size of the file it is reading, writes durably so a partial file is never promoted, and deletes any entry it cannot trust so the next read simply regenerates it. A corrupt cache now costs you a rebuild, not a startup failure.
-{{< /callout >}}
-
 Check XEarthLayer's own logs for messages that may not be printed to `stdout` or `stderr`.
 
 ```bash
@@ -84,23 +59,21 @@ tail -f ~/.xearthlayer/xearthlayer.log
 
 Download the latest package for your distribution from the [GitHub releases](https://github.com/samsoir/xearthlayer/releases) and install it over your existing installation.
 
-### I upgraded to 0.4.7 and my first flight was slow. Is something wrong?
+### My first flight after upgrading was slow. Is something wrong?
 
-No — this is expected once, and then it is over.
+No, this is expected once and then it is over.
 
-0.4.7 emits complete DDS mipmap chains ([#212](https://github.com/samsoir/xearthlayer/issues/212)), which changes the size of a generated tile. Every DDS tile written by 0.4.6 or earlier is therefore the wrong size for this release. Those tiles are detected and replaced the first time each is needed ([#253](https://github.com/samsoir/xearthlayer/issues/253)), so expect one slower flight while the DDS cache refills over ground you have already covered.
+An upgrade can change the size of a generated tile, which makes every tile already in your cache stale. Stale tiles are detected and replaced the first time they are used, so your first flight afterwards re-downloads more than usual while the cache refills. It repairs itself as you fly.
 
 {{< callout type="warning" >}}
-You do **not** need to run `xearthlayer cache clear`. That was the remedy for the unrelated magenta-tile problem in 0.4.5, and running it here only makes the refill larger — it would discard the raw image chunks as well, which are still perfectly good and are what save the re-download. Let the tiles be replaced as they are used.
+You do **not** need to run `xearthlayer cache clear`. It discards the raw image chunks as well, which are still perfectly good and are what save the re-download, so it makes the refill considerably larger for no benefit.
 {{< /callout >}}
-
-On earlier releases a stale tile of the wrong size was served to X-Plane as a magenta placeholder indefinitely, because nothing removed it. If you upgraded from 0.4.6 and are seeing persistent magenta in areas you have flown before, that is the same issue, and it now resolves itself.
 
 ### Why is terrain in the distance banded or striped?
 
-Fixed in 0.4.7. Generated tiles declared a 5-level mipmap chain where a 4096x4096 texture supports 13 ([#212](https://github.com/samsoir/xearthlayer/issues/212)). X-Plane clamps sampling at the last declared level, so beyond that distance the texture was undersampled rather than filtered, which showed up as regular banding along terrain contours at grazing angles. It appeared regardless of imagery provider or zoom level, so it was easy to mistake for a provider problem.
+Generated tiles carry a complete mipmap chain, 13 levels for a 4096x4096 texture. X-Plane clamps its texture sampling at the last declared level, so a truncated chain leaves distant terrain undersampled and produces visible banding along contours at grazing angles.
 
-Complete chains are now emitted. Tiles already in your cache were written with the old chain and are replaced as they are used — see the question above.
+If you are seeing banding, the tiles in your cache were written by an older version and still declare a short chain. They are replaced as they are used, so the banding clears as you fly over the area again.
 
 ---
 
@@ -159,7 +132,7 @@ This can be caused by several factors:
 The XEarthLayer log outputs information about failed tile construction jobs and chunk downloads, so review it before posting in community channels.
 
 {{< callout type="warning" >}}
-**If you started seeing magenta tiles after upgrading to 0.4.7, read this first.** Before 0.4.7 the `generation.timeout` setting was parsed and reported but never reached the code that enforces it — a hardcoded 30-second constant won instead. That is fixed in 0.4.7 ([#248](https://github.com/samsoir/xearthlayer/issues/248)), which means the effective ceiling has dropped from 30 seconds to the documented default of **10**. A system that was quietly taking 12 to 25 seconds per tile on 0.4.6 was never showing you a placeholder; on 0.4.7 it will. Nothing has got slower — the limit you configured is simply being applied now. Set `generation.timeout = 30` to restore the previous behaviour, then work down from there.
+**Check `generation.timeout` first.** It bounds how long a blocking FUSE read waits for a tile before a magenta placeholder is returned, and it defaults to **10 seconds**. A system that is taking longer than that per tile will show placeholders rather than stalling the simulator. Raise the value to confirm that is what you are seeing, then work down from there.
 {{< /callout >}}
 
 If the situation persists, it is likely caused by configuration that exceeds your system's capabilities. The settings below are the ones actually worth tuning. Reduce the concurrency figures and testing again; if things stabilise, increase them one at a time.
@@ -180,7 +153,7 @@ compressor = ispc      ; Or `gpu` to move encoding off the CPU entirely
 ```
 
 {{< callout type="info" >}}
-Resource pool capacities are no longer configurable as of 0.4.7. If you are working from older advice that told you to reduce `executor.network_concurrent`, `executor.cpu_concurrent`, `executor.disk_io_concurrent` or `cache.disk_io_profile`, those keys have been removed — none of them ever reached the executor ([#249](https://github.com/samsoir/xearthlayer/issues/249)). Run `xearthlayer config upgrade` to strip them from your file.
+Resource pool capacities are not configurable. The network, CPU and disk I/O pool sizes are derived from your host's logical core count. If you are working from older advice that told you to tune `executor.network_concurrent`, `executor.cpu_concurrent`, `executor.disk_io_concurrent` or `cache.disk_io_profile`, those keys no longer exist. Run `xearthlayer config upgrade` to strip them from your file.
 {{< /callout >}}
 
 ### Help! I am seeing white tiles on the scenery when I fly.
@@ -201,12 +174,10 @@ journalctl --since "1 hour ago" | grep -iE "fuse|xearthlayer"
 If your system memory is less than 8GB, consider increasing swap space or upgrading RAM. See the [Performance](#performance) section for cache tuning recommendations.
 
 {{< callout type="info" >}}
-**Substantially improved in 0.4.7.** If you were killed by the OOM killer on a long flight, this release is worth upgrading for. A generated tile is about 11 MB, and glibc was serving allocations that size from arenas it never returns to the operating system, so the process footprint climbed for the life of the session regardless of how small a memory cache you had configured ([#227](https://github.com/samsoir/xearthlayer/issues/227)). Over a 4.3-hour flight against an identical build on default settings, committed memory at matched work fell 35% — 8,970 MB against 13,721 MB at the same 39,157 tiles. Separately, serving a tile used to copy all 11 MB of it several times over to deliver the roughly 4% X-Plane actually reads; the payload is now borrowed from the cache rather than copied ([#237](https://github.com/samsoir/xearthlayer/issues/237)).
-
-This bounds the steep early growth. It does not prove growth is bounded on a very long haul, and [#227](https://github.com/samsoir/xearthlayer/issues/227) remains open for the tail — if you still hit an OOM kill, the report is welcome.
+XEarthLayer pins two glibc allocator parameters at startup and sizes its thread pool from the work that actually queues on it. Without those, a generated tile is large enough that the C library serves it from arenas it never returns to the operating system, and the process footprint climbs for the life of the session regardless of how small a memory cache you configure. If you set them yourself via `MALLOC_MMAP_THRESHOLD_`, `MALLOC_ARENA_MAX` or `GLIBC_TUNABLES`, your values are left alone. This applies to Linux only.
 {{< /callout >}}
 
-0.4.7 also makes memory behaviour visible without running the whole session at `--debug`. A `Memory sample` line is written to the log every 60 seconds at normal log level, reporting resident and committed memory, swap, thread count, per-tier cache sizes and in-flight writes, alongside a `Prefetch sample` line covering region states and promotion counts ([#209](https://github.com/samsoir/xearthlayer/issues/209)). Quote `anon_mb + swap_mb` when reporting a memory problem: that is the committed footprint the OOM killer scores. Do not quote `vm_mb`, which also counts address space that is mapped but never touched, and carries a sawtooth of roughly a gigabyte from thread stacks that is not memory at all.
+Memory behaviour is visible without running the whole session at `--debug`. A `Memory sample` line is written to the log every 60 seconds at normal log level, reporting resident and committed memory, swap, thread count, per-tier cache sizes and in-flight writes, alongside a `Prefetch sample` line covering region states and promotion counts. Quote `anon_mb + swap_mb` when reporting a memory problem: that is the committed footprint the OOM killer scores. Do not quote `vm_mb`, which also counts address space that is mapped but never touched, and carries a sawtooth of roughly a gigabyte from thread stacks that is not memory at all.
 
 ### GPU encoding is not working or the wrong GPU is selected
 
@@ -238,7 +209,7 @@ First, check the [XEarthLayer GitHub issues](https://github.com/samsoir/xearthla
 Issues submitted without the required logs and system diagnostics will be closed automatically.
 {{< /callout >}}
 
-The issue template asks for the output of `xearthlayer diagnostics`. On releases before 0.4.7 that command could hang indefinitely while measuring a large cache directory, which on a multi-terabyte cache meant the report never printed at all — blocking the bug report it was needed for ([#251](https://github.com/samsoir/xearthlayer/issues/251)). The measurement is now bounded at five seconds and reports the cache size as unmeasured if it does not finish, so the rest of the report always prints. If you see the size listed as unmeasured, that is not itself a fault.
+The issue template asks for the output of `xearthlayer diagnostics`. Measuring the cache directory is bounded at five seconds, so the command completes even on a multi-terabyte cache. If the size cannot be measured in that time it is reported as unmeasured and the rest of the report still prints, which is not itself a fault.
 
 Attaching the `Memory sample` and `Prefetch sample` lines from `~/.xearthlayer/xearthlayer.log` is also useful for anything performance or memory related — both are written at normal log level, so you do not need to reproduce the problem under `--debug`.
 
@@ -268,7 +239,7 @@ Performance optimization is a broad topic that extends well beyond XEarthLayer i
 - Ensure adequate disk cache to minimize network downloads during flight
 - Use `bc1` texture format instead of `bc3` if you don't need alpha transparency (smaller files, faster encoding)
 - Monitor the XEarthLayer log for timeout warnings that may indicate bottlenecks
-- If running on limited hardware, reduce `executor.max_concurrent_jobs` and `generation.threads`. Resource pool capacities are no longer configurable as of 0.4.7 — `executor.network_concurrent`, `executor.cpu_concurrent`, `executor.disk_io_concurrent` and `cache.disk_io_profile` have been removed because they never reached the executor
+- If running on limited hardware, reduce `executor.max_concurrent_jobs` and `generation.threads`. Resource pool capacities are not configurable — `executor.network_concurrent`, `executor.cpu_concurrent`, `executor.disk_io_concurrent` and `cache.disk_io_profile` have been removed because they never reached the executor
 - Move DDS encoding off the CPU with `texture.compressor = gpu` and `texture.gpu_device = integrated` if you have an integrated GPU sitting idle while the discrete GPU runs X-Plane
 
 For detailed configuration guidance, see the [Configuration](/docs/configuration/) page.

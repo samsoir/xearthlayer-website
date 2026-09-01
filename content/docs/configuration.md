@@ -98,11 +98,11 @@ For best performance, place the cache directory on a fast NVMe or SSD that is no
 {{< /callout >}}
 
 {{< callout type="tip" >}}
-Size values support `KB`, `MB`, and `GB` suffixes. Since 0.4.7 they also accept decimals and a bare `B` suffix, so `500 MB`, `4 GB`, `2.6GB` and `1500000000B` are all valid. Before 0.4.7 a value such as `1.5 GB` could be written by XEarthLayer but not read back ([#218](https://github.com/samsoir/xearthlayer/issues/218)).
+Size values support `KB`, `MB` and `GB` suffixes, decimals, and a bare `B` suffix, so `500 MB`, `4 GB`, `2.6GB` and `1500000000B` are all valid.
 {{< /callout >}}
 
-{{< callout type="warning" >}}
-**Changed in 0.4.7.** `dds_disk_ratio` is now actually applied ([#248](https://github.com/samsoir/xearthlayer/issues/248)). Until this release the setting was parsed, validated and displayed on the dashboard, but the disk budget always split 60/40 no matter what you configured. If you had set a non-default ratio, your DDS and chunk cache sizes will change when you upgrade.
+{{< callout type="info" >}}
+`dds_disk_ratio` divides the disk budget between encoded DDS tiles and the raw image chunks they are built from. The default of `0.6` gives 60% to DDS tiles, which are the more expensive of the two to reproduce.
 {{< /callout >}}
 
 ### Texture Format
@@ -119,7 +119,7 @@ format = bc1
 | `format` | `bc1` | `bc1` (DXT1) produces smaller tiles at ~11.2 MB per 4096x4096 tile. `bc3` (DXT5) includes an alpha channel at ~22.4 MB per tile. Use `bc1` unless you specifically need transparency |
 
 {{< callout type="info" >}}
-**Changed in 0.4.7.** Generated tiles now carry a complete mipmap chain — 13 levels for a 4096x4096 texture, where earlier releases declared only 5 ([#212](https://github.com/samsoir/xearthlayer/issues/212)). X-Plane clamps sampling at the last declared level, so a truncated chain left distant terrain undersampled and produced visible banding along contours at grazing angles. The fix costs about 11 KB per tile, but it does change the tile size, which means every DDS tile written by 0.4.6 or earlier is now stale. See [Getting Started](../getting-started/) for what to expect on your first flight after upgrading.
+Generated tiles carry a complete mipmap chain, 13 levels for a 4096x4096 texture. X-Plane clamps its sampling at the last declared level, so a full chain is what keeps distant terrain from banding along contours at grazing angles. See [How It Works](../how-it-works/).
 {{< /callout >}}
 
 ---
@@ -206,7 +206,7 @@ Telemetry is automatic. XEarthLayer connects to X-Plane's built-in Web API (port
 {{< /callout >}}
 
 {{< callout type="info" >}}
-**Improved in 0.4.7.** Prefetch tracks every 1°x1° region through a lifecycle, and two of its states behaved badly before this release. A region whose tiles were merely slow to arrive shared a retirement path with a region the scenery index says has no tiles at all, so a slow region was permanently written off after three attempts and never retried ([#226](https://github.com/samsoir/xearthlayer/issues/226)). Separately, running with no ortho packages installed marked the entire world as uncovered, because "no index was loaded" was indistinguishable from "the index was consulted and found nothing" ([#228](https://github.com/samsoir/xearthlayer/issues/228)). Both are fixed, and a region that is merely slow is now deferred on a 20/30/40/60 second ladder rather than retired. See [How It Works](../how-it-works/) for the full lifecycle. None of this is configurable — it is noted here because it changes what the log reports.
+Prefetch tracks every 1°x1° region through a lifecycle. A region is marked as having no coverage only when the scenery index genuinely attributes zero tiles to it. A region whose tiles are merely slow to arrive is deferred on a 20/30/40/60 second ladder instead, so its tiles stay retryable. None of this is configurable; it is noted here because it shapes what the log reports. See [How It Works](../how-it-works/) for the full lifecycle.
 {{< /callout >}}
 
 {{< code lang="ini" copy="true" >}}
@@ -260,7 +260,7 @@ timeout = 10
 {{< /code >}}
 
 {{< callout type="warning" >}}
-**Changed in 0.4.7.** `generation.timeout` now actually bounds the blocking FUSE read ([#248](https://github.com/samsoir/xearthlayer/issues/248)). Until this release the setting was parsed and reported but a hardcoded 30-second constant won, so the effective ceiling before a magenta placeholder was returned drops from 30 seconds to the documented default of 10. On a system that was already close to the limit this can mean **more** magenta tiles on 0.4.7 than on 0.4.6. If you see that, raise `generation.timeout` — the old behaviour is `timeout = 30`. See the [FAQ](../faq/#help-i-am-seeing-magenta-tiles-on-the-scenery-when-i-fly) for the full diagnosis.
+`generation.timeout` bounds how long a blocking FUSE read waits for a tile before a magenta placeholder is returned, so X-Plane is never left stalling. If you see placeholders on scenery that should be available, raise this value. See the [FAQ](../faq/#help-i-am-seeing-magenta-tiles-on-the-scenery-when-i-fly) for the full diagnosis.
 {{< /callout >}}
 
 ### Executor
@@ -287,7 +287,7 @@ retry_base_delay_ms = 100
 {{< /code >}}
 
 {{< callout type="info" >}}
-**Resource pool capacities are not configurable.** The network, CPU and disk I/O pool sizes are derived from your host's logical core count using multipliers tuned by flight testing. The `network_concurrent`, `cpu_concurrent` and `disk_io_concurrent` keys were removed in 0.4.7 ([#249](https://github.com/samsoir/xearthlayer/issues/249)) because no value they carried ever reached the executor — `config list` even reported figures computed by a second formula that contradicted the live one. A configuration file that still contains them loads normally, and `xearthlayer config upgrade` removes them.
+**Resource pool capacities are not configurable.** The network, CPU and disk I/O pool sizes are derived from your host's logical core count using multipliers tuned by flight testing.
 {{< /callout >}}
 
 ### FUSE Kernel Parameters
@@ -358,29 +358,26 @@ update_check = true
 
 ---
 
-## Settings Removed in 0.4.7
+## Obsolete Settings
 
-Four settings were removed in this release. Each was parsed, validated and echoed back by `config list`, while a hardcoded constant or a separate policy silently won — so no value you could write in the file described anything XEarthLayer actually did.
+Configuration files written by older versions may contain settings that XEarthLayer no longer uses. They are ignored rather than rejected, so an old file still loads, but they describe nothing the software does.
 
 | Setting | Replacement |
 |---------|-------------|
-| `cache.disk_io_profile` | None. Disk I/O concurrency was never derived from this value; the pool took a flat capacity and the profile-aware code path had no callers |
+| `cache.disk_io_profile` | None. Disk I/O concurrency is not derived from a storage profile |
 | `executor.network_concurrent` | None. Pool capacities are derived from your logical core count |
 | `executor.cpu_concurrent` | None. As above |
 | `executor.disk_io_concurrent` | None. As above |
+| `download.timeout` | `executor.request_timeout_secs` |
+| `control_plane.max_concurrent_jobs` | `executor.max_concurrent_jobs` |
+| `control_plane.stall_threshold_secs` | None. Stall detection is not configurable |
+| `control_plane.health_check_interval_secs` | None. As above |
 
-A configuration file that still contains these keys loads normally — they are ignored. To tidy them up, run:
+To remove them:
 
 {{< code lang="bash" copy="true" >}}
 xearthlayer config upgrade --dry-run   # Preview
 xearthlayer config upgrade             # Apply
 {{< /code >}}
 
-The setup wizard also dropped its disk I/O profile prompt, so step 3 now asks for the cache directory, disk cache size, DDS-to-chunk ratio and memory cache size only.
-
-Two sections removed in earlier 0.4.x releases are worth mentioning because configuration files written before them are still in circulation:
-
-- **`[download]`** was consolidated into `[executor]`. Use `executor.request_timeout_secs` in place of `download.timeout`.
-- **`[control_plane]`** was deprecated. `max_concurrent_jobs` moved to `[executor]`; the stall-detection and health-check settings are no longer configurable. In 0.4.7 the parser was fixed so that `executor.max_concurrent_jobs` can be read back from a file XEarthLayer wrote itself ([#248](https://github.com/samsoir/xearthlayer/issues/248)) — before this, the key had moved section without the parser following.
-
-`xearthlayer config upgrade` removes all of these too.
+A timestamped backup of your existing file is written before anything is changed.

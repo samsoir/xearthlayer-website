@@ -39,7 +39,7 @@ You only download the scenery you actually fly over. No wasted bandwidth or disk
 7. **Cache**: Store the completed DDS tile in the memory cache and the DDS disk cache, and keep the source chunks in the chunk disk cache
 8. **Serve**: Return the DDS texture to X-Plane
 
-Every generated tile carries a **complete mipmap chain** — 13 levels for a 4096×4096 texture, down to a single pixel. X-Plane clamps its texture sampling at the last level a file declares, so a truncated chain leaves distant terrain undersampled rather than filtered, which shows up as regular banding along terrain contours at shallow viewing angles. Earlier releases emitted only five levels; XEarthLayer 0.4.7 emits the full chain ([#212](https://github.com/samsoir/xearthlayer/issues/212)).
+Every generated tile carries a **complete mipmap chain** — 13 levels for a 4096×4096 texture, down to a single pixel. X-Plane clamps its texture sampling at the last level a file declares, so a truncated chain leaves distant terrain undersampled rather than filtered, which shows up as regular banding along terrain contours at shallow viewing angles.
 
 ### Prefetching
 
@@ -63,17 +63,17 @@ Prefetching works a 1°×1° DSF region at a time, and remembers what it has alr
 | **Deferred** | The region has scenery coverage but has not finished yet — retry shortly |
 | **NoCoverage** | The scenery index attributes no tiles to this region, so there is nothing to fetch |
 
-The distinction between the last two matters, and getting it wrong was a real bug before 0.4.7. "This region has no scenery" and "this region's tiles have not arrived yet" are opposite conclusions, but they used to share one retirement path: a region that was merely slow got written off after three attempts and was never retried for the rest of the flight ([#226](https://github.com/samsoir/xearthlayer/issues/226)).
+The distinction between the last two matters. "This region has no scenery" and "this region's tiles have not arrived yet" are opposite conclusions, and only the first is grounds for giving up.
 
-From 0.4.7, **NoCoverage** is reachable only when the scenery index genuinely attributes zero tiles to a region. A region that stalls with tiles still outstanding is **Deferred** instead — a temporary state that expires on its own after 20 seconds, then 30, 40 and 60 on repeated stalls, so its tiles stay retryable. If X-Plane asks for a tile in a deferred region, the deferral is cleared immediately and prefetch picks it up again.
+**NoCoverage** is therefore reachable only when the scenery index genuinely attributes zero tiles to a region. A region that stalls with tiles still outstanding is **Deferred** instead — a temporary state that expires on its own after 20 seconds, then 30, 40 and 60 on repeated stalls, so its tiles stay retryable. If X-Plane asks for a tile in a deferred region, the deferral is cleared immediately and prefetch picks it up again.
 
-A related fix ([#228](https://github.com/samsoir/xearthlayer/issues/228)) separates "the index found nothing here" from "there was no index to consult". Previously the two were indistinguishable, so anyone running without installed ortho packages had the entire world marked as uncovered. Only a genuine, answered lookup can now retire a region.
+"The index found nothing here" is also kept separate from "there was no index to consult". Only a genuine, answered lookup can retire a region, so running without installed ortho packages does not mark the world as uncovered.
 
-Tiles that ship inside an installed scenery package also count toward a region's coverage. Prefetch deliberately never downloads those — they are already on your disk — but until 0.4.7 it did not count them either, so regions supplied by a package could never be confirmed complete and were eventually retired as having no coverage.
+Tiles that ship inside an installed scenery package also count toward a region's coverage. Prefetch deliberately never downloads those, since they are already on your disk, but it does count them, so a region supplied entirely by a package is correctly confirmed as complete.
 
 #### Divergence Detection
 
-If X-Plane asks XEarthLayer to generate a tile on demand inside a region that prefetch has already marked complete, then the "complete" claim was wrong. XEarthLayer now notices that contradiction and clears the region's state so it is prefetched again ([#176](https://github.com/samsoir/xearthlayer/issues/176)).
+If X-Plane asks XEarthLayer to generate a tile on demand inside a region that prefetch has already marked complete, then the "complete" claim was wrong. XEarthLayer notices that contradiction and clears the region's state so it is prefetched again.
 
 Ordinary cache eviction can produce the same signal — a tile that was fetched hours ago may simply have aged out — so a region is demoted at most once every 120 seconds. That keeps a long flight from churning between demotion and re-prefetching.
 
@@ -89,9 +89,9 @@ XEarthLayer uses a single FUSE mount point (`zzXEL_ortho`) for all of your insta
 
 ### Serving a Tile
 
-The Linux kernel caps every FUSE read at 1 MiB regardless of how much the application asked for, so X-Plane reading one 11 MB texture arrives at XEarthLayer as a series of smaller ranged requests. Before 0.4.7 both read paths answered each of those requests by rebuilding the entire file or texture and then discarding everything except the window that was actually asked for.
+The Linux kernel caps every FUSE read at 1 MiB regardless of how much the application asked for, so X-Plane reading one 11 MB texture arrives at XEarthLayer as a series of smaller ranged requests.
 
-XEarthLayer 0.4.7 stops doing that ([#233](https://github.com/samsoir/xearthlayer/issues/233), [#234](https://github.com/samsoir/xearthlayer/issues/234)). Files served straight from an installed package now read only the range requested. A generated tile is resolved once when X-Plane opens the file and sliced for each read after that, and the tile data is shared from the cache to the kernel rather than copied along the way. Across a four-minute scene load this avoids roughly 24 GiB of pointless copying, which is memory bandwidth and CPU time returned to the simulator.
+Each request is answered with only the range asked for. Files served straight from an installed package read just that range from disk. A generated tile is resolved once when X-Plane opens the file and sliced for each read after that, and the tile data is shared from the cache to the kernel rather than copied along the way. Across a four-minute scene load this avoids roughly 24 GiB of pointless copying, which is memory bandwidth and CPU time returned to the simulator.
 
 ## Technical Details
 

@@ -10,6 +10,14 @@
   <div class="docs-layout{{ if .Params.toc }} docs-layout--with-toc{{ end }}">
     <aside class="docs-sidebar">
       <nav>
+        {{ $docsHome := site.GetPage "/docs" }}
+        <a href="{{ $docsHome.RelPermalink }}" class="docs-home{{ if eq $docsHome.RelPermalink .RelPermalink }} active{{ end }}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          Docs Home
+        </a>
         <ul class="docs-nav">
           {{ $currentPage := . }}
           {{ range (where site.RegularPages "Section" "docs").ByWeight }}
