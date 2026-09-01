@@ -5,7 +5,8 @@
   "assets": {
     "deb": "xearthlayer_0.4.7-1_amd64.deb",
     "rpm": "xearthlayer-0.4.7-1.fc44.x86_64.rpm",
-    "tarball": "xearthlayer-v0.4.7-x86_64-linux.tar.gz"
+    "tarball": "xearthlayer-v0.4.7-x86_64-linux.tar.gz",
+    "aur": "aur-package.zip"
   },
   "download_base_url": "https://github.com/samsoir/xearthlayer/releases/download/v0.4.7"
 }

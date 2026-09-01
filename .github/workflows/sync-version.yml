@@ -39,6 +39,7 @@ jobs:
           DEB_FILE=$(jq -r '.assets.deb.filename' "$VERSION_FILE")
           RPM_FILE=$(jq -r '.assets.rpm.filename' "$VERSION_FILE")
           TARBALL_FILE=$(jq -r '.assets.tarball.filename' "$VERSION_FILE")
+          AUR_FILE=$(jq -r '.assets.aur.filename' "$VERSION_FILE")
           BASE_URL=$(jq -r '.download_base_url' "$VERSION_FILE")
 
           echo "Version: $VERSION"
@@ -47,6 +48,7 @@ jobs:
           echo "DEB: $DEB_FILE"
           echo "RPM: $RPM_FILE"
           echo "Tarball: $TARBALL_FILE"
+          echo "AUR: $AUR_FILE"
           echo "Base URL: $BASE_URL"
 
           # Update hugo.toml
@@ -62,7 +64,8 @@ jobs:
             "assets": {
               "deb": "${DEB_FILE}",
               "rpm": "${RPM_FILE}",
-              "tarball": "${TARBALL_FILE}"
+              "tarball": "${TARBALL_FILE}",
+              "aur": "${AUR_FILE}"
             },
             "download_base_url": "${BASE_URL}"
           }
