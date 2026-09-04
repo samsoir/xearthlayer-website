@@ -67,8 +67,19 @@ Ubuntu, `fuse3-devel` on Fedora and RHEL, and `fuse3` on Arch, which ships the
 headers alongside the library rather than splitting them into a separate
 package.
 
+**Debian/Ubuntu**
 {{< code lang="bash" copy="true" >}}
 sudo apt install libfuse3-dev
+{{< /code >}}
+
+**RHEL/Fedora**
+{{< code lang="bash" copy="true" >}}
+sudo dnf install fuse3-devel
+{{< /code >}}
+
+**Arch**
+{{< code lang="bash" copy="true" >}}
+sudo pacman -S fuse3
 {{< /code >}}
 
 **3. Build and install** to `~/.local/bin`. No sudo required.
