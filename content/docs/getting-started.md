@@ -63,7 +63,9 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 Open a new shell once it finishes, so that `cargo` is on your `PATH`.
 
 **2. Install the FUSE 3 headers.** The package is `libfuse3-dev` on Debian and
-Ubuntu, or `fuse3-devel` on Fedora and RHEL.
+Ubuntu, `fuse3-devel` on Fedora and RHEL, and `fuse3` on Arch, which ships the
+headers alongside the library rather than splitting them into a separate
+package.
 
 {{< code lang="bash" copy="true" >}}
 sudo apt install libfuse3-dev
