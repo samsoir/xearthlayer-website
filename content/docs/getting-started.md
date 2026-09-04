@@ -50,20 +50,28 @@ curl -sL {{< download-url "aur" >}} | bsdtar -xf- -C /tmp && cd /tmp && makepkg 
 <!--tab:Build from Source-->
 Building needs **Rust 1.97.1 or newer** and the FUSE 3 development headers.
 
-Install Rust through [rustup](https://rustup.rs) rather than your
+**1. Install Rust.** Use [rustup](https://rustup.rs) rather than your
 distribution's package manager. Several dependencies require a recent
 compiler, and most distributions ship one too old to build XEarthLayer at all.
 rustup also reads the repository's toolchain file and selects the right
 version for you.
 
 {{< code lang="bash" copy="true" >}}
-# Rust toolchain
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+{{< /code >}}
 
-# FUSE 3 headers: libfuse3-dev on Debian/Ubuntu, fuse3-devel on Fedora/RHEL
+Open a new shell once it finishes, so that `cargo` is on your `PATH`.
+
+**2. Install the FUSE 3 headers.** The package is `libfuse3-dev` on Debian and
+Ubuntu, or `fuse3-devel` on Fedora and RHEL.
+
+{{< code lang="bash" copy="true" >}}
 sudo apt install libfuse3-dev
+{{< /code >}}
 
-# Build and install to ~/.local/bin
+**3. Build and install** to `~/.local/bin`. No sudo required.
+
+{{< code lang="bash" copy="true" >}}
 git clone https://github.com/samsoir/xearthlayer.git && cd xearthlayer && make install
 {{< /code >}}
 
