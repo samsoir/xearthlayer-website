@@ -120,41 +120,77 @@ This can happen for several valid reasons:
 2. You have a scenery package installed that provides its own mesh. Some third-party scenery providers include custom mesh that overrides XEarthLayer scenery for that specific area.
 
 ### Help! I am seeing magenta tiles on the scenery when I fly.
+![Magenta placeholder tiles ahead of the aircraft](/images/bugs/magenta-tiles.jpg)
 
-Magenta tiles are returned when XEarthLayer is unable to construct a tile within the configured timeout period.
+Magenta tiles are returned when XEarthLayer cannot deliver a tile within the configured timeout. The placeholder exists to keep the simulator moving. X-Plane blocks on the read until XEarthLayer answers, so without a deadline a slow tile would stall the sim rather than blur it.
 
-This can be caused by several factors:
-- Slow or throttled downloads from the mapping service
-- Operating system overhead reducing available CPU and memory
-- Configuration that is too aggressive for your system's capabilities
-- Network or disk I/O bottlenecks
+`generation.timeout` bounds the whole round trip, from the moment X-Plane asks for a texture to the moment XEarthLayer hands one back. That includes time the request spends queued behind other work, not only the time spent building the tile. On a modest system the queue is usually the larger of the two, which is why placeholders often appear in bursts while individual tiles are still being built quickly.
 
-The XEarthLayer log outputs information about failed tile construction jobs and chunk downloads, so review it before posting in community channels.
+#### Confirm it in the log
 
-{{< callout type="warning" >}}
-**Check `generation.timeout` first.** It bounds how long a blocking FUSE read waits for a tile before a magenta placeholder is returned, and it defaults to **10 seconds**. A system that is taking longer than that per tile will show placeholders rather than stalling the simulator. Raise the value to confirm that is what you are seeing, then work down from there.
-{{< /callout >}}
+A timeout writes an error, and the job it cancelled writes its own duration:
 
-If the situation persists, it is likely caused by configuration that exceeds your system's capabilities. The settings below are the ones actually worth tuning. Reduce the concurrency figures and testing again; if things stabilise, increase them one at a time.
+```
+ERROR TIMEOUT: DDS generation exceeded 10s ... tile_row=1456 tile_col=2184 tile_zoom=12
+ WARN Task cancelled job_id=dds-1456_2184_ZL12 task_name=BuildAndCacheDds duration_ms=1918
+```
+
+Compare `duration_ms` against the timeout. Here the tile took under two seconds to build and spent the remaining eight waiting its turn, so the pipeline is saturated rather than incapable, and raising the timeout is the right fix. If `duration_ms` is close to the timeout instead, the tile genuinely is slow to build, and the load reductions below matter more than the deadline.
+
+#### Raise the timeout
+
+Start at 20 seconds and increase in steps of 10 until the placeholders stop. Do not go beyond 60.
 
 ```ini
 [generation]
-threads = 4            ; Default is num_cpus / 2 — try half of that
-timeout = 30           ; Default 10; raise before you conclude your system is too slow
+timeout = 20           ; Default is 10
+```
+
+{{< callout type="warning" >}}
+**A longer deadline is not free.** If X-Plane reaches an area before XEarthLayer has returned the texture, the simulator will slow or freeze until that read completes. Protecting the sim from exactly that is why the timeout exists. A brief pause for a real texture is usually worth it, but an excessive value trades a visible problem for a felt one.
+{{< /callout >}}
+
+#### Use one GPU for one job
+
+If your machine has a single physical GPU, encode on the CPU with `texture.compressor = ispc`. GPU encoding is intended for systems with two physical GPUs, where one drives X-Plane and the other is free to encode. Sharing a single card between rendering and encoding costs you frames and slows tile delivery at the same time.
+
+```ini
+[texture]
+compressor = ispc
+```
+
+Several adapters in `xearthlayer diagnostics` do not mean several GPUs. One card commonly appears more than once, once per graphics backend, as Vulkan and again as OpenGL. Count physical cards, not entries.
+
+#### Reduce the load on your system
+
+Placeholders that persist after the above are usually a configuration that exceeds what the machine can sustain, made worse by whatever else competes for it: slow or throttled downloads from the mapping service, operating system overhead, or disk I/O bottlenecks. Reduce the concurrency figures, test again, then raise them one at a time.
+
+```ini
+[generation]
+threads = 4            ; Default is num_cpus / 2, try half of that
 
 [executor]
-max_concurrent_jobs = 6   ; Default is ceil(num_cpus * 0.75) — try half
+max_concurrent_jobs = 6   ; Default is ceil(num_cpus * 0.75), try half
 request_timeout_secs = 10 ; Per-chunk HTTP timeout
 max_retries = 3           ; Retry attempts per failed chunk
 
 [texture]
 format = bc1           ; bc1 encodes faster and writes half as much as bc3
-compressor = ispc      ; Or `gpu` to move encoding off the CPU entirely
 ```
 
 {{< callout type="info" >}}
 Resource pool capacities are not configurable. The network, CPU and disk I/O pool sizes are derived from your host's logical core count. If you are working from older advice that told you to tune `executor.network_concurrent`, `executor.cpu_concurrent`, `executor.disk_io_concurrent` or `cache.disk_io_profile`, those keys no longer exist. Run `xearthlayer config upgrade` to strip them from your file.
 {{< /callout >}}
+
+#### Prewarm your departure airport
+
+A handful of placeholders in the first minutes of a flight is a cold cache rather than a misconfiguration. Build the tiles around your departure airport before the sim needs them:
+
+```bash
+xearthlayer run --airport LSGG
+```
+
+See the [CLI Reference](/docs/cli-reference/) for details, and `prewarm.grid_rows` and `prewarm.grid_cols` in [Configuration](/docs/configuration/) to widen the area that is warmed.
 
 ### Help! I am seeing white tiles on the scenery when I fly.
 ![White tiles on landscape](/images/bugs/white-tiles.jpg)
@@ -182,6 +218,8 @@ Memory behaviour is visible without running the whole session at `--debug`. A `M
 ### GPU encoding is not working or the wrong GPU is selected
 
 If you have configured `texture.compressor = gpu` and are experiencing issues, here are some common causes and solutions.
+
+**Check that you have two physical GPUs first.** GPU encoding is intended for systems with two physical cards, where one drives X-Plane and the other is free to encode. On a machine with a single GPU, set `texture.compressor = ispc` instead. Sharing one card between rendering and encoding costs you frames and slows tile delivery at the same time. Several adapters listed by `xearthlayer diagnostics` do not mean several GPUs, because one card appears once per graphics backend.
 
 **GPU not detected:** Run `xearthlayer diagnostics` to list available GPU adapters on your system. If no GPUs are listed, ensure your GPU drivers are installed correctly and that Vulkan support is available. See the [CLI Reference](/docs/cli-reference/) for more on the `diagnostics` command.
 
