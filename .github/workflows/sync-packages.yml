@@ -19,28 +19,52 @@ jobs:
       - name: Checkout website
         uses: actions/checkout@v6
 
-      - name: Fetch package library and metadata
+      # The scenery repository holds library generations (v1/, v2/, ...),
+      # each a complete world at its own URL, and keeps the pre-0.5 library
+      # at its root, frozen. Every one of them is hosted, so each client
+      # finds the library it reads. What the packages page presents is one
+      # generation only, named by `sceneryGeneration` in hugo.toml: the
+      # world users of the current stable release can install.
+      - name: Fetch package libraries and metadata
+        id: fetch
         run: |
-          # Fetch package library
-          curl -sSL \
-            https://raw.githubusercontent.com/samsoir/xearthlayer-regional-scenery/main/xearthlayer_package_library.txt \
-            -o static/packages/xearthlayer_package_library.txt
+          BASE=https://raw.githubusercontent.com/samsoir/xearthlayer-regional-scenery/main
+          LIBRARY=xearthlayer_package_library.txt
 
-          # Fetch region metadata (contains names and coverage descriptions)
-          curl -sSL \
-            https://raw.githubusercontent.com/samsoir/xearthlayer-regional-scenery/main/region_metadata.json \
-            -o /tmp/region_metadata.json
+          # The frozen root library, read by releases before 0.5.0
+          curl -fsSL "$BASE/$LIBRARY" -o "static/packages/$LIBRARY"
 
-          # Fetch coverage map image
+          # Every generation folder on main: v1, v2, ...
+          GENERATIONS=$(curl -fsSL https://api.github.com/repos/samsoir/xearthlayer-regional-scenery/contents \
+            | jq -r '.[] | select(.type == "dir") | .name' | grep -E '^v[1-9][0-9]*$' || true)
+          for gen in $GENERATIONS; do
+            mkdir -p "static/packages/$gen"
+            curl -fsSL "$BASE/$gen/$LIBRARY" -o "static/packages/$gen/$LIBRARY"
+            echo "Hosted library generation $gen"
+          done
+
+          # The generation the packages page presents. Until it exists on
+          # main, the root library stands in for it.
+          GEN=$(sed -n 's/^[[:space:]]*sceneryGeneration[[:space:]]*=[[:space:]]*"\(v[1-9][0-9]*\)".*/\1/p' hugo.toml | head -1)
+          SOURCE="$BASE/$GEN"
+          PAGE_LIBRARY="static/packages/$GEN/$LIBRARY"
+          if [ -z "$GEN" ] || [ ! -f "$PAGE_LIBRARY" ]; then
+            echo "::notice::Generation '${GEN}' not on main yet; the packages page uses the root library"
+            SOURCE="$BASE"
+            PAGE_LIBRARY="static/packages/$LIBRARY"
+          fi
+          echo "library=$PAGE_LIBRARY" >> "$GITHUB_OUTPUT"
+
+          # Region metadata (names and coverage descriptions) and the coverage
+          # map, both of the presented generation
+          curl -fsSL "$SOURCE/region_metadata.json" -o /tmp/region_metadata.json
           mkdir -p static/images
-          curl -sSL \
-            https://raw.githubusercontent.com/samsoir/xearthlayer-regional-scenery/main/coverage.png \
-            -o static/images/coverage.png
+          curl -fsSL "$SOURCE/coverage.png" -o static/images/coverage.png
 
       - name: Update packages documentation
         run: |
           # Parse library file and generate region table
-          LIBRARY_FILE="static/packages/xearthlayer_package_library.txt"
+          LIBRARY_FILE="${{ steps.fetch.outputs.library }}"
           PACKAGES_MD="content/docs/packages.md"
           METADATA_FILE="/tmp/region_metadata.json"
 
@@ -138,7 +162,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add static/packages/xearthlayer_package_library.txt static/images/coverage.png content/docs/packages.md
+          git add static/packages static/images/coverage.png content/docs/packages.md
           git commit -m "chore: sync package library and update docs
 
           Automatically synced from xearthlayer-regional-scenery repository."
