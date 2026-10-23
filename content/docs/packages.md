@@ -10,7 +10,7 @@ XEarthLayer uses a package system to manage regional scenery from across the glo
 
 ![Coverage Map](/images/coverage.png)
 
-*AF1 in cyan, AF2 in yellowgreen, AS1 in firebrick, AS2 in crimson, AS3 in red, AS4 in palevioletred, EU in orange, EU2 in tangerine, NA in blue, OC in purple, SA in green.*
+*AF1 in cyan, AF2 in yellowgreen, AS1 in firebrick, AS2 in crimson, AS3 in red, AS4 in palevioletred, EU in orange, EU2 in #ffaa00, NA in blue, OC in purple, SA in green.*
 
 | Code | Region | Version | Coverage |
 |------|--------|---------|----------|

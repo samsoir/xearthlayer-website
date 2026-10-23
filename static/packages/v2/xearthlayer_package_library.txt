@@ -1,0 +1,42 @@
+XEARTHLAYER REGIONAL SCENERY PACKAGE LIBRARY
+1.0.0
+EARTH
+210
+2026-10-20T04:19:33Z
+34
+
+
+c08e70c58fa11d05997882ad19c2784777ed4b4a80ce14976191a81a9684ab89  Y  AF-NORTH  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/af-north-v0.5.0/yzXEL_af-north_overlay-metadata.txt
+e681778092fe990d6f042d394881d8a90f7b8e0f8b797e0b803fa04d7267d8ae  Z  AF-NORTH  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/af-north-v0.5.0/zzXEL_af-north_ortho-metadata.txt
+3d1326e629e66e32aa2330512dc3cfe5ed4068e41a6014201b1d4db589b12a17  Y  AF-SOUTH  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/af-south-v0.5.0/yzXEL_af-south_overlay-metadata.txt
+790d83f0ee7ef65654923f8273dc7c0de521ba1ace3440a8430ad6aaa2d43d04  Z  AF-SOUTH  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/af-south-v0.5.0/zzXEL_af-south_ortho-metadata.txt
+971f6abca5b06f1a5a7038d4e7f0a07d3ee4054291644fab0b7fb924e16c5f38  Y  AS-ASIA-PACIFIC  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/as-asia-pacific-v0.5.0/yzXEL_as-asia-pacific_overlay-metadata.txt
+d0fc337366cfa1a8a996ec86eb5fe5ae7c828adf25866d193c18939418206127  Z  AS-ASIA-PACIFIC  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/as-asia-pacific-v0.5.0/zzXEL_as-asia-pacific_ortho-metadata.txt
+28ac3cbabf8ce0c2d63e0f5b4313d90d524355d527ec586b0ca00d675d06620c  Y  AS-CHINA-MONGOLIA  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/as-china-mongolia-v0.5.0/yzXEL_as-china-mongolia_overlay-metadata.txt
+21906990a4f4edd5f9126e483e884273f410801c91d63acb4fcdae881339f630  Z  AS-CHINA-MONGOLIA  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/as-china-mongolia-v0.5.0/zzXEL_as-china-mongolia_ortho-metadata.txt
+d8ab85f1f52f81f8027385b33d9bd554f698f23c10165c03351c53115fef869e  Y  AS-INDIA-MIDDLE-EAST-HIMALAYAN  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/as-india-middle-east-himalayan-v0.5.0/yzXEL_as-india-middle-east-himalayan_overlay-metadata.txt
+b50368e62df24e6e5ef22d2b6dc47600c96cac53ad0ae54c473742192137a35b  Z  AS-INDIA-MIDDLE-EAST-HIMALAYAN  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/as-india-middle-east-himalayan-v0.5.0/zzXEL_as-india-middle-east-himalayan_ortho-metadata.txt
+effead8d777ce7abe1477d9681b7ba58da1e7902bb8e1c794f2017a8045fea6c  Y  AS-RUSSIA-CENTRAL  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/as-russia-central-v0.5.0/yzXEL_as-russia-central_overlay-metadata.txt
+c83262c4fb734b32280a0bcb38be4159400f9c1b9c71f7668a8b0b97594078dd  Z  AS-RUSSIA-CENTRAL  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/as-russia-central-v0.5.0/zzXEL_as-russia-central_ortho-metadata.txt
+1b636aa86d88a7c0b7adb9faa198a59ad3aa242c53f1d721d6b918f9c9ad8738  Y  AS-RUSSIA-EAST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/as-russia-east-v0.5.0/yzXEL_as-russia-east_overlay-metadata.txt
+3d09119b29202eca661fe41f5c3143e14fb443a7ee8bccc71baa76274ee0d363  Z  AS-RUSSIA-EAST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/as-russia-east-v0.5.0/zzXEL_as-russia-east_ortho-metadata.txt
+fa617a97b12d336ddcef226b6e23ecd094ab5c58b2348478ab2725904dee4418  Y  EU-EAST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/eu-east-v0.5.0/yzXEL_eu-east_overlay-metadata.txt
+9801e07e449400a416f792cfdebba7f609a78fef290e54f2cc305edd452d6315  Z  EU-EAST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/eu-east-v0.5.0/zzXEL_eu-east_ortho-metadata.txt
+189cca770db7db7d1d900d0adba624dd43f35fb2ffacb9d0744c9e2f9501602e  Y  EU-WEST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/eu-west-v0.5.0/yzXEL_eu-west_overlay-metadata.txt
+198a2ad4bd5008e4e15e30e3d27e448d15699cd6dd4ea8fc3e57820f400b0f5f  Z  EU-WEST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/eu-west-v0.5.0/zzXEL_eu-west_ortho-metadata.txt
+b107a96e9804e8565b61f8e3c93ab02de358756fbaf8583daaa2a88ce226dce6  Y  NA-CANADA-EAST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/na-canada-east-v0.5.0/yzXEL_na-canada-east_overlay-metadata.txt
+c7ff4abd005d39f77f55e48d33d6a0c865756158f5b3393ec6041d3b87c0f3cc  Z  NA-CANADA-EAST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/na-canada-east-v0.5.0/zzXEL_na-canada-east_ortho-metadata.txt
+19d8171b261246c950e891d86dd18e8ab1ce8aa3ac1d465a2cc3d3d5ce7fafc2  Y  NA-CANADA-WEST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/na-canada-west-v0.5.0/yzXEL_na-canada-west_overlay-metadata.txt
+3f4b4fec342fc2f333daba94c147645e5580ae2cf510a727ea9d6dcf14f10d50  Z  NA-CANADA-WEST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/na-canada-west-v0.5.0/zzXEL_na-canada-west_ortho-metadata.txt
+ab7017194dc36d6740bb68d9cc0d712460513eaa08e6aae9359dfd04646d8d2d  Y  NA-GREENLAND  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/na-greenland-v0.5.0/yzXEL_na-greenland_overlay-metadata.txt
+474ae541014def94feaa0f232ebfb27609dcafa5565dcfc913bc4c7cfa13e07e  Z  NA-GREENLAND  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/na-greenland-v0.5.0/zzXEL_na-greenland_ortho-metadata.txt
+e0b087d5f90722d079ad6a45a56c2e4473893958ec3fad62e5e26775fe91323e  Y  NA-MEXICO-CENTRAL  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/na-mexico-central-v0.5.0/yzXEL_na-mexico-central_overlay-metadata.txt
+d0439fdedef9ef70b202c1b17900213dbf854d77fc64bdba02a2392bd930ef54  Z  NA-MEXICO-CENTRAL  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/na-mexico-central-v0.5.0/zzXEL_na-mexico-central_ortho-metadata.txt
+af55a358cb1b534a59e235d5156f1d15f608623328c53f6e27ac9fe7d2a277b6  Y  NA-USA-BERMUDA-BAHAMAS  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/na-usa-bermuda-bahamas-v0.5.0/yzXEL_na-usa-bermuda-bahamas_overlay-metadata.txt
+e01ea92a97e6273bc532b72389cf752040e47c77ac09958b399614b14f77103d  Z  NA-USA-BERMUDA-BAHAMAS  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/na-usa-bermuda-bahamas-v0.5.0/zzXEL_na-usa-bermuda-bahamas_ortho-metadata.txt
+e68c6ec621b1b602641ed48adbcad2725f792ac2119819432b89b163148705f5  Y  OC-AUSTRALIA-NZ-PACIFIC  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/oc-australia-nz-pacific-v0.5.0/yzXEL_oc-australia-nz-pacific_overlay-metadata.txt
+8bf1be9617e5e8b82bdc08fb9f15f9b64f01db7479c3578efcbdc69e7af156a6  Z  OC-AUSTRALIA-NZ-PACIFIC  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/oc-australia-nz-pacific-v0.5.0/zzXEL_oc-australia-nz-pacific_ortho-metadata.txt
+0d8071714485c1e3ba38c9c60786f07e1ebb11c26c43bd7f9640646aa59fe06e  Y  SA-EAST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/sa-east-v0.5.0/yzXEL_sa-east_overlay-metadata.txt
+014dc915803c54b3d69ac63ed3c515f8d4c6babd3463e662638ec575fb526a26  Z  SA-EAST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/sa-east-v0.5.0/zzXEL_sa-east_ortho-metadata.txt
+5ced2a535bbad32db4767e6275f1752f387983533c77a0c5e3802ed7f3341d5e  Y  SA-WEST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/sa-west-v0.5.0/yzXEL_sa-west_overlay-metadata.txt
+6bf5b88f8abc7a69830798b5df5eaceec0e81f3b56660c5984bf8995a4b39e9d  Z  SA-WEST  0.5.0  https://github.com/samsoir/xearthlayer-regional-scenery/releases/download/sa-west-v0.5.0/zzXEL_sa-west_ortho-metadata.txt
