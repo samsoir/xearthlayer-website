@@ -46,7 +46,7 @@
             </svg>
             Download v{{ site.Params.latestVersion }}
           </a>
-          <p class="hero-video__platform">Available for Linux</p>
+          <p class="hero-video__platform">Available for Linux and macOS</p>
         </div>
         <a href="{{ site.Params.github }}" class="btn btn-secondary" target="_blank" rel="noopener">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -210,7 +210,7 @@
             <polyline points="7 10 12 15 17 10"/>
             <line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          Download for Linux
+          Download for Linux or macOS
           <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="6 9 12 15 18 9"/>
           </svg>
@@ -230,7 +230,15 @@
             <span class="download-option-file">AUR package</span>
           </a>
           <a href="{{ hugo.Data.release.download_base_url }}/{{ hugo.Data.release.assets.tarball }}" class="download-option">
-            <span class="download-option-title">Static Binary</span>
+            <span class="download-option-title">Linux Static Binary</span>
+            <span class="download-option-file">.tar.gz archive</span>
+          </a>
+          <a href="/docs/macos/#install-with-homebrew" class="download-option">
+            <span class="download-option-title">macOS with Homebrew</span>
+            <span class="download-option-file">brew install --cask xearthlayer/tap/xearthlayer</span>
+          </a>
+          <a href="{{ hugo.Data.release.download_base_url }}/{{ hugo.Data.release.assets.macos_tarball }}" class="download-option">
+            <span class="download-option-title">macOS Apple Silicon</span>
             <span class="download-option-file">.tar.gz archive</span>
           </a>
         </div>
@@ -250,7 +258,7 @@
   <div class="container">
     <div class="section-header">
       <h2>System Requirements</h2>
-      <p class="base-requirements">Linux (amd64)</p>
+      <p class="base-requirements">Linux (amd64) or macOS 12+ on Apple Silicon</p>
       <p class="base-requirements">X-Plane 12.4.0 or later</p>
     </div>
 
@@ -271,7 +279,7 @@
         <ul>
           <li>12 Core CPU</li>
           <li>32GB System Memory</li>
-          <li>GPU with 12GB Video Memory</li>
+          <li>GPU with 16GB Video Memory</li>
           <li>250GB Cache Capacity</li>
           <li>500Mbit Internet</li>
         </ul>
@@ -282,13 +290,16 @@
         <ul>
           <li>16 Core CPU</li>
           <li>64GB System Memory</li>
-          <li>GPU with 24GB Video Memory</li>
+          <li>GPU with 24GB+ Video Memory</li>
           <li>500GB+ Cache Capacity</li>
           <li>1Gbit Internet or faster</li>
         </ul>
       </div>
     </div>
 
+    <p class="requirements-note">A GPU with 8GB of video memory is the minimum. Plan on 16GB if you also run SimHeaven X-World Pro, and 24GB or more with everything on at 4K.</p>
+
+    {{ $stats := partial "region-stats.html" . }}
     <div class="scenery-storage">
       <h3>Scenery Storage</h3>
       <p>XEarthLayer streams satellite imagery onto the terrain mesh supplied by
@@ -305,24 +316,24 @@
         </thead>
         <tbody>
           <tr>
-            <td>Smallest region (Africa 2)</td>
-            <td>17 GB</td>
-            <td>25 GB</td>
+            <td>Smallest region ({{ $stats.smallest.code }})</td>
+            <td>{{ partial "gb.html" $stats.smallest.installed }}</td>
+            <td>{{ partial "gb.html" (add $stats.smallest.installed $stats.smallest.download) }}</td>
           </tr>
           <tr>
-            <td>Largest region (North America)</td>
-            <td>112 GB</td>
-            <td>187 GB</td>
+            <td>Largest region ({{ $stats.largest.code }})</td>
+            <td>{{ partial "gb.html" $stats.largest.installed }}</td>
+            <td>{{ partial "gb.html" (add $stats.largest.installed $stats.largest.download) }}</td>
           </tr>
           <tr class="full-library">
-            <td>All 11 regions</td>
-            <td>421 GB</td>
-            <td>497 GB</td>
+            <td>All {{ $stats.count }} regions, the whole Earth</td>
+            <td>{{ partial "gb.html" $stats.total }}</td>
+            <td>{{ partial "gb.html" (add $stats.total $stats.max_download) }}</td>
           </tr>
         </tbody>
       </table>
 
-      <p>Installation of a region package needs more free space than the installed result occupies because the download sits on disk while it is extracted. Per-region sizes are published in the <a href="https://github.com/samsoir/xearthlayer-regional-scenery">regional scenery repository</a>.</p>
+      <p>Installing a region needs more free space than the installed result occupies, because one download sits on disk while it is extracted. Night lighting reserves a further 5% of the cache capacity above. Every region and its size is listed on the <a href="/docs/packages/">Package Management</a> page.</p>
     </div>
   </div>
 </section>

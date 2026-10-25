@@ -1177,6 +1177,14 @@ section {
   letter-spacing: 0.05em;
 }
 
+.requirements-note {
+  max-width: 900px;
+  margin: var(--space-lg) auto 0;
+  text-align: center;
+  color: var(--ctp-subtext1);
+  font-size: 0.95rem;
+}
+
 .requirement-card li.optional {
   font-style: italic;
   color: var(--ctp-overlay0);
