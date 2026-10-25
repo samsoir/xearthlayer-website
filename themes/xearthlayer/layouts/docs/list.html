@@ -3,8 +3,26 @@
   <h1>{{ .Title }}</h1>
   {{ .Content }}
 
-  {{/* Pages featured in quicklinks - exclude from auto-generated list */}}
-  {{ $featured := slice "how-it-works" "getting-started" "configuration" "cli-reference" "packages" "x-plane-configuration" "custom-ortho-tiles" "faq" "about" "macos" "night-lighting" "x-world-pro" "directory-layout" }}
+  {{/* Quick-link cards come from the section's front matter (quicklinks: a list
+       of page slugs in display order). Each card carries data-doc="<slug>" so
+       the icon CSS keys on the page, not its position in the list. */}}
+  {{ $quicklinks := .Params.quicklinks | default slice }}
+  {{ with $quicklinks }}
+  <div class="docs-quicklinks">
+    <ul>
+    {{ range . }}
+      {{ with $.GetPage . }}
+      <li data-doc="{{ .File.ContentBaseName }}"><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+      {{ else }}
+        {{ errorf "docs quicklinks: no page found for slug %q in %s" . $.File.Path }}
+      {{ end }}
+    {{ end }}
+    </ul>
+  </div>
+  {{ end }}
+
+  {{/* Pages featured in quicklinks (plus About, linked below) are excluded from the auto-generated list */}}
+  {{ $featured := $quicklinks | append "about" }}
 
   <div class="docs-index">
     {{ range (where site.RegularPages "Section" "docs").ByWeight }}

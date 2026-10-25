@@ -1,5 +1,6 @@
 ---
 title: "Frequently Asked Questions"
+linkTitle: "FAQ / Troubleshooting"
 description: "Find answers to common questions about XEarthLayer."
 weight: 60
 toc: true

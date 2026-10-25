@@ -1,5 +1,6 @@
 ---
 title: "X-Plane 12 Configuration"
+linkTitle: "X-Plane 12 Setup"
 description: "How to configure X-Plane 12 for the best results"
 weight: 50
 ---
