@@ -1,0 +1,15 @@
+<table class="regions-upgrade">
+  <thead>
+    <tr><th>New region</th><th>Replaces</th></tr>
+  </thead>
+  <tbody>
+    {{- range $code, $r := site.Data.regions.regions -}}
+    {{- with $r.supersedes -}}
+    <tr>
+      <td><code>{{ $code }}</code></td>
+      <td>{{ range $i, $old := . }}{{ if $i }}, {{ end }}<code>{{ $old }}</code>{{ end }}</td>
+    </tr>
+    {{- end -}}
+    {{- end -}}
+  </tbody>
+</table>

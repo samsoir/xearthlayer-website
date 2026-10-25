@@ -2970,3 +2970,33 @@ section {
 .paths-table code {
   white-space: nowrap;
 }
+
+/* Coverage map legend rendered by the regions-legend shortcode */
+.regions-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+  list-style: none;
+  padding: 0;
+  margin: var(--space-sm) 0 var(--space-lg);
+  font-size: 0.9rem;
+}
+
+.regions-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.regions-legend__swatch {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  border-radius: 2px;
+  border: 1px solid var(--ctp-surface1);
+}
+
+.regions-table td:nth-child(3),
+.regions-table td:nth-child(4) {
+  white-space: nowrap;
+}

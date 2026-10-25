@@ -74,7 +74,7 @@ Push to main          ──────────────►    sync-pack
 |------|--------|-------------|
 | `static/packages/xearthlayer_package_library.txt` | Regional scenery repo | Package index for CLI |
 | `static/images/coverage.png` | Regional scenery repo | Coverage map image |
-| `content/docs/packages.md` | Auto-generated | Regions table, coverage map, legend |
+| `data/regions.json` | Regional scenery repo | Region names, coverage, colours, sizes and supersedes; Hugo renders the packages page and homepage storage figures from it |
 
 ### Data Files
 
@@ -84,7 +84,7 @@ The sync workflow uses these files from the regional-scenery repo:
 - **`region_metadata.json`** - Region names, coverage descriptions, and colors
 - **`coverage.png`** - Coverage map image
 
-The legend (e.g., "NA in blue, EU in orange") is generated dynamically from `region_metadata.json`.
+The region table, legend and homepage storage figures are rendered by Hugo from `data/regions.json`, so a world rebuild is a data drop, not an edit.
 
 ## App Version Sync
 

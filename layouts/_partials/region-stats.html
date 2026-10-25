@@ -1,0 +1,25 @@
+{{- $rows := slice -}}
+{{- range $code, $r := site.Data.regions.regions -}}
+  {{- $dl := 0.0 -}}
+  {{- $inst := 0.0 -}}
+  {{- with $r.size -}}
+    {{- with .ortho -}}
+      {{- $dl = add $dl (float (default 0 .download_bytes)) -}}
+      {{- $inst = add $inst (float (default 0 .installed_bytes)) -}}
+    {{- end -}}
+    {{- with .overlay -}}
+      {{- $dl = add $dl (float (default 0 .download_bytes)) -}}
+      {{- $inst = add $inst (float (default 0 .installed_bytes)) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $rows = $rows | append (dict "code" $code "name" $r.name "download" $dl "installed" $inst) -}}
+{{- end -}}
+{{- $asc := sort $rows "installed" "asc" -}}
+{{- $desc := sort $rows "installed" "desc" -}}
+{{- $total := 0.0 -}}
+{{- $maxdl := 0.0 -}}
+{{- range $rows -}}
+  {{- $total = add $total .installed -}}
+  {{- if gt .download $maxdl -}}{{- $maxdl = .download -}}{{- end -}}
+{{- end -}}
+{{- return (dict "count" (len $rows) "smallest" (index $asc 0) "largest" (index $desc 0) "total" $total "max_download" $maxdl) -}}

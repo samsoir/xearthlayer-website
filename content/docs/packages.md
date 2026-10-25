@@ -4,34 +4,72 @@ description: "Install, update, and manage regional scenery packages."
 weight: 40
 ---
 
-XEarthLayer uses a package system to manage regional scenery from across the globe. Packages contain tile indices that tell XEarthLayer which areas have satellite imagery and what resources to download.
+XEarthLayer streams satellite imagery onto terrain supplied by regional scenery packages. A package carries the terrain mesh, the terrain definitions that tell XEarthLayer which imagery to fetch, and, since 0.5.0, the night lighting recipes for its tiles. It carries no imagery of its own, which is why a whole continent fits in a few gigabytes.
+
+Every region comes as an **ortho** package (the terrain) and an **overlay** package (roads, buildings, forests). Install the ortho package at least. With `packages.auto_install_overlays` on, the overlay comes along automatically.
 
 ## Available Regions
 
 ![Coverage Map](/images/coverage.png)
 
-*AF1 in cyan, AF2 in yellowgreen, AS1 in firebrick, AS2 in crimson, AS3 in red, AS4 in palevioletred, EU in orange, EU2 in #ffaa00, NA in blue, OC in purple, SA in green.*
+{{< regions-legend >}}
 
-| Code | Region | Version | Coverage |
-|------|--------|---------|----------|
-| AF1 | Africa - Part 1 | 0.1.0 | North Africa including Morocco, Algeria, Tunisia, Libya, Egypt, Sudan, South Sudan, Ethiopia, Somalia, Djibouti, Chad, Niger, Nigeria, Cameroon, Central African Republic, Mali, Senegal, Gambia, Guinea, Sierra Leone, Liberia, Ivory Coast, Ghana, Benin, Mauritania, Western Sahara |
-| AF2 | Africa - Part 2 | 0.1.0 | Southern Africa including South Africa, Namibia, Botswana, Zimbabwe, Zambia, Mozambique, Madagascar, Tanzania, Kenya, DRC |
-| AS1 | Asia - Part 1 | 0.1.0 | China and Mongolia |
-| AS2 | Asia - Part 2 | 0.1.0 | Middle East, South Asia, and Central Asia including Saudi Arabia, UAE, Oman, Yemen, Iran, Iraq, Syria, Jordan, Israel, Lebanon, eastern Turkey, Afghanistan, Pakistan, India, Nepal, Bhutan, Bangladesh, Sri Lanka, Maldives, Kazakhstan, Uzbekistan, Turkmenistan, Kyrgyzstan, Tajikistan, western China, western Mongolia, southern Russia, and Indian Ocean islands |
-| AS3 | Asia - Part 3 | 0.1.0 | Indonesia, Malaysia, Philippines, Vietnam, Thailand, Japan, South Korea, Taiwan, Eastern Russia |
-| AS4 | Asia - Part 4 | 0.1.0 | Russia east of the Ural Mountains extending to the Pacific peninsula |
-| EU | Europe | 0.1.1 | Western and Central Europe |
-| EU2 | Europe - Part 2 | 0.1.0 | Eastern Europe, Scandinavia, Caucasus, and European Russia including Greece, Bulgaria, Romania, Moldova, Ukraine, Belarus, Baltic States, Finland, Sweden, Norway, Turkey, Cyprus, Georgia, Armenia, Azerbaijan, and European Russia extending to the Ural Mountains |
-| NA | North America | 0.2.3 | United States, Canada, Caribbean |
-| OC | Oceania | 0.2.0 | Australia, New Zealand, Fiji, French Polynesia, Papua New Guinea, Vanuatu, Solomon Islands |
-| SA | South America | 0.2.0 | Complete continent including Falkland Islands |
+Sizes are the ortho and overlay packages together. "Download" is what crosses the network; "Installed" is what the package occupies afterwards.
 
-## Managing Packages
+{{< regions-table >}}
 
-Use the `xearthlayer packages` command to list, install, update, and remove regional packages. For example, to install the Europe region:
+Installing a package needs free space for the installed result plus one download's worth of temporary space, because the download sits on disk while it is extracted. The temporary folder defaults to `~/.cache/xearthlayer/tmp` (`~/Library/Caches/XEarthLayer/tmp` on macOS) and can be moved with `packages.temp_dir`.
+
+## The Package Manager
+
+Run `xearthlayer packages` with no subcommand to open the package manager, a full-screen view with four tabs: **Local** (what is installed), **Library** (what is available), **Progress** (the jobs of this session) and **Settings** (the `[packages]` section of your configuration). Mark rows with Space, then press `i` to install, `u` to update or `d` to delete. Press `?` for every key.
 
 {{< code lang="bash" copy="true" >}}
-xearthlayer packages install EU
+xearthlayer packages
 {{< /code >}}
 
-See the [CLI Reference](/docs/cli-reference/) for all package commands and options.
+The setup wizard offers to open it when it finishes, so a fresh install can go straight from setup to choosing scenery.
+
+## Installing from the Command Line
+
+Region codes are hierarchical, continent first, so the start of a code selects every package beneath it. Matching ignores case. When a code selects more than one package, the matches are listed and confirmed before anything downloads.
+
+| You type | Selects |
+|----------|---------|
+| `NA` | every North America package |
+| `NA-CANADA` | `NA-CANADA-WEST` and `NA-CANADA-EAST` |
+| `AF-SOUTH` | exactly `AF-SOUTH` |
+
+{{< code lang="bash" copy="true" >}}
+xearthlayer packages install EU-WEST
+{{< /code >}}
+
+{{< code lang="bash" copy="true" >}}
+xearthlayer packages install NA-CANADA AF
+{{< /code >}}
+
+{{< code lang="bash" copy="true" >}}
+xearthlayer packages install --all
+{{< /code >}}
+
+See the [CLI Reference](/docs/cli-reference/#package-management) for every package command and option.
+
+## Upgrading from the Continental Packages
+
+XEarthLayer 0.5.0 ships a rebuilt world. The eleven continental packages of earlier releases (`AF1`, `AF2`, `AS1` to `AS4`, `EU`, `EU2`, `NA`, `OC`, `SA`) are replaced by the seventeen regions above, each about a third smaller on disk and each carrying night lighting. The old packages are not in the 0.5.0 library and receive no further updates.
+
+**Remove the old packages first, then install the new regions.** Both generations can sit on disk at once, but a short code such as `EU` is also the start of `EU-WEST` and `EU-EAST`, so while both are installed the old package cannot be addressed on its own. Removing first avoids that.
+
+{{< code lang="bash" copy="true" >}}
+xearthlayer packages remove --all
+xearthlayer packages remove --all --type overlay
+xearthlayer packages install --all
+{{< /code >}}
+
+Or open the package manager, mark everything on the Local tab with `a`, press `d`, then choose your regions from the Library tab.
+
+{{< regions-upgrade >}}
+
+Greenland moved continent in the rebuild: anyone who flew it from the old `EU` package will find it under `NA-GREENLAND`.
+
+Releases before 0.5.0 keep reading the old library and cannot install the new regions. Upgrade XEarthLayer first.

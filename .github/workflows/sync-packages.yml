@@ -23,8 +23,9 @@ jobs:
       # each a complete world at its own URL, and keeps the pre-0.5 library
       # at its root, frozen. Every one of them is hosted, so each client
       # finds the library it reads. What the packages page presents is one
-      # generation only, named by `sceneryGeneration` in hugo.toml: the
-      # world users of the current stable release can install.
+      # generation only, named by `sceneryGeneration` in hugo.toml. Its
+      # region_metadata.json is written to data/regions.json, and Hugo
+      # renders the region table, legend and sizes from it.
       - name: Fetch package libraries and metadata
         id: fetch
         run: |
@@ -57,94 +58,10 @@ jobs:
 
           # Region metadata (names and coverage descriptions) and the coverage
           # map, both of the presented generation
-          curl -fsSL "$SOURCE/region_metadata.json" -o /tmp/region_metadata.json
+          mkdir -p data
+          curl -fsSL "$SOURCE/region_metadata.json" -o data/regions.json
           mkdir -p static/images
           curl -fsSL "$SOURCE/coverage.png" -o static/images/coverage.png
-
-      - name: Update packages documentation
-        run: |
-          # Parse library file and generate region table
-          LIBRARY_FILE="${{ steps.fetch.outputs.library }}"
-          PACKAGES_MD="content/docs/packages.md"
-          METADATA_FILE="/tmp/region_metadata.json"
-
-          # Extract unique regions with their versions (Y=overlay, Z=ortho)
-          # Format: CHECKSUM TYPE REGION VERSION URL
-          declare -A regions
-          declare -A ortho_versions
-          declare -A overlay_versions
-
-          while IFS=' ' read -r checksum type region version url; do
-            # Skip header lines (first 8 lines) and empty lines
-            [[ -z "$checksum" || "$checksum" == "XEARTHLAYER" || "$checksum" =~ ^[0-9]+$ ]] && continue
-            [[ ${#checksum} -ne 64 ]] && continue  # Skip non-checksum lines
-
-            regions["$region"]=1
-            if [[ "$type" == "Z" ]]; then
-              ortho_versions["$region"]="$version"
-            elif [[ "$type" == "Y" ]]; then
-              overlay_versions["$region"]="$version"
-            fi
-          done < "$LIBRARY_FILE"
-
-          # Load region metadata from JSON file
-          # This allows descriptions to be updated in the regional-scenery repo
-          # without needing to modify this workflow
-          declare -A region_names
-          declare -A region_coverage
-          declare -A region_colors
-
-          for code in $(jq -r '.regions | keys[]' "$METADATA_FILE"); do
-            region_names["$code"]=$(jq -r ".regions.\"$code\".name" "$METADATA_FILE")
-            region_coverage["$code"]=$(jq -r ".regions.\"$code\".coverage" "$METADATA_FILE")
-            region_colors["$code"]=$(jq -r ".regions.\"$code\".color" "$METADATA_FILE")
-          done
-
-          # Build the legend dynamically from regions in the library
-          LEGEND=""
-          for region in $(echo "${!regions[@]}" | tr ' ' '\n' | sort); do
-            color="${region_colors[$region]:-gray}"
-            if [[ -n "$LEGEND" ]]; then
-              LEGEND+=", "
-            fi
-            LEGEND+="$region in $color"
-          done
-
-          # Build the table
-          TABLE="| Code | Region | Version | Coverage |\n"
-          TABLE+="|------|--------|---------|----------|\n"
-
-          # Sort regions and build rows
-          for region in $(echo "${!regions[@]}" | tr ' ' '\n' | sort); do
-            name="${region_names[$region]:-$region}"
-            version="${ortho_versions[$region]:-${overlay_versions[$region]:-?}}"
-            coverage="${region_coverage[$region]:-Available}"
-            TABLE+="| $region | $name | $version | $coverage |\n"
-          done
-
-          # Update packages.md - replace the Available Regions section
-          # Use awk to replace content between markers, including coverage map
-          awk -v table="$TABLE" -v legend="$LEGEND" '
-            /^## Available Regions/ {
-              print;
-              print "";
-              print "![Coverage Map](/images/coverage.png)";
-              print "";
-              print "*" legend ".*";
-              print "";
-              printf "%s", table;
-              # Skip until next ## or end of file
-              while ((getline line) > 0) {
-                if (line ~ /^## /) {
-                  print "";
-                  print line;
-                  break;
-                }
-              }
-              next;
-            }
-            { print }
-          ' "$PACKAGES_MD" > "${PACKAGES_MD}.tmp" && mv "${PACKAGES_MD}.tmp" "$PACKAGES_MD"
 
       - name: Check for changes
         id: changes
@@ -162,7 +79,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add static/packages static/images/coverage.png content/docs/packages.md
+          git add static/packages static/images/coverage.png data/regions.json
           git commit -m "chore: sync package library and update docs
 
           Automatically synced from xearthlayer-regional-scenery repository."

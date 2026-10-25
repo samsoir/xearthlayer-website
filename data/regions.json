@@ -1,0 +1,330 @@
+{
+  "schema_version": 2,
+  "regions": {
+    "NA-USA-BERMUDA-BAHAMAS": {
+      "name": "North America: United States, Bermuda and the Bahamas",
+      "coverage": "The contiguous United States, Alaska including the Aleutian and Pribilof Islands, Hawaii including the Northwestern Hawaiian Islands and Midway, Bermuda, the Bahamas and the Turks and Caicos Islands",
+      "color": "#0091f8",
+      "status": "staging",
+      "supersedes": [
+        "NA"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 12583452704,
+          "installed_bytes": 12661368117
+        },
+        "overlay": {
+          "download_bytes": 1519713170,
+          "installed_bytes": 1519029535
+        }
+      }
+    },
+    "NA-MEXICO-CENTRAL": {
+      "name": "North America: Mexico, Central America and the Caribbean",
+      "coverage": "Mexico including the Revillagigedo Islands and Clipperton, Guatemala, Belize, Honduras, El Salvador, Nicaragua, Costa Rica, Panama, and the Caribbean from Cuba and the Cayman Islands through Hispaniola, Puerto Rico and the Lesser Antilles",
+      "color": "#99c3e1",
+      "status": "staging",
+      "supersedes": [
+        "NA"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 4085041447,
+          "installed_bytes": 4100447313
+        },
+        "overlay": {
+          "download_bytes": 409203675,
+          "installed_bytes": 409018113
+        }
+      }
+    },
+    "NA-CANADA-WEST": {
+      "name": "North America: Western Canada",
+      "coverage": "Canada west of 95 degrees west: British Columbia including Haida Gwaii, Alberta, Saskatchewan, western Manitoba, Yukon, the Northwest Territories and western Nunavut, with the western Arctic Archipelago",
+      "color": "#153247",
+      "status": "staging",
+      "supersedes": [
+        "NA"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 9992741186,
+          "installed_bytes": 10107896177
+        },
+        "overlay": {
+          "download_bytes": 248148445,
+          "installed_bytes": 247929071
+        }
+      }
+    },
+    "NA-CANADA-EAST": {
+      "name": "North America: Eastern Canada",
+      "coverage": "Canada east of 95 degrees west: eastern Manitoba, Ontario, Quebec, the Atlantic provinces including Sable Island, Newfoundland and Labrador, eastern Nunavut and the eastern Arctic Archipelago, with Saint Pierre and Miquelon",
+      "color": "#00497e",
+      "status": "staging",
+      "supersedes": [
+        "NA"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 12956238555,
+          "installed_bytes": 13078407424
+        },
+        "overlay": {
+          "download_bytes": 282492424,
+          "installed_bytes": 282297890
+        }
+      }
+    },
+    "NA-GREENLAND": {
+      "name": "North America: Greenland",
+      "coverage": "Greenland",
+      "color": "#50b3f9",
+      "status": "staging",
+      "supersedes": [
+        "EU"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 843153948,
+          "installed_bytes": 914045063
+        },
+        "overlay": {
+          "download_bytes": 2628272,
+          "installed_bytes": 2670644
+        }
+      }
+    },
+    "SA-WEST": {
+      "name": "South America: West",
+      "coverage": "Colombia, Venezuela, Ecuador including the Galapagos Islands, Peru, Bolivia, Chile including Easter Island and the Juan Fernandez Islands, the Guianas, Trinidad and Tobago, Aruba, Curacao and Bonaire, and the Pitcairn Islands",
+      "color": "#88fd92",
+      "status": "staging",
+      "supersedes": [
+        "SA"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 8865296675,
+          "installed_bytes": 8893145820
+        },
+        "overlay": {
+          "download_bytes": 342811693,
+          "installed_bytes": 342611432
+        }
+      }
+    },
+    "SA-EAST": {
+      "name": "South America: East",
+      "coverage": "Brazil including Fernando de Noronha, Argentina, Paraguay, Uruguay, the Falkland Islands, South Georgia and the South Sandwich Islands",
+      "color": "#0dbf1c",
+      "status": "staging",
+      "supersedes": [
+        "SA"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 8097924549,
+          "installed_bytes": 8144412713
+        },
+        "overlay": {
+          "download_bytes": 697967365,
+          "installed_bytes": 697587053
+        }
+      }
+    },
+    "EU-WEST": {
+      "name": "Europe: West",
+      "coverage": "Europe west of Russia: the British Isles, Iceland, the Faroe Islands, Scandinavia including Svalbard and Jan Mayen, Finland, the Baltic states, Poland, Belarus, Ukraine, Moldova, Western and Central Europe, Iberia with the Azores, the Mediterranean islands, the Balkans, Greece and European Turkey",
+      "color": "#1633ef",
+      "status": "staging",
+      "supersedes": [
+        "EU"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 14151377360,
+          "installed_bytes": 14248453307
+        },
+        "overlay": {
+          "download_bytes": 1969621828,
+          "installed_bytes": 1968849979
+        }
+      }
+    },
+    "EU-EAST": {
+      "name": "Europe: East",
+      "coverage": "European Russia west of the Urals, from St Petersburg and the Kola Peninsula to the Volga and the northern Caucasus, including Novaya Zemlya",
+      "color": "#4b5ccb",
+      "status": "staging",
+      "supersedes": [
+        "EU2"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 3350880762,
+          "installed_bytes": 3412589112
+        },
+        "overlay": {
+          "download_bytes": 330443259,
+          "installed_bytes": 330239302
+        }
+      }
+    },
+    "AF-NORTH": {
+      "name": "Africa: North",
+      "coverage": "North and West Africa: Morocco, Western Sahara, Algeria, Tunisia, Libya, Egypt, Sudan, Chad, the Sahel and the West African coast from Mauritania to Nigeria, with the Canary Islands, Madeira and Cabo Verde",
+      "color": "#ff9924",
+      "status": "staging",
+      "supersedes": [
+        "AF1"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 6698082242,
+          "installed_bytes": 6737857728
+        },
+        "overlay": {
+          "download_bytes": 558525276,
+          "installed_bytes": 558279319
+        }
+      }
+    },
+    "AF-SOUTH": {
+      "name": "Africa: South",
+      "coverage": "Central, East and Southern Africa from Cameroon, South Sudan, Ethiopia and the Horn of Africa to South Africa, with Madagascar, the Indian Ocean islands including the Seychelles, Mauritius and Reunion, and the South Atlantic islands of St Helena, Ascension, Tristan da Cunha, Gough and Bouvet",
+      "color": "#ffcc92",
+      "status": "staging",
+      "supersedes": [
+        "AF1",
+        "AF2"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 8522704167,
+          "installed_bytes": 8566477778
+        },
+        "overlay": {
+          "download_bytes": 622412201,
+          "installed_bytes": 622011053
+        }
+      }
+    },
+    "AS-INDIA-MIDDLE-EAST-HIMALAYAN": {
+      "name": "Asia: India, the Middle East and the Himalaya",
+      "coverage": "The Arabian Peninsula, the Levant, Cyprus, Anatolia, the Caucasus, Iran, Iraq, Central Asia including Kazakhstan, Afghanistan, Pakistan, India, Nepal, Bhutan, Bangladesh, Sri Lanka and the Maldives",
+      "color": "#fa0022",
+      "status": "staging",
+      "supersedes": [
+        "AS2",
+        "EU2"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 15477821588,
+          "installed_bytes": 15542857243
+        },
+        "overlay": {
+          "download_bytes": 1320044246,
+          "installed_bytes": 1319414243
+        }
+      }
+    },
+    "AS-CHINA-MONGOLIA": {
+      "name": "Asia: China and Mongolia",
+      "coverage": "China including Hainan, Hong Kong and Macau, and Mongolia",
+      "color": "#d26170",
+      "status": "staging",
+      "supersedes": [
+        "AS1"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 17849017542,
+          "installed_bytes": 17894846519
+        },
+        "overlay": {
+          "download_bytes": 679063556,
+          "installed_bytes": 678693106
+        }
+      }
+    },
+    "AS-RUSSIA-CENTRAL": {
+      "name": "Asia: Central Russia",
+      "coverage": "Siberia from the Urals to Lake Baikal and Transbaikalia, including Franz Josef Land, Severnaya Zemlya and the Taymyr Peninsula",
+      "color": "#e9afb7",
+      "status": "staging",
+      "supersedes": [
+        "AS4"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 4519181703,
+          "installed_bytes": 4628580854
+        },
+        "overlay": {
+          "download_bytes": 234978331,
+          "installed_bytes": 234719737
+        }
+      }
+    },
+    "AS-RUSSIA-EAST": {
+      "name": "Asia: Russian Far East",
+      "coverage": "The Russian Far East from Yakutia to the Bering Strait, including Chukotka, Kamchatka, the northern Kuril Islands, Sakhalin, Primorye and Wrangel Island",
+      "color": "#ff324d",
+      "status": "staging",
+      "supersedes": [
+        "AS4"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 6290641305,
+          "installed_bytes": 6371096265
+        },
+        "overlay": {
+          "download_bytes": 137012436,
+          "installed_bytes": 136820781
+        }
+      }
+    },
+    "AS-ASIA-PACIFIC": {
+      "name": "Asia: Japan, Korea and Southeast Asia",
+      "coverage": "Japan including the Ryukyu and Ogasawara Islands, the southern Kuril Islands, North and South Korea, Taiwan, Myanmar, Thailand, Laos, Cambodia, Vietnam, Malaysia, Singapore, Brunei, Indonesia, Timor-Leste, the Philippines, Palau, Guam and the Northern Mariana Islands",
+      "color": "#ff99a7",
+      "status": "staging",
+      "supersedes": [
+        "AS3"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 10435463075,
+          "installed_bytes": 10475902303
+        },
+        "overlay": {
+          "download_bytes": 1162309300,
+          "installed_bytes": 1161826359
+        }
+      }
+    },
+    "OC-AUSTRALIA-NZ-PACIFIC": {
+      "name": "Oceania: Australia, New Zealand and the Pacific",
+      "coverage": "Australia including Lord Howe, Norfolk and Macquarie Islands, New Zealand including the Chatham, Kermadec and subantarctic islands, Papua New Guinea, Melanesia, Micronesia and Polynesia from the Marshall Islands and Kiribati to Fiji, Samoa, Tonga, the Cook Islands and French Polynesia",
+      "color": "#b723e8",
+      "status": "staging",
+      "supersedes": [
+        "OC"
+      ],
+      "size": {
+        "ortho": {
+          "download_bytes": 5279183431,
+          "installed_bytes": 5322547602
+        },
+        "overlay": {
+          "download_bytes": 225851462,
+          "installed_bytes": 225643975
+        }
+      }
+    }
+  }
+}
