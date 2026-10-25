@@ -10,7 +10,7 @@ Every region comes as an **ortho** package (the terrain) and an **overlay** pack
 
 ## Available Regions
 
-![Coverage Map](/images/coverage.png)
+{{< regions-map >}}
 
 {{< regions-legend >}}
 

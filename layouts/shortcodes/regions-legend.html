@@ -1,5 +1,5 @@
 <ul class="regions-legend">
   {{- range $code, $r := hugo.Data.regions.regions -}}
-  <li><span class="regions-legend__swatch" style="background: {{ $r.color | safeCSS }}"></span><code>{{ $code }}</code></li>
+  <li data-region="{{ $code }}"><span class="regions-legend__swatch" style="background: {{ $r.color | safeCSS }}"></span><code>{{ $code }}</code></li>
   {{- end -}}
 </ul>

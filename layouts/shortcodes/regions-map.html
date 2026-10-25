@@ -1,0 +1,25 @@
+{{- /*
+  Leaflet map of the scenery regions for the packages page. Region names,
+  colours, status and sizes come from data/regions.json; the shapes come
+  from static/data/regions.geojson, written by the sync workflow. Leaflet
+  loads from cdnjs with Subresource Integrity. The coverage PNG inside the
+  container shows until the map has drawn, and stays if it never does.
+*/ -}}
+{{- $regions := dict -}}
+{{- range $code, $r := hugo.Data.regions.regions -}}
+  {{- $size := partial "region-size.html" $r -}}
+  {{- $entry := dict "name" $r.name "color" $r.color "status" (default "released" $r.status) "download" (partial "gb.html" $size.download) -}}
+  {{- $regions = merge $regions (dict $code $entry) -}}
+{{- end -}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+      integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<div class="regions-map" id="regions-map" data-geojson="/data/regions.geojson" data-regions="{{ $regions | jsonify }}">
+  <img class="regions-map__fallback" src="/images/coverage.png" alt="Coverage map of the scenery regions">
+</div>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
+        integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{{- with resources.Get "js/regions-map.js" }}
+<script defer src="{{ (. | minify | fingerprint).RelPermalink }}"></script>
+{{- end }}

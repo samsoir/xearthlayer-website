@@ -4,23 +4,12 @@
   </thead>
   <tbody>
     {{- range $code, $r := hugo.Data.regions.regions -}}
-    {{- $dl := 0.0 -}}
-    {{- $inst := 0.0 -}}
-    {{- with $r.size -}}
-      {{- with .ortho -}}
-        {{- $dl = add $dl (float (default 0 .download_bytes)) -}}
-        {{- $inst = add $inst (float (default 0 .installed_bytes)) -}}
-      {{- end -}}
-      {{- with .overlay -}}
-        {{- $dl = add $dl (float (default 0 .download_bytes)) -}}
-        {{- $inst = add $inst (float (default 0 .installed_bytes)) -}}
-      {{- end -}}
-    {{- end -}}
-    <tr>
+    {{- $size := partial "region-size.html" $r -}}
+    <tr data-region="{{ $code }}">
       <td><code>{{ $code }}</code></td>
       <td>{{ $r.name }}</td>
-      <td>{{ partial "gb.html" $dl }}</td>
-      <td>{{ partial "gb.html" $inst }}</td>
+      <td>{{ partial "gb.html" $size.download }}</td>
+      <td>{{ partial "gb.html" $size.installed }}</td>
       <td>{{ $r.coverage }}</td>
     </tr>
     {{- end -}}

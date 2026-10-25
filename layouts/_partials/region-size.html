@@ -1,0 +1,18 @@
+{{- /*
+  Sum of a region's ortho and overlay package sizes from data/regions.json.
+  Takes one region entry; returns a dict with "download" and "installed"
+  as floats in bytes. Missing parts count as zero.
+*/ -}}
+{{- $dl := 0.0 -}}
+{{- $inst := 0.0 -}}
+{{- with .size -}}
+  {{- with .ortho -}}
+    {{- $dl = add $dl (float (default 0 .download_bytes)) -}}
+    {{- $inst = add $inst (float (default 0 .installed_bytes)) -}}
+  {{- end -}}
+  {{- with .overlay -}}
+    {{- $dl = add $dl (float (default 0 .download_bytes)) -}}
+    {{- $inst = add $inst (float (default 0 .installed_bytes)) -}}
+  {{- end -}}
+{{- end -}}
+{{- return (dict "download" $dl "installed" $inst) -}}
