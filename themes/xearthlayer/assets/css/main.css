@@ -2019,7 +2019,7 @@ section {
   --ctp-text: #d4d4d9;
 
   /* Light neutrals (replace Latte; picked up by DOCS LIGHT MODE) */
-  --ctp-latte-base: #e2e2e5;
+  --ctp-latte-base: #eff1f5;   /* Catppuccin Latte base, shared with the news section */
   --ctp-latte-mantle: #d9d9dd;
   --ctp-latte-crust: #d0d0d4;
   --ctp-latte-surface0: #c4c4c9;
@@ -2096,7 +2096,7 @@ section {
 
   /* Docs header in light mode */
   .docs-page .site-header {
-    background: rgba(226, 226, 229, 0.9);
+    background: rgba(239, 241, 245, 0.9);
     border-bottom-color: var(--ctp-latte-surface0);
   }
 
