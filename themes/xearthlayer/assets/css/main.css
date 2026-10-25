@@ -1009,9 +1009,21 @@ section {
   gap: var(--space-md);
 }
 
+/* Two platform dropdowns side by side; they stack when the row is too narrow */
+.download-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
 .download-dropdown {
   position: relative;
   display: inline-block;
+}
+
+.download-btn__icon {
+  flex-shrink: 0;
 }
 
 .btn-large {

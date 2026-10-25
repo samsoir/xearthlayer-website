@@ -145,24 +145,41 @@ document.addEventListener('DOMContentLoaded', function() {
   // ==========================================
   // DOWNLOAD DROPDOWN
   // ==========================================
-  const downloadDropdown = document.querySelector('.download-dropdown');
-  const downloadBtn = document.getElementById('download-btn');
+  const downloadDropdowns = Array.from(document.querySelectorAll('.download-dropdown'));
 
-  if (downloadDropdown && downloadBtn) {
-    downloadBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      downloadDropdown.classList.toggle('open');
+  function setDropdownOpen(dropdown, open) {
+    dropdown.classList.toggle('open', open);
+    const btn = dropdown.querySelector('.download-btn');
+    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function closeAllDropdowns(except) {
+    downloadDropdowns.forEach(function(d) {
+      if (d !== except) setDropdownOpen(d, false);
+    });
+  }
+
+  if (downloadDropdowns.length) {
+    downloadDropdowns.forEach(function(dropdown) {
+      const btn = dropdown.querySelector('.download-btn');
+      if (!btn) return;
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const willOpen = !dropdown.classList.contains('open');
+        closeAllDropdowns(dropdown);
+        setDropdownOpen(dropdown, willOpen);
+      });
     });
 
     document.addEventListener('click', function(e) {
-      if (!downloadDropdown.contains(e.target)) {
-        downloadDropdown.classList.remove('open');
+      if (!downloadDropdowns.some(function(d) { return d.contains(e.target); })) {
+        closeAllDropdowns(null);
       }
     });
 
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
-        downloadDropdown.classList.remove('open');
+        closeAllDropdowns(null);
       }
     });
   }
