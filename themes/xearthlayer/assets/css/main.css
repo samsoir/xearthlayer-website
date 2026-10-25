@@ -255,8 +255,9 @@ tr:hover td {
   color: var(--color-primary);
 }
 
-.nav-logo svg {
-  width: 32px;
+.nav-logo img {
+  display: block;
+  width: auto;
   height: 32px;
 }
 
@@ -509,9 +510,11 @@ tr:hover td {
   margin: 0 auto var(--space-md);
 }
 
-.hero-video__logo svg {
-  width: 100%;
+.hero-video__logo img {
+  display: block;
+  width: auto;
   height: 100%;
+  margin: 0 auto;
 }
 
 .hero-video__card h1 {
@@ -1409,10 +1412,24 @@ section {
 .docs-layout {
   display: grid;
   grid-template-columns: 250px 1fr;
-  gap: var(--space-xl);
+  /* Horizontal space around the content column lives entirely in
+     .docs-content's padding, so it is equal on both sides */
+  gap: 0;
   padding-top: 80px;
   min-height: 100vh;
-  padding-right: var(--space-lg);
+  --docs-gutter: 7.5rem;
+}
+
+@media (max-width: 1100px) {
+  .docs-layout {
+    --docs-gutter: 4.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .docs-layout {
+    --docs-gutter: 24px;
+  }
 }
 
 .docs-sidebar {
@@ -1478,9 +1495,17 @@ section {
 }
 
 .docs-content {
-  padding: var(--space-lg);
+  padding: var(--space-lg) var(--docs-gutter);
   min-width: 0;
   overflow-x: auto;
+  /* Reading text: above the 16px site default, looser leading */
+  font-size: 19px;
+  line-height: 1.7;
+}
+
+/* Paragraph spacing follows the docs text size rather than the root rem */
+.docs-content p {
+  margin-bottom: 1em;
 }
 
 .docs-content h1 {
@@ -1491,7 +1516,10 @@ section {
 }
 
 .docs-content h2 {
-  margin-top: var(--space-xl);
+  /* A little more than --space-xl (4rem) to separate sections */
+  margin-top: 4.75rem;
+  /* Breathing room before the section's first paragraph */
+  margin-bottom: 1.5rem;
   color: #b4befe;
 }
 
@@ -1515,10 +1543,17 @@ section {
   border-radius: var(--radius-md);
 }
 
+/* The tile anatomy diagram is dense; at 75% its labels get too small */
+.docs-content img[src$="tile-anatomy.svg"] {
+  max-width: 100%;
+}
+
 /* Docs description */
 .docs-description {
   color: var(--ctp-subtext0);
-  font-size: 1.1rem;
+  /* Lede: clearly larger than the 19px body copy, same weight */
+  font-size: 1.45rem;
+  line-height: 1.45;
   margin-bottom: var(--space-lg);
 }
 
@@ -1585,10 +1620,6 @@ section {
 
 .docs-layout--with-toc .docs-toc-sidebar {
   border-right: 1px solid var(--ctp-surface0);
-}
-
-.docs-layout--with-toc .docs-content {
-  padding-left: var(--space-xl);
 }
 
 .docs-toc-sidebar {
@@ -1736,9 +1767,11 @@ section {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23f2cdcd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpath d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3'%3E%3C/path%3E%3Cpath d='M12 17h.01'%3E%3C/path%3E%3C/svg%3E");
 }
 
-/* Laptop icon for XEarthLayer on macOS */
+/* Apple logo for XEarthLayer on macOS (Simple Icons path). It is a filled
+   glyph, so the viewBox is padded to match the visual weight of the
+   stroked icons around it. */
 .docs-quicklinks li:nth-child(9)::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2389dceb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='12' x='3' y='4' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='2' x2='22' y1='20' y2='20'%3E%3C/line%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='-2 -2 28 28' fill='%2389dceb'%3E%3Cpath d='M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701'/%3E%3C/svg%3E");
 }
 
 /* Moon icon for Night Lighting */
@@ -1957,6 +1990,61 @@ section {
 .mb-3 { margin-bottom: var(--space-xl); }
 
 /* ==========================================
+   DOCS NEUTRAL PALETTE
+   Docs pages swap the blue-violet Catppuccin
+   neutrals (backgrounds, borders, body text)
+   for near-greys carrying only a faint trace of
+   the original hue. Accents stay Catppuccin.
+   Must sit before DOCS LIGHT MODE so the light
+   block's --ctp-* remapping wins there.
+   ========================================== */
+
+.docs-page {
+  /* Dark neutrals (replace Mocha) */
+  --ctp-crust: #121214;
+  --ctp-mantle: #18181b;
+  --ctp-base: #1d1d20;
+  --ctp-surface0: #2e2e33;
+  --ctp-surface1: #414147;
+  --ctp-surface2: #55555c;
+  --ctp-overlay0: #6a6a72;
+  --ctp-overlay1: #7e7e86;
+  --ctp-overlay2: #93939a;
+  --ctp-subtext0: #a5a5ac;
+  --ctp-subtext1: #babac0;
+  --ctp-text: #d4d4d9;
+
+  /* Light neutrals (replace Latte; picked up by DOCS LIGHT MODE) */
+  --ctp-latte-base: #e2e2e5;
+  --ctp-latte-mantle: #d9d9dd;
+  --ctp-latte-crust: #d0d0d4;
+  --ctp-latte-surface0: #c4c4c9;
+  --ctp-latte-surface1: #b5b5bb;
+  --ctp-latte-surface2: #a5a5ac;
+  --ctp-latte-overlay0: #8c8c93;
+  --ctp-latte-overlay1: #737379;
+  --ctp-latte-overlay2: #67676e;
+  --ctp-latte-subtext0: #5c5c63;
+  --ctp-latte-subtext1: #4b4b52;
+  --ctp-latte-text: #36363c;
+
+  /* :root resolved these against Mocha, so restate them here */
+  --color-bg: var(--ctp-base);
+  --color-bg-alt: var(--ctp-mantle);
+  --color-bg-dark: var(--ctp-crust);
+  --color-text: var(--ctp-text);
+  --color-text-muted: var(--ctp-subtext0);
+}
+
+.docs-page .site-header {
+  background: rgba(29, 29, 32, 0.9);
+}
+
+.docs-page .docs-toc-sidebar {
+  background: #1a1a1d;
+}
+
+/* ==========================================
    DOCS LIGHT MODE (Catppuccin Latte)
    Only applies to docs pages when system prefers light
    ========================================== */
@@ -1991,7 +2079,8 @@ section {
     --color-primary: var(--ctp-latte-mauve);
     --color-secondary: var(--ctp-latte-blue);
     --color-accent: var(--ctp-latte-lavender);
-    --color-link: var(--ctp-latte-sapphire);
+    /* Same blue as the info callout icon */
+    --color-link: var(--ctp-latte-blue);
     --color-link-hover: var(--ctp-latte-sky);
   }
 
@@ -2003,7 +2092,7 @@ section {
 
   /* Docs header in light mode */
   .docs-page .site-header {
-    background: rgba(239, 241, 245, 0.9);
+    background: rgba(226, 226, 229, 0.9);
     border-bottom-color: var(--ctp-latte-surface0);
   }
 
@@ -2037,28 +2126,25 @@ section {
     color: var(--ctp-latte-subtext0);
   }
 
+  /* Light-mode sidebar stays greyscale: dark grey instead of mauve */
   .docs-page .docs-nav a:hover,
   .docs-page .docs-nav a.active {
     background: var(--ctp-latte-surface0);
-    color: var(--ctp-latte-mauve);
+    color: var(--ctp-latte-text);
+  }
+
+  .docs-page .docs-home:hover,
+  .docs-page .docs-home.active {
+    color: var(--ctp-latte-text);
+    border-color: var(--ctp-latte-text);
   }
 
   /* TOC sidebar in light mode */
   .docs-page .docs-toc-sidebar {
-    background: #e0e3ea !important;
+    background: #d5d5d9 !important;
     border-right-color: var(--ctp-latte-surface0);
   }
 
-  /* Logo layers in light mode - darker at top, lighter at bottom */
-  .docs-page .nav-logo svg g:nth-child(1) polygon:nth-child(1) { fill: #bcc0cc; }
-  .docs-page .nav-logo svg g:nth-child(1) polygon:nth-child(2) { fill: #ccd0da; }
-  .docs-page .nav-logo svg g:nth-child(1) polygon:nth-child(3) { fill: #dce0e8; }
-  .docs-page .nav-logo svg g:nth-child(2) polygon:nth-child(1) { fill: #9ca0b0; }
-  .docs-page .nav-logo svg g:nth-child(2) polygon:nth-child(2) { fill: #acb0be; }
-  .docs-page .nav-logo svg g:nth-child(2) polygon:nth-child(3) { fill: #bcc0cc; }
-  .docs-page .nav-logo svg g:nth-child(3) polygon:nth-child(1) { fill: #40a02b; }
-  .docs-page .nav-logo svg g:nth-child(3) polygon:nth-child(2) { fill: #5c4030; }
-  .docs-page .nav-logo svg g:nth-child(3) polygon:nth-child(3) { fill: #4a3428; }
 
   .docs-page .docs-toc--sticky {
     background: transparent !important;
@@ -2090,16 +2176,17 @@ section {
     border-bottom-color: var(--ctp-latte-surface0);
   }
 
+  /* Headings step lighter from the h1 (--ctp-latte-text, #36363c) */
   .docs-page .docs-content h2 {
-    color: var(--ctp-latte-lavender);
+    color: #55555c;
   }
 
   .docs-page .docs-content h3 {
-    color: var(--ctp-latte-mauve);
+    color: #64646b;
   }
 
   .docs-page .docs-content h4 {
-    color: var(--ctp-latte-pink);
+    color: #6e6e75;
   }
 
   .docs-page .docs-description {
@@ -2244,6 +2331,13 @@ section {
 
   .docs-page .docs-quicklinks li:hover {
     border-color: var(--ctp-latte-lavender);
+  }
+
+  /* Icons are data-URI SVGs with Mocha pastel strokes baked in, which wash
+     out on light grey. Flatten them to black, then lift to a mid grey
+     (~#5c5c5c) close to --ctp-latte-subtext0. */
+  .docs-page .docs-quicklinks li::before {
+    filter: brightness(0) invert(36%);
   }
 
   .docs-page .docs-quicklinks li a {
@@ -2953,16 +3047,6 @@ section {
   .news-page .nav-links a:hover { color: var(--ctp-latte-mauve); }
   .news-page .nav-hamburger__line { background: var(--ctp-latte-text); }
 
-  /* Logo layers in light mode — mirror docs treatment */
-  .news-page .nav-logo svg g:nth-child(1) polygon:nth-child(1) { fill: #bcc0cc; }
-  .news-page .nav-logo svg g:nth-child(1) polygon:nth-child(2) { fill: #ccd0da; }
-  .news-page .nav-logo svg g:nth-child(1) polygon:nth-child(3) { fill: #dce0e8; }
-  .news-page .nav-logo svg g:nth-child(2) polygon:nth-child(1) { fill: #9ca0b0; }
-  .news-page .nav-logo svg g:nth-child(2) polygon:nth-child(2) { fill: #acb0be; }
-  .news-page .nav-logo svg g:nth-child(2) polygon:nth-child(3) { fill: #bcc0cc; }
-  .news-page .nav-logo svg g:nth-child(3) polygon:nth-child(1) { fill: #40a02b; }
-  .news-page .nav-logo svg g:nth-child(3) polygon:nth-child(2) { fill: #5c4030; }
-  .news-page .nav-logo svg g:nth-child(3) polygon:nth-child(3) { fill: #4a3428; }
 
   .news-page .news-post__body {
     color: var(--ctp-latte-subtext1);
@@ -3009,6 +3093,87 @@ section {
 /* Directory layout table rendered by the paths shortcode */
 .paths-table code {
   white-space: nowrap;
+}
+
+/* The tab panel already supplies the frame and padding */
+.paths-tabs .paths-table {
+  margin: 0;
+}
+
+/* scenery_packs.ini example from the scenery-packs shortcode. Matches the
+   Prism code blocks' frame, with lines coloured like the scenery order
+   diagram (static/images/docs/scenery-layers.svg). */
+.scenery-packs {
+  background: var(--ctp-crust) !important;
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 1rem 0;
+  margin: 0 0 var(--space-lg);
+}
+
+.scenery-packs code {
+  /* Stretch to the widest line so line bands span the scrolled width */
+  display: inline-block;
+  min-width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--ctp-text);
+}
+
+.sp-line {
+  display: block;
+  padding: 0 1rem;
+  white-space: pre;
+}
+
+.sp-line--xwp,
+.sp-line--ovl,
+.sp-line--ort {
+  border-left: 3px solid;
+  padding-left: calc(1rem - 3px);
+}
+
+.sp-line--xwp {
+  color: #a6e3a1;
+  background: rgba(166, 227, 161, 0.10);
+  border-left-color: #a6e3a1;
+}
+
+.sp-line--ovl {
+  color: #89dceb;
+  background: rgba(137, 180, 250, 0.12);
+  border-left-color: #89b4fa;
+}
+
+.sp-line--ort {
+  color: #f5c2e7;
+  background: rgba(203, 166, 247, 0.12);
+  border-left-color: #cba6f7;
+}
+
+.sp-line--disabled {
+  opacity: 0.55;
+}
+
+@media (prefers-color-scheme: light) {
+  .docs-page .sp-line--xwp {
+    color: #2f7a20;
+    background: rgba(64, 160, 43, 0.10);
+    border-left-color: #40a02b;
+  }
+
+  .docs-page .sp-line--ovl {
+    color: #1e66f5;
+    background: rgba(30, 102, 245, 0.08);
+    border-left-color: #1e66f5;
+  }
+
+  .docs-page .sp-line--ort {
+    color: #8839ef;
+    background: rgba(136, 57, 239, 0.08);
+    border-left-color: #8839ef;
+  }
 }
 
 /* Coverage map legend rendered by the regions-legend shortcode */

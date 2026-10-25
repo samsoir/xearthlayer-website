@@ -1,6 +1,6 @@
 ---
 title: "How It Works"
-description: "Understand the technology behind XEarthLayer's on-demand satellite imagery streaming."
+description: "What is inside a scenery tile, how XEarthLayer supplies each part of it, and how it stays ahead of your aircraft."
 weight: 10
 ---
 
@@ -14,40 +14,79 @@ Traditional orthophoto scenery for X-Plane requires downloading entire regions u
 - **Hours** of download and installation time before you can fly
 - **Large disk space** requirements for scenery you may never use
 
-## The Solution
+## Anatomy of a Scenery Tile
 
-XEarthLayer takes a just-in-time streaming approach:
+X-Plane loads ortho scenery one 1°×1° tile at a time, and each tile is a set of files that work together. XEarthLayer handles each kind differently. Most of a tile ships in the package you install and is read straight from disk. The satellite imagery and the night lighting, the parts that make ortho scenery so large, are made on your machine when X-Plane asks for them.
 
-1. **Virtual Filesystem**: Creates a FUSE file system that X-Plane uses to read scenery tiles
-2. **Just-In-Time Fetching**: When X-Plane requests tile resources, XEarthLayer fetches it from satellite providers in real-time and then returns the tile dependencies
-3. **Layered Caching**: Four cache layers work together. Completed tiles are held in a small **memory cache**, because X-Plane requests the same tile several times in quick succession. Those completed tiles are also written to the **DDS disk cache**, which is the retention layer — it is what makes a second visit to the same place load from disk instead of the network. Underneath both, the **raw chunk disk cache** keeps the source image chunks that tiles are built from, so an interrupted tile only has to re-fetch the chunks that actually failed. A fourth, the **night texture cache**, holds generated lit textures for cities at night; see below.
+![A scenery tile split into layers: the DSF, the terrain files, and the three resources they reference, with the ortho and night pipelines that make two of them](/images/docs/tile-anatomy.svg)
 
-You only download the scenery you actually fly over. No wasted bandwidth or disk space on areas you'll never visit.
+X-Plane sees all of it through one folder, `zzXEL_ortho`. It is a virtual filesystem that merges every installed package with any custom tile patches you have added, and patches take priority over package tiles. Only the three folders X-Plane needs are visible in it: `Earth nav data`, `terrain` and `textures`.
 
-## Architecture
+Overlays, the roads, forests and buildings drawn on top of the imagery, are not part of the tile shown here. They live in a separate `yzXEL_overlay` folder of ordinary files, and nothing in them is generated.
 
-![XEarthLayer Architecture](/images/docs/architecture-stack.svg)
+### DSF
 
-### Scenery Request Pipeline Stages
+The DSF describes the tile: its terrain mesh, which terrain type covers each part of it, and where everything sits. It ships in the package compressed with 7z, the same way Laminar compresses its own scenery, and X-Plane reads it compressed.
 
-1. **Request**: X-Plane requests a DSF from XEarthLayer
-2. **Image Resource**: X-Plane decodes DSF and creates requests for textures
-3. **Cache Check**: XEarthLayer first checks the memory cache for the completed tile, then the DDS disk cache. A hit in either is served straight back to X-Plane. Failing both, it checks the raw chunk disk cache for the source chunks the tile is built from
-4. **Download**: Any chunks still missing are downloaded from the imagery provider
-5. **Assembly**: Combine 256 small image chunks into a 4096×4096 image
-6. **Encode**: Compress the 4096×4096 image into DDS format (BC1/BC3) using one of three backends — Software (pure Rust), ISPC SIMD (default, 5–10× faster), or GPU compute shaders (fastest, requires a wgpu-compatible GPU)
-7. **Cache**: Store the completed DDS tile in the memory cache and the DDS disk cache, and keep the source chunks in the chunk disk cache
-8. **Serve**: Return the DDS texture to X-Plane
+XEarthLayer never opens a DSF. It serves the bytes exactly as they are on disk.
 
-Every generated tile carries a **complete mipmap chain** — 13 levels for a 4096×4096 texture, down to a single pixel. X-Plane clamps its texture sampling at the last level a file declares, so a truncated chain leaves distant terrain undersampled rather than filtered, which shows up as regular banding along terrain contours at shallow viewing angles.
+### Terrain
 
-### The Lit Texture Path
+Each `.ter` file describes one terrain type the DSF uses and names the textures to draw it with. Terrain files ship in the package and are read from disk. A tile can have thousands of them, so XEarthLayer looks each one up when X-Plane asks for it, rather than scanning them all at startup.
 
-X-Plane lights its terrain at night through the terrain type, and ortho scenery replaces those terrain types with its own, so cities on ortho scenery used to go dark wherever autogen lights did not reach. Packages built for 0.5.0 carry a night recipe for each tile: which Laminar urban and industrial terrain covers each part of it, and how bright the ground is at night according to NASA's Black Marble night lights.
+A terrain file references up to three resources:
 
-When X-Plane asks for a `_LIT.dds` texture, XEarthLayer turns the recipe into one, on your machine, from the lit art in your own X-Plane installation. That art cannot be redistributed, so no package carries it. Lit textures are served through the same mount as the ortho textures, on a separate path with its own small set of permits, so they never queue behind downloads. Each texel is computed from its ground position alone, which is why neighbouring textures and different zoom levels agree at their edges. Results are cached in memory and on disk, under 5% of the disk cache budget, with a fingerprint of everything they were built from, so an X-Plane update or a brightness change regenerates them without a cache clear. See [Night Lighting](../night-lighting/).
+- `BASE_TEX_NOWRAP` names the ortho texture. That file is not in the package. It is made when X-Plane asks for it.
+- `BORDER_TEX` names the water mask, in terrain files along coastlines.
+- `TEXTURE_LIT` names the night texture, in packages built for 0.5.0.
 
-### Prefetching
+These lines are written when the package is built. XEarthLayer never edits a terrain file.
+
+### Water Masks
+
+Water masks blend the imagery into X-Plane's own water along coastlines. They ship as PNG images and are read from disk, with no pipeline of their own.
+
+X-Plane first asks for a DDS version of each mask, and that name looks exactly like an ortho texture's. When the PNG exists, XEarthLayer turns the DDS request down, so X-Plane falls back to the real mask. Without that check, X-Plane would be handed satellite imagery where the sea should be.
+
+### Ortho Textures
+
+The satellite imagery is never shipped. When X-Plane asks for a texture, the ortho pipeline produces it:
+
+1. **Memory, then DDS disk cache.** A finished texture is served straight back. The memory cache is a short-lived staging area, because X-Plane reads the same texture several times in quick succession. The DDS disk cache is what keeps textures between flights, so a second visit to the same place loads from disk instead of the network.
+2. **Chunk disk cache.** Failing both, XEarthLayer looks for the source image chunks the texture is built from, so an interrupted texture only has to re-fetch the chunks that actually failed.
+3. **Download missing chunks.** Whatever is still missing comes from the imagery provider.
+4. **Assemble.** 256 chunks, a 16×16 grid, are combined into one 4096×4096 image.
+5. **Encode.** The image is compressed to DDS, BC1 by default, by one of three encoders: software (pure Rust), ISPC SIMD (the default, 5–10× faster), or GPU compute shaders (fastest, and needs a wgpu-compatible GPU).
+6. **Cache and serve.** The texture is stored in the memory and DDS disk caches and returned to X-Plane.
+
+Every texture carries a **complete mipmap chain**, 13 levels for a 4096×4096 texture, down to a single pixel. X-Plane clamps its texture sampling at the last level a file declares, so a truncated chain leaves distant terrain undersampled rather than filtered. That shows up as regular banding along terrain contours at shallow viewing angles.
+
+If a texture cannot be made, X-Plane gets a magenta placeholder rather than an error. A failed download shows up as a bright patch instead of stalling the simulator.
+
+| Cache | Default size |
+|---|---|
+| Memory | 512 MB |
+| DDS disk | 60% of the disk cache |
+| Chunk disk | 40% of the disk cache |
+
+The disk cache is 20 GB by default. See the [configuration reference](../configuration/) to change any of these.
+
+### Night Lighting
+
+X-Plane lights its terrain at night through the terrain type, and ortho scenery replaces those terrain types with its own. Cities on ortho scenery used to go dark wherever autogen lights did not reach. Packages built for 0.5.0 carry a small night recipe for each tile: which Laminar urban and industrial terrain covers each part of it, and how bright the ground is at night according to NASA's Black Marble night lights.
+
+When X-Plane asks for a `_LIT.dds` texture, the night pipeline produces it:
+
+1. **Memory, then night disk cache.** A finished lit texture is served straight back.
+2. **Read the tile's night recipe.** Recipes sit in the package but are hidden from X-Plane. Only XEarthLayer reads them.
+3. **Lit art from your X-Plane.** The light patterns come from the lit textures in your own X-Plane installation. That art cannot be redistributed, so no package carries it.
+4. **Light texels by ground position.** Each texel is computed from its ground position alone, which is why neighbouring textures and different zoom levels agree at their edges.
+5. **Encode with a distance fade.** The most detailed levels are left dark, so close to the aircraft the lit ground fades out and X-Plane's own 3D lights take over.
+6. **Cache and serve.** The texture is stored in the night caches and returned to X-Plane.
+
+The night pipeline runs on its own path, with its own small set of permits, so lit textures never queue behind ortho downloads. Its memory cache holds 256 MB, and its disk cache takes 5% of the disk cache budget before the rest is split. Each cached texture records a fingerprint of everything it was built from, so an X-Plane update or a brightness change regenerates it without a cache clear. Anything that goes wrong produces a dark texture, never an error. See [Night Lighting](../night-lighting/) for the settings.
+
+## Prefetching
 
 XEarthLayer reads your aircraft's position and heading directly from X-Plane's built-in Web API, with no configuration. The API is versioned, and XEarthLayer uses v3, which X-Plane added in **12.4.0**. On an earlier sim the connection is never established: scenery still streams when X-Plane asks for it, but nothing is prefetched.
 
@@ -60,52 +99,8 @@ The prefetch system uses two strategies, selected automatically based on flight 
 
 A brief **transition** phase bridges the two: when a takeoff is detected (ground speed exceeds 40 kt), prefetching is suppressed until the aircraft climbs 1,000 ft above the departure elevation (or a 90-second timeout elapses). This reserves system resources for X-Plane while it loads departure scenery. Once cruise is confirmed, prefetching ramps up gradually from 25% to full rate over 30 seconds to avoid flooding the pipeline.
 
-#### Region Tracking
-
-Prefetching works a 1°×1° DSF region at a time, and remembers what it has already done with each one so it does not repeat work. A region is in one of four states, or in none of them at all — a region XEarthLayer has never evaluated is simply eligible for prefetch:
-
-| State | Meaning |
-|-------|---------|
-| **InProgress** | Tiles for this region have been submitted and are being fetched |
-| **Prefetched** | Every tile the region needs is present |
-| **Deferred** | The region has scenery coverage but has not finished yet — retry shortly |
-| **NoCoverage** | The scenery index attributes no tiles to this region, so there is nothing to fetch |
-
-The distinction between the last two matters. "This region has no scenery" and "this region's tiles have not arrived yet" are opposite conclusions, and only the first is grounds for giving up.
-
-**NoCoverage** is therefore reachable only when the scenery index genuinely attributes zero tiles to a region. A region that stalls with tiles still outstanding is **Deferred** instead — a temporary state that expires on its own after 20 seconds, then 30, 40 and 60 on repeated stalls, so its tiles stay retryable. If X-Plane asks for a tile in a deferred region, the deferral is cleared immediately and prefetch picks it up again.
-
-"The index found nothing here" is also kept separate from "there was no index to consult". Only a genuine, answered lookup can retire a region, so running without installed ortho packages does not mark the world as uncovered.
-
-Tiles that ship inside an installed scenery package also count toward a region's coverage. Prefetch deliberately never downloads those, since they are already on your disk, but it does count them, so a region supplied entirely by a package is correctly confirmed as complete.
-
-#### Divergence Detection
-
-If X-Plane asks XEarthLayer to generate a tile on demand inside a region that prefetch has already marked complete, then the "complete" claim was wrong. XEarthLayer notices that contradiction and clears the region's state so it is prefetched again.
-
-Ordinary cache eviction can produce the same signal — a tile that was fetched hours ago may simply have aged out — so a region is demoted at most once every 120 seconds. That keeps a long flight from churning between demotion and re-prefetching.
-
-### Consolidated Mounting
-
-XEarthLayer uses a single FUSE mount point (`zzXEL_ortho`) for all of your installed scenery packages. Whether you have one region or a dozen, they are all merged into one virtual folder that X-Plane reads from. Custom tile patches (for airport add-ons, for example) are included in the same mount and automatically take priority over regional package tiles. This means your `scenery_packs.ini` only needs one ortho entry, and resource usage stays low regardless of how many regions you have installed.
-
-## Performance
-
-- **Scene load**: typically 1–2 minutes with a warm cache, longer on a cold one
-- **Cache hits**: under 10 ms
-- **Cold download**: on the order of a second per tile on a gigabit connection, depending on the provider
-
-### Serving a Tile
+## Serving a Tile
 
 On Linux, the kernel caps every FUSE read at 1 MiB regardless of how much the application asked for, so X-Plane reading one 11 MB texture arrives at XEarthLayer as a series of smaller ranged requests. On macOS, macFUSE serves generated textures through the kernel page cache instead, so XEarthLayer sees each texture's first read only.
 
 Each request is answered with only the range asked for. Files served straight from an installed package read just that range from disk. A generated tile is resolved once when X-Plane opens the file and sliced for each read after that, and the tile data is shared from the cache to the kernel rather than copied along the way. Across a four-minute scene load this avoids roughly 24 GiB of pointless copying, which is memory bandwidth and CPU time returned to the simulator.
-
-## Technical Details
-
-XEarthLayer is written in Rust for performance and memory safety. Key technologies:
-
-- **fuse3** on Linux and **macFUSE** on macOS: the virtual filesystem X-Plane reads from
-- **tokio**: Async runtime for concurrent I/O
-- **reqwest**: HTTP client with connection pooling
-- **image**: JPEG decoding and manipulation

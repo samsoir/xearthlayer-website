@@ -78,7 +78,7 @@ Controls how much memory and disk space XEarthLayer uses for caching tiles. Larg
 
 {{< code lang="ini" copy="true" >}}
 [cache]
-memory_size = 2 GB
+memory_size = 512 MB
 disk_size = 20 GB
 dds_disk_ratio = 0.6
 directory = /mnt/nvme/xearthlayer-cache

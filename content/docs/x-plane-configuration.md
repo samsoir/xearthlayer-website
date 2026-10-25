@@ -10,38 +10,56 @@ Ensure your X-Plane configuration is setup correctly for XEarthLayer to operate 
 
 Setting the scenery pack order in your `X-Plane 12/Custom Scenery/scenery_packs.ini` file is essential to ensure all of your scenery loads with the correct priority relative all others.
 
-### Scenery Pack Loading Order
+### Scenery Pack Order
 
-![Scenery pack loading order](/images/docs/scenery-layers.svg)
+![Scenery pack order](/images/docs/scenery-layers.svg)
 
-XEarthLayer uses a best effort attempt by using a specific naming convention to ensure scenery is ordered correctly in X-Plane's scenery pack file. XEarthLayer scenery files are all prefixed `zzXEL_<ortho>` or `yzXEL_<overlay>`.
+X-Plane gives priority to the packs listed first. Sort the file from small, local scenery at the top to progressively larger areas below: airports and landmarks, then X-Plane's global airports, then continent-wide overlays such as SimHeaven X-World Pro, then meshes and libraries. XEarthLayer's two entries come last.
 
-When X-Plane launches for the first time after any change to the Custom Scenery folder, it rebuilds the scenery_packs.ini file based on the scenery packs available. It is likely that this process will result in incorrect ordering of the scenery packs installed. 
+XEarthLayer installs exactly two entries, and their names are chosen to sort to the end of the file:
 
-Ensure you exit from X-Plane before starting a flight, then use the reference below to order your scenery correctly in the scenery pack file.
+- `yzXEL_overlay` holds the overlays from every installed package: roads, forests and buildings.
+- `zzXEL_ortho` holds the satellite imagery for every installed package, and must be the very last entry.
 
-XEarthLayer checks the order of `scenery_packs.ini` on every start. With `packages.xworld_pro` on, it requires its own entries to load after every X-World Pro layer, and when they do not it names the two lines, explains the fix, and offers to stop or continue. It never edits the file itself.
+When X-Plane starts after any change to the Custom Scenery folder, it adds the new packs to `scenery_packs.ini`, and the order it picks is often wrong. Start X-Plane once, quit before flying, then check the file against the example below and fix the order by hand.
 
-```ini
+{{< scenery-packs >}}
 I
 1000 Version
 SCENERY
 
-SCENERY_PACK Custom Scenery/{Airports, landmarks, other object based scenery}
-SCENERY_PACK Custom Scenery/{Airport Overlays}
-SCENERY_PACK Custom Scenery/{Airport Mesh}
-SCENERY_PACK Custom Scenery/{Sim Heaven X-World, other layers (SFP Global etc)}
-SCENERY_PACK Custom Scenery/X-Plane Airports
+SCENERY_PACK Custom Scenery/{Your airports, landmarks and regional scenery}/
+SCENERY_PACK Custom Scenery/X-Plane Airports - {Airport}/
+SCENERY_PACK Custom Scenery/X-Plane Landmarks - {City}/
 SCENERY_PACK *GLOBAL_AIRPORTS*
-SCENERY_PACK Custom Scenery/X-Plane Landmarks
 
-# XEarthLayer Start
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-01-bridges_O4XP-Mesh/
+SCENERY_PACK_DISABLED Custom Scenery/simHeaven_X-WORLD-Pro_Europe-01-bridges_XP12-Mesh/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-02-fountains/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-03-vfr/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-04-regions/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-05-details/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-06-extras1/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-07-extras2/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-08-footprints/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-09-scenery/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-10-forests/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-11-net1-aerials/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-12-net2-ships/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-13-net3-roads/
+
+SCENERY_PACK Custom Scenery/{Regional and airport meshes}/
+
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Library/
+SCENERY_PACK Custom Scenery/{Other libraries}/
+
 SCENERY_PACK Custom Scenery/yzXEL_overlay/
 SCENERY_PACK Custom Scenery/zzXEL_ortho/
-# XEarthLayer End
+{{< /scenery-packs >}}
 
-SCENERY_PACK Custom Scenery/{Libraries}
-```
+The X-World Pro lines follow the order in the X-World Pro manual, using Europe as the example. Other continents have up to thirteen layers, named the same way. In X-World Pro 1.1, only Europe's bridges layer comes in two versions: enable the `_O4XP-Mesh` one, because XEarthLayer packages use Ortho4XP meshes, and disable its `_XP12-Mesh` twin. Leave the X-World Pro lines out if you do not use it.
+
+XEarthLayer never edits `scenery_packs.ini`. With `packages.xworld_pro` on, it checks the order on every start, and when its own entries load before any X-World Pro layer it names the two lines and offers to stop or continue. See [SimHeaven X-World Pro](../x-world-pro/) for the details.
 
 The file lives in your X-Plane Custom Scenery folder, wherever you installed the simulator: for example `~/X-Plane 12/Custom Scenery/scenery_packs.ini`, or `/Applications/X-Plane 12/Custom Scenery/scenery_packs.ini` on a Mac that installed it there.
 

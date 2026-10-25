@@ -237,7 +237,7 @@ journalctl -k --since "1 hour ago" | grep -iE "oom|killed process|out of memory"
 journalctl --since "1 hour ago" | grep -iE "fuse|xearthlayer"
 ```
 
-If your system memory is less than 8GB, consider increasing swap space or upgrading RAM. See the [Performance](#performance) section for cache tuning recommendations.
+If your system memory is less than 16GB, the minimum, consider increasing swap space or upgrading RAM. See the [Performance](#performance) section for cache tuning recommendations.
 
 **macOS**: look in Console.app, or run `log show --last 1h --predicate 'eventMessage CONTAINS "xearthlayer"'`.
 
@@ -348,7 +348,7 @@ For detailed configuration guidance, see the [Configuration](/docs/configuration
 
 ```ini
 [cache]
-memory_size = 8GB
+memory_size = 4GB
 disk_size = 50GB
 ```
 

@@ -1,17 +1,48 @@
+{{- /*
+  Default XEarthLayer paths from data/paths.json, one tab per platform.
+  Emits the same markup as the theme's tabs shortcode so main.js wires up
+  switching. Optional positional arg limits output to one role key.
+*/ -}}
 {{- $role := .Get 0 -}}
-<table class="paths-table">
-  <thead>
-    <tr><th>What</th><th>Linux</th><th>macOS</th></tr>
-  </thead>
-  <tbody>
-    {{- range hugo.Data.paths.roles -}}
-    {{- if or (not $role) (eq .key $role) -}}
-    <tr>
-      <td>{{ .label }}</td>
-      <td><code>{{ .linux }}</code></td>
-      <td><code>{{ .macos }}</code></td>
-    </tr>
-    {{- end -}}
-    {{- end -}}
-  </tbody>
-</table>
+{{- $id := printf "paths-%d" .Ordinal -}}
+{{- $platforms := slice (dict "key" "linux" "label" "Linux") (dict "key" "macos" "label" "macOS") -}}
+<div class="tabs paths-tabs" data-tabs-id="{{ $id }}">
+  <div class="tabs__nav" role="tablist">
+    {{- range $i, $p := $platforms }}
+    <button
+      class="tabs__button{{ if eq $i 0 }} active{{ end }}"
+      role="tab"
+      aria-selected="{{ if eq $i 0 }}true{{ else }}false{{ end }}"
+      aria-controls="{{ $id }}-panel-{{ $i }}"
+      data-tab="{{ $i }}"
+    >{{ $p.label }}</button>
+    {{- end }}
+  </div>
+  <div class="tabs__content">
+    {{- range $i, $p := $platforms }}
+    <div
+      class="tabs__panel{{ if eq $i 0 }} active{{ end }}"
+      role="tabpanel"
+      id="{{ $id }}-panel-{{ $i }}"
+      data-tab="{{ $i }}"
+      {{ if ne $i 0 }}hidden{{ end }}
+    >
+      <table class="paths-table">
+        <thead>
+          <tr><th>What</th><th>Location</th></tr>
+        </thead>
+        <tbody>
+          {{- range hugo.Data.paths.roles -}}
+          {{- if or (not $role) (eq .key $role) }}
+          <tr>
+            <td>{{ .label }}</td>
+            <td><code>{{ index . $p.key }}</code></td>
+          </tr>
+          {{- end -}}
+          {{- end }}
+        </tbody>
+      </table>
+    </div>
+    {{- end }}
+  </div>
+</div>

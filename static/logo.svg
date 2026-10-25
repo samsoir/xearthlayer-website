@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="128" height="128" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- XEarthLayer Logo: Three stacked isometric tile layers -->
-  <!-- DSF (bottom layer) -->
-  <g transform="translate(2, 18)">
-    <polygon points="0,7 14,0 28,7 14,14" fill="#313244"/>
-    <polygon points="0,7 0,10 14,17 14,14" fill="#1e1e2e"/>
-    <polygon points="14,14 14,17 28,10 28,7" fill="#181825"/>
-  </g>
-  <!-- TER (middle layer) -->
-  <g transform="translate(2, 12)">
-    <polygon points="0,7 14,0 28,7 14,14" fill="#45475a"/>
-    <polygon points="0,7 0,10 14,17 14,14" fill="#313244"/>
-    <polygon points="14,14 14,17 28,10 28,7" fill="#313244"/>
-  </g>
-  <!-- Ortho (top layer) with earth tones -->
-  <g transform="translate(2, 6)">
-    <polygon points="0,7 14,0 28,7 14,14" fill="#a6e3a1"/>
-    <polygon points="0,7 0,10 14,17 14,14" fill="#7c5c3e"/>
-    <polygon points="14,14 14,17 28,10 28,7" fill="#5c4030"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 363.771 376.762" role="img" aria-label="XEarthLayer">
+  <defs>
+    <style>
+      .cls-1{fill:#252428}
+      .cls-2{fill:#262630}
+      .cls-3{fill:#181825}
+      .cls-4{fill:#486774}
+      .cls-5{fill:#324349}
+      .cls-6{fill:#2d393e}
+      .cls-7{fill:url(#linear-gradient-1)}
+      .cls-8{fill:#7c5c3e}
+      .cls-9{fill:#5b4728}
+    </style>
+    <linearGradient id="linear-gradient-1" x1="181.885" y1="181.885" x2="181.885" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#88d07e"/>
+      <stop offset="0.9922" stop-color="#99ff33"/>
+      <stop offset="0.9922" stop-color="#c5ff97"/>
+    </linearGradient>
+  </defs>
+  <title>XEarthLayer</title>
+  <g>
+    <g>
+      <g>
+        <path d="M0 246.844 L181.885 155.902 L363.771 246.844 L181.885 337.787 Z" class="cls-1"/>
+        <path d="M0 246.844 L0 285.82 L181.885 376.762 L181.885 337.787 Z" class="cls-2"/>
+        <path d="M181.885 337.787 L181.885 376.762 L363.771 285.82 L363.771 246.844 Z" class="cls-3"/>
+        <path d="M0 168.894 L181.885 77.951 L363.771 168.894 L181.885 259.836 Z" class="cls-4"/>
+        <path d="M0 168.894 L0 207.869 L181.885 298.812 L181.885 259.836 Z" class="cls-5"/>
+        <path d="M181.885 259.836 L181.885 298.812 L363.771 207.869 L363.771 168.894 Z" class="cls-6"/>
+        <path d="M0 90.943 L181.885 0 L363.771 90.943 L181.885 181.885 Z" class="cls-7"/>
+        <path d="M0 90.943 L0 129.918 L181.885 220.861 L181.885 181.885 Z" class="cls-8"/>
+        <path d="M181.885 181.885 L181.885 220.861 L363.771 129.918 L363.771 90.943 Z" class="cls-9"/>
+      </g>
+    </g>
   </g>
 </svg>

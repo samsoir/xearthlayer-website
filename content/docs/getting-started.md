@@ -10,7 +10,7 @@ This guide will help you install XEarthLayer and get flying with photoreal scene
 
 - **X-Plane 12.4.0 or later**. XEarthLayer reads your position from X-Plane's Web API, which reached the version it needs in 12.4.0
 - **Linux** (amd64) with FUSE 3 and **glibc 2.34 or newer** for the prebuilt packages (Ubuntu 22.04 LTS, Debian 12 and RHEL 9 onwards; check with `ldd --version`), **or macOS 12 or later on Apple Silicon** with [macFUSE](https://macfuse.io) 5.x
-- An **8 core CPU** and **8GB of system memory** (12 cores and 32GB recommended)
+- An **8 core CPU** and **16GB of system memory** (12 cores and 32GB recommended)
 - A **GPU with 8GB of video memory**. 16GB if you also run SimHeaven X-World Pro, and 24GB or more with everything on at 4K
 - **100GB of free disk space** for the tile cache and scenery packages. Night lighting takes 5% of the cache budget
 - A **100Mbit internet connection** for streaming imagery
@@ -18,7 +18,7 @@ This guide will help you install XEarthLayer and get flying with photoreal scene
 These are the minimum figures. See [System Requirements](/#requirements) for the recommended and ultimate tiers.
 
 {{< callout type="warning" >}}
-XEarthLayer and X-Plane compete for the same system memory, and X-Plane alone wants around 15GB while it loads a scene. On an 8GB machine you will need swap space and a small memory cache. If you are choosing hardware rather than working with what you have, treat 32GB as the real target.
+XEarthLayer and X-Plane compete for the same system memory, and X-Plane alone wants around 15GB while it loads a scene. On a 16GB machine you will need swap space and a small memory cache. If you are choosing hardware rather than working with what you have, treat 32GB as the real target.
 {{< /callout >}}
 
 {{< callout type="info" >}}
