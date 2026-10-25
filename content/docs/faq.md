@@ -13,11 +13,13 @@ XEarthLayer is a just-in-time satellite imagery streaming system for X-Plane 12.
 
 ### Which operating systems are supported?
 
-Currently, XEarthLayer supports Linux only. macOS support may be added in the future if there is enough community interest.
-
-Please add a feature request/up vote on Github if you would like to see XEarthLayer on macOS.
+Linux (amd64) and macOS 12 or later on Apple Silicon. Both ship as prebuilt binaries; see [Getting Started](/docs/getting-started/) and [XEarthLayer on macOS](/docs/macos/).
 
 Windows is well supported by alternative products and likely will never be supported.
+
+### Does XEarthLayer run on an Intel Mac?
+
+No. Intel Macs are not supported, and no build is published for them.
 
 ### Is XEarthLayer free?
 
@@ -33,7 +35,9 @@ No.
 
 ### Why won't XEarthLayer run?
 
-XEarthLayer should provide messages to the command line if there is an issue executing any part of the program. If you are not seeing any output, check your system journal for issues that would prevent XEarthLayer from starting.
+XEarthLayer prints to the terminal when something stops it starting. If you see nothing, check the system log.
+
+**Linux**
 
 ```bash
 # Check kernel log for OOM kills or process terminations
@@ -42,6 +46,14 @@ journalctl -k --since "1 hour ago" | grep -iE "oom|killed process|out of memory"
 # Check for xearthlayer specific entries
 journalctl --since "1 hour ago" | grep -i xearthlayer
 ```
+
+**macOS**
+
+```bash
+log show --last 1h --predicate 'process == "xearthlayer" OR eventMessage CONTAINS "macfuse"'
+```
+
+On a Mac the most common cause is macFUSE not yet approved: `mount_macfuse: the file system is not available (255)`. See [XEarthLayer on macOS](/docs/macos/#installing-macfuse).
 
 These are some factors that could prevent XEarthLayer from launching:
 
@@ -52,12 +64,14 @@ These are some factors that could prevent XEarthLayer from launching:
 Check XEarthLayer's own logs for messages that may not be printed to `stdout` or `stderr`.
 
 ```bash
-tail -f ~/.xearthlayer/xearthlayer.log
+tail -f ~/.local/state/xearthlayer/xearthlayer.log
 ```
+
+On macOS the log is `~/Library/Logs/XEarthLayer/xearthlayer.log`. Only `xearthlayer run` writes it; the package commands write `xearthlayer-packages.log` beside it.
 
 ### How do I update to the latest version?
 
-Download the latest package for your distribution from the [GitHub releases](https://github.com/samsoir/xearthlayer/releases) and install it over your existing installation.
+Linux: download the latest package for your distribution from the [GitHub releases](https://github.com/samsoir/xearthlayer/releases) and install it over your existing installation. macOS: `brew upgrade`, or download the new tarball. Then read the next two answers.
 
 ### My first flight after upgrading was slow. Is something wrong?
 
@@ -68,6 +82,22 @@ An upgrade can change the size of a generated tile, which makes every tile alrea
 {{< callout type="warning" >}}
 You do **not** need to run `xearthlayer cache clear`. It discards the raw image chunks as well, which are still perfectly good and are what save the re-download, so it makes the refill considerably larger for no benefit.
 {{< /callout >}}
+
+### Do I have to reinstall my scenery packages for 0.5.0?
+
+Yes. The world was rebuilt: seventeen regional packages, each about a third smaller on disk and each carrying night lighting, replace the eleven continental ones, which are not in the 0.5.0 library. Remove the old packages first, then install the new regions. Removing first matters because a short code such as `EU` is also the start of `EU-WEST` and `EU-EAST`, so while both generations are installed the old package cannot be addressed on its own.
+
+```bash
+xearthlayer packages remove --all
+xearthlayer packages remove --all --type overlay
+xearthlayer packages install --all
+```
+
+Or use the package manager: `xearthlayer packages`, `a` then `d` on the Local tab, then pick regions from the Library tab. See [Package Management](/docs/packages/#upgrading-from-the-continental-packages).
+
+### Where did `~/.xearthlayer` go?
+
+0.5.0 keeps its files where the system expects them: configuration in `~/.config/xearthlayer/`, the tile cache in `~/.cache/xearthlayer/`, packages and patches in `~/.local/share/xearthlayer/`, logs in `~/.local/state/xearthlayer/` (and the `Library` equivalents on macOS). The first start copied `config.ini` across and moved nothing else, so anything still in `~/.xearthlayer` is pinned there in your configuration and keeps working. `xearthlayer migrate status` shows where everything resolves, and [Where XEarthLayer Keeps Its Files](/docs/directory-layout/) says what is safe to delete.
 
 ### Why is terrain in the distance banded or striped?
 
@@ -152,14 +182,14 @@ timeout = 20           ; Default is 10
 
 #### Use one GPU for one job
 
-If your machine has a single physical GPU, encode on the CPU with `texture.compressor = ispc`. GPU encoding is intended for systems with two physical GPUs, where one drives X-Plane and the other is free to encode. Sharing a single card between rendering and encoding costs you frames and slows tile delivery at the same time.
+If your machine has one GPU, encode on the CPU with `texture.compressor = ispc`, which is also what XEarthLayer chooses when nothing is set. GPU encoding is for systems with two physical GPUs, one driving X-Plane and one free to encode. On a single card XEarthLayer honours `gpu` but warns at startup and on the dashboard, because rendering and encoding then compete for the same silicon.
 
 ```ini
 [texture]
 compressor = ispc
 ```
 
-Several adapters in `xearthlayer diagnostics` do not mean several GPUs. One card commonly appears more than once, once per graphics backend, as Vulkan and again as OpenGL. Count physical cards, not entries.
+Several adapters in `xearthlayer diagnostics` do not mean several GPUs. One card can appear more than once. Count physical cards, not entries.
 
 #### Reduce the load on your system
 
@@ -169,17 +199,15 @@ Placeholders that persist after the above are usually a configuration that excee
 [generation]
 threads = 4            ; Default is num_cpus / 2, try half of that
 
-[executor]
-max_concurrent_jobs = 6   ; Default is ceil(num_cpus * 0.75), try half
-request_timeout_secs = 10 ; Per-chunk HTTP timeout
-max_retries = 3           ; Retry attempts per failed chunk
+[prefetch]
+capacity_share = 0.2   ; Default 0.35 (range 0.05-0.50): how much CPU prefetch may use
 
 [texture]
 format = bc1           ; bc1 encodes faster and writes half as much as bc3
 ```
 
 {{< callout type="info" >}}
-Resource pool capacities are not configurable. The network, CPU and disk I/O pool sizes are derived from your host's logical core count. If you are working from older advice that told you to tune `executor.network_concurrent`, `executor.cpu_concurrent`, `executor.disk_io_concurrent` or `cache.disk_io_profile`, those keys no longer exist. Run `xearthlayer config upgrade` to strip them from your file.
+Prefetch cannot delay X-Plane's own tile requests in 0.5.0: it runs in its own lane and admits no new work while X-Plane is waiting on a tile. It still shares the CPU with the simulator, which is what `capacity_share` limits. Resource pool capacities are not configurable, and `executor.max_concurrent_jobs` no longer exists: it named no limit even when it was there. Run `xearthlayer config upgrade` to strip retired keys from your file.
 {{< /callout >}}
 
 #### Prewarm your departure airport
@@ -195,9 +223,11 @@ See the [CLI Reference](/docs/cli-reference/) for details, and `prewarm.grid_row
 ### Help! I am seeing white tiles on the scenery when I fly.
 ![White tiles on landscape](/images/bugs/white-tiles.jpg)
 
-This is usually caused by a FUSE mount issue, most commonly the result of the operating system killing the FUSE process due to out of memory (OOM) conditions.
+This is usually caused by a FUSE mount issue, most commonly the result of the operating system killing the FUSE process due to out of memory (OOM) conditions. On macOS the equivalent is a stale macFUSE mount after a crash, which XEarthLayer clears at startup; see [XEarthLayer on macOS](/docs/macos/#stale-mount-recovery).
 
 If the operating system did kill the process, it will have added a journal entry of this event.
+
+**Linux**
 
 ```bash
 # Check for OOM killer activity
@@ -209,8 +239,10 @@ journalctl --since "1 hour ago" | grep -iE "fuse|xearthlayer"
 
 If your system memory is less than 8GB, consider increasing swap space or upgrading RAM. See the [Performance](#performance) section for cache tuning recommendations.
 
+**macOS**: look in Console.app, or run `log show --last 1h --predicate 'eventMessage CONTAINS "xearthlayer"'`.
+
 {{< callout type="info" >}}
-XEarthLayer pins two glibc allocator parameters at startup and sizes its thread pool from the work that actually queues on it. Without those, a generated tile is large enough that the C library serves it from arenas it never returns to the operating system, and the process footprint climbs for the life of the session regardless of how small a memory cache you configure. If you set them yourself via `MALLOC_MMAP_THRESHOLD_`, `MALLOC_ARENA_MAX` or `GLIBC_TUNABLES`, your values are left alone. This applies to Linux only.
+XEarthLayer pins two glibc allocator parameters at startup and sizes its thread pool from the work that actually queues on it. Without those, a generated tile is large enough that the C library serves it from arenas it never returns to the operating system, and the process footprint climbs for the life of the session regardless of how small a memory cache you configure. If you set them yourself via `MALLOC_MMAP_THRESHOLD_`, `MALLOC_ARENA_MAX` or `GLIBC_TUNABLES`, your values are left alone. This applies on Linux; macOS does not use glibc.
 {{< /callout >}}
 
 Memory behaviour is visible without running the whole session at `--debug`. A `Memory sample` line is written to the log every 60 seconds at normal log level, reporting resident and committed memory, swap, thread count, per-tier cache sizes and in-flight writes, alongside a `Prefetch sample` line covering region states and promotion counts. Quote `anon_mb + swap_mb` when reporting a memory problem: that is the committed footprint the OOM killer scores. Do not quote `vm_mb`, which also counts address space that is mapped but never touched, and carries a sawtooth of roughly a gigabyte from thread stacks that is not memory at all.
@@ -219,9 +251,9 @@ Memory behaviour is visible without running the whole session at `--debug`. A `M
 
 If you have configured `texture.compressor = gpu` and are experiencing issues, here are some common causes and solutions.
 
-**Check that you have two physical GPUs first.** GPU encoding is intended for systems with two physical cards, where one drives X-Plane and the other is free to encode. On a machine with a single GPU, set `texture.compressor = ispc` instead. Sharing one card between rendering and encoding costs you frames and slows tile delivery at the same time. Several adapters listed by `xearthlayer diagnostics` do not mean several GPUs, because one card appears once per graphics backend.
+**Check that you have two physical GPUs first.** XEarthLayer picks `ispc` when nothing is set and never picks a GPU on its own. If you set `texture.compressor = gpu` on a machine whose only GPU is the one X-Plane renders with (every Apple Silicon Mac, any single-GPU PC), it honours the setting but logs a warning at startup and marks the Tile Processing Engine line on the dashboard's Status pane with an amber `!`. That warning is the answer: switch to `ispc`. Several adapters listed by `xearthlayer diagnostics` do not mean several GPUs.
 
-**GPU not detected:** Run `xearthlayer diagnostics` to list available GPU adapters on your system. If no GPUs are listed, ensure your GPU drivers are installed correctly and that Vulkan support is available. See the [CLI Reference](/docs/cli-reference/) for more on the `diagnostics` command.
+**GPU not detected:** Run `xearthlayer diagnostics` to list the adapters XEarthLayer can use. Only Vulkan, Metal and DX12 adapters are listed, because GPU encoding needs compute shaders. If none is listed, check your drivers and that Vulkan is available.
 
 **Wrong GPU selected (integrated vs discrete):** On systems with both an integrated GPU (iGPU) and a discrete GPU (dGPU), XEarthLayer may select the wrong adapter. Configure the `texture.gpu_device` setting to target the correct GPU:
 
@@ -239,6 +271,32 @@ When using the same GPU for both X-Plane rendering and XEarthLayer texture encod
 
 **Fallback options:** If GPU encoding is not available or causes issues, you can always fall back to CPU-based compression. Set `texture.compressor = ispc` for SIMD-accelerated encoding, or `texture.compressor = software` for a portable fallback that works on any system.
 
+### My cities are dark at night. Is night lighting working?
+
+Night lighting needs three things: a 0.5.0 scenery package (the old continental packages carry no night recipes), an X-Plane installation behind your Custom Scenery path (the lit art comes from your own X-Plane, it is never redistributed), and `night.enabled = true`, which is the default. The dashboard's Status pane says which of these is missing: it reads enabled, disabled, or warns that the X-Plane installation could not be found.
+
+Close to the aircraft the lit layer fades out on purpose and X-Plane's own 3D lights take over, so look at the middle distance. Rural ground is dark because it is dark: brightness comes from NASA's Black Marble night lights. See [Night Lighting](/docs/night-lighting/).
+
+### Why does night lighting need my X-Plane installation?
+
+The textures that make city ground glow are built from Laminar's own lit art, which cannot be redistributed. Packages carry a recipe for each tile, and XEarthLayer bakes the lit texture on your machine from your X-Plane install.
+
+### How do I turn night lighting off, and what does it cost?
+
+Set `night.enabled = false`. Lit textures are then served as a tiny dark texture and no disk cache is reserved. While it is on, night lighting takes 5% of `cache.disk_size`, about 150 ms of CPU per lit texture it generates, and 256 MB of memory. `night.brightness` (0.5 to 1.5) scales the light if the default is too much or too little for your monitor.
+
+### macOS asks me to approve a kernel extension. Is that right?
+
+Yes. macFUSE, which XEarthLayer uses to present scenery to X-Plane, is a kernel extension. On Apple Silicon you first allow third-party kernel extensions from Recovery, then approve macFUSE in System Settings → Privacy & Security, and restart. It is a one-time step, repeated only after some macOS upgrades. The full walk-through is in [XEarthLayer on macOS](/docs/macos/#installing-macfuse).
+
+### Finder shows `zzXEL_ortho` in Custom Scenery. Is that XEarthLayer?
+
+Yes. It is the one mount XEarthLayer presents every installed package through, named after its folder. Versions before 0.5.0 showed macFUSE's default name instead, `macFUSE Volume 0 (xearthlayer)`; the folder was always `zzXEL_ortho`.
+
+### On my Mac the mount works but reading it over SSH fails with "Operation not permitted"
+
+macOS grants Full Disk Access per responsible process, and over SSH that process is `sshd`, which has none by default. Run XEarthLayer from a Terminal on the Mac itself, or grant `sshd` Full Disk Access in System Settings → Privacy & Security → Full Disk Access (add `/usr/sbin/sshd` with Cmd+Shift+G) and reconnect. XEarthLayer never returns `EPERM` itself, so that error always comes from the OS.
+
 ### I found a bug! How do I report it?
 
 First, check the [XEarthLayer GitHub issues](https://github.com/samsoir/xearthlayer/issues) to see if the bug has already been reported. If so, add your details to the existing issue. If it's a new issue, follow the issue template to create a new report.
@@ -249,7 +307,7 @@ Issues submitted without the required logs and system diagnostics will be closed
 
 The issue template asks for the output of `xearthlayer diagnostics`. Measuring the cache directory is bounded at five seconds, so the command completes even on a multi-terabyte cache. If the size cannot be measured in that time it is reported as unmeasured and the rest of the report still prints, which is not itself a fault.
 
-Attaching the `Memory sample` and `Prefetch sample` lines from `~/.xearthlayer/xearthlayer.log` is also useful for anything performance or memory related — both are written at normal log level, so you do not need to reproduce the problem under `--debug`.
+Attaching the `Memory sample` and `Prefetch sample` lines from `~/.local/state/xearthlayer/xearthlayer.log` (`~/Library/Logs/XEarthLayer/` on macOS) is also useful for anything performance or memory related — both are written at normal log level, so you do not need to reproduce the problem under `--debug`.
 
 ### Where can I get help?
 
@@ -277,8 +335,8 @@ Performance optimization is a broad topic that extends well beyond XEarthLayer i
 - Ensure adequate disk cache to minimize network downloads during flight
 - Use `bc1` texture format instead of `bc3` if you don't need alpha transparency (smaller files, faster encoding)
 - Monitor the XEarthLayer log for timeout warnings that may indicate bottlenecks
-- If running on limited hardware, reduce `executor.max_concurrent_jobs` and `generation.threads`. Resource pool capacities are not configurable — `executor.network_concurrent`, `executor.cpu_concurrent`, `executor.disk_io_concurrent` and `cache.disk_io_profile` have been removed because they never reached the executor
-- Move DDS encoding off the CPU with `texture.compressor = gpu` and `texture.gpu_device = integrated` if you have an integrated GPU sitting idle while the discrete GPU runs X-Plane
+- If running on limited hardware, lower `generation.threads` and `prefetch.capacity_share`. Resource pool capacities are not configurable, and `executor.max_concurrent_jobs` was removed in 0.5.0 because it never limited anything
+- Move DDS encoding onto an idle integrated GPU with `texture.compressor = gpu` and `texture.gpu_device = integrated`, but only if a discrete GPU runs X-Plane. On one GPU, stay on `ispc`
 
 For detailed configuration guidance, see the [Configuration](/docs/configuration/) page.
 
@@ -294,7 +352,7 @@ memory_size = 8GB
 disk_size = 50GB
 ```
 
-**Low memory systems:** If system memory is limited (less than 32GB total), consider creating swap space to provide additional virtual memory for both XEarthLayer and X-Plane. This is particularly important if your GPU has less than 8GB of VRAM, as the system may need to accommodate texture overflow.
+**Low memory systems:** If system memory is limited (less than 32GB total), consider creating swap space to provide additional virtual memory for both XEarthLayer and X-Plane. A GPU with 8GB of video memory is the minimum; 16GB if you also run SimHeaven X-World Pro.
 
 {{< callout type="warning" >}}
 Heavy swap usage on SSDs or NVMe drives can significantly reduce drive lifespan due to the high volume of write operations. If possible, place swap on a separate, less critical drive or consider upgrading system RAM instead.
