@@ -1,12 +1,13 @@
 {
-  "version": "0.4.8",
-  "tag": "v0.4.8",
-  "release_date": "2026-09-01",
+  "version": "0.5.0",
+  "tag": "v0.5.0",
+  "release_date": "2026-11-01",
   "assets": {
-    "deb": "xearthlayer_0.4.8-1_amd64.deb",
-    "rpm": "xearthlayer-0.4.8-1.fc44.x86_64.rpm",
-    "tarball": "xearthlayer-v0.4.8-x86_64-linux.tar.gz",
+    "deb": "xearthlayer_0.5.0-1_amd64.deb",
+    "rpm": "xearthlayer-0.5.0-1.fc44.x86_64.rpm",
+    "tarball": "xearthlayer-v0.5.0-x86_64-linux.tar.gz",
+    "macos_tarball": "xearthlayer-v0.5.0-arm64-macos.tar.gz",
     "aur": "aur-package.zip"
   },
-  "download_base_url": "https://github.com/samsoir/xearthlayer/releases/download/v0.4.8"
+  "download_base_url": "https://github.com/samsoir/xearthlayer/releases/download/v0.5.0"
 }

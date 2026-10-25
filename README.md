@@ -111,7 +111,7 @@ Release v0.x.x        ──────────────►   sync-versi
 
 ### Files Updated
 
-- `content/docs/getting-started.md` - Download links with correct version numbers
+- `data/release.json` and `hugo.toml` - Version, date and asset filenames the download links are built from
 
 ### Data File
 
@@ -119,11 +119,14 @@ The main xearthlayer repo contains `version.json` with current release info:
 
 ```json
 {
-  "version": "0.2.9",
-  "tag": "v0.2.9",
+  "version": "0.5.0",
+  "tag": "v0.5.0",
   "assets": {
-    "deb": { "filename": "xearthlayer_0.2.9-1_amd64.deb" },
-    "rpm": { "filename": "xearthlayer-0.2.9-1.fc43.x86_64.rpm" }
+    "deb": { "filename": "xearthlayer_0.5.0-1_amd64.deb" },
+    "rpm": { "filename": "xearthlayer-0.5.0-1.fc44.x86_64.rpm" },
+    "tarball": { "filename": "xearthlayer-v0.5.0-x86_64-linux.tar.gz" },
+    "macos_tarball": { "filename": "xearthlayer-v0.5.0-arm64-macos.tar.gz" },
+    "aur": { "filename": "aur-package.zip" }
   }
 }
 ```
