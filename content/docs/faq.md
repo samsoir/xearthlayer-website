@@ -322,6 +322,54 @@ The XEarthLayer community is active and happy to help with questions, troublesho
 
 ## Performance
 
+### X-Plane runs at a lower frame rate with XEarthLayer than without it
+
+Two different things produce this symptom, and they need different fixes. Check the log first, because it tells them apart.
+
+#### Tiles are arriving late
+
+X-Plane asks XEarthLayer for a texture and waits for the answer. If tiles take longer to produce than the sim can absorb, frames are lost while the sim waits, and the frame rate sags for as long as the aircraft keeps moving into new scenery. The log records every tile that misses its deadline:
+
+```
+ERROR TIMEOUT: DDS generation exceeded 10s ... tile_row=1456 tile_col=2184 tile_zoom=12
+ WARN Task cancelled job_id=dds-1456_2184_ZL12 task_name=BuildAndCacheDds duration_ms=1918
+```
+
+Open `~/.local/state/xearthlayer/xearthlayer.log` (`~/Library/Logs/XEarthLayer/xearthlayer.log` on macOS) after a flight with low frame rates. If these lines appear in bursts, tile production is the bottleneck. The usual causes, in the order worth checking:
+
+- **Underpowered system.** Tile generation is CPU work that runs beside the simulator. A CPU that is already saturated by X-Plane has little left to build tiles with. Lower `generation.threads` and `prefetch.capacity_share` so the two stop fighting, then test again.
+- **Encoding on the GPU X-Plane renders with.** If `texture.compressor = gpu` on a single-GPU machine, every tile encoded steals time from the frame being drawn. Switch to `ispc`. XEarthLayer warns about this at startup and on the dashboard.
+- **Slow or lossy internet.** Each tile is assembled from 256 downloaded chunks, so a slow connection stretches every tile. Raise `executor.request_timeout_secs` on a lossy line, and prewarm your departure area before the flight.
+- **Thread count set wrong in either direction.** Too few threads and tiles queue up behind each other. More threads than cores and they fight the simulator for CPU. The default of half your core count is the right starting point. Do not exceed your core count.
+
+The [magenta tiles](#help-i-am-seeing-magenta-tiles-on-the-scenery-when-i-fly) answer walks through these settings in detail. Low frame rate and magenta placeholders are the same problem at different severities: a tile that is slow costs frames, a tile that is slower than `generation.timeout` becomes a placeholder.
+
+#### Video memory is exhausted
+
+If the log is quiet, the frame rate is being lost on the GPU. Photoreal scenery is texture heavy, and a GPU that runs out of video memory falls back to shuffling textures over the bus every frame, which is far slower. On a card with less than 8 GB of VRAM this is severe. Cut the amount of texture memory X-Plane needs, in this order:
+
+- **Texture quality** down one notch at a time until the frame rate recovers
+- **Number of world objects** reduced
+- **Shadow quality** reduced or off
+- **Visual effects and draw distance** reduced
+
+See the [requirements on the homepage](/#requirements) for VRAM guidance: 8 GB is the minimum, 16 GB with SimHeaven X-World Pro, 24 GB or more with everything on at 4K.
+
+### X-Plane stutters or freezes briefly in flight
+
+A stutter is one late tile: X-Plane blocks on the read until XEarthLayer answers, and the frame it was drawing waits with it. A freeze of a second or more is a tile that was very late, or several late at once. The causes and fixes are the same as for low frame rate above, and the log tells you which tiles were late.
+
+Two settings move the trade-off. A longer `generation.timeout` turns placeholders into pauses, because the sim waits longer for a real texture. A shorter one turns pauses into placeholders. If you raised the timeout to get rid of magenta tiles and now feel the sim hitch, you have found the point where your system cannot keep up, and the load reductions above are the fix rather than the deadline.
+
+### X-Plane crashes to desktop while XEarthLayer is running
+
+X-Plane expects scenery textures to arrive in time. When XEarthLayer cannot deliver them, the simulator tolerates a certain amount of waiting and placeholders before it gives up. Sustained slow delivery is therefore a crash risk, not only a visual one. Two situations account for nearly every crash report:
+
+- **XEarthLayer was stopped while X-Plane was running.** Terminating the process pulls the scenery out from under the simulator, and X-Plane crashes. Always leave XEarthLayer running until you have quit X-Plane. On macOS, see [stale mount recovery](/docs/macos/#stale-mount-recovery) if XEarthLayer itself crashed.
+- **Tiles were consistently late.** The fixes are the ones for low frame rate above. A slow internet connection or an underpowered system is the common thread: both stretch tile delivery past what the simulator will wait for. Lower the concurrency settings, keep encoding off the rendering GPU, and prewarm your departure airport so the first minutes of the flight are served from cache.
+
+Magenta tiles are the early warning. If you see them regularly and ignore them, the same conditions that produce them will eventually produce a crash. Check the log for `TIMEOUT` lines before reaching for X-Plane's own settings.
+
 ### How can I improve performance?
 
 Performance optimization is a broad topic that extends well beyond XEarthLayer itself. If you're experiencing performance issues in X-Plane, they are most likely related to X-Plane's rendering settings rather than XEarthLayer.
