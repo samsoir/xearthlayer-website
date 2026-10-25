@@ -61,7 +61,7 @@ XEarthLayer is built with:
 
 Night-time brightness comes from NASA's Black Marble annual night lights, from the VIIRS instrument on NOAA-20:
 
-> NASA VIIRS Land Science Investigator-led Processing System. (2025). *VIIRS/JPSS1 Lunar BRDF-Adjusted Nighttime Lights Yearly L3 Global 15 arc second Linear Lat Lon Grid* [Dataset]. NASA Level 1 and Atmosphere Archive and Distribution System Distributed Active Archive Center. https://doi.org/10.5067/VIIRS/VJ146A4.002 Date Accessed: 2026-10-16
+> NASA VIIRS Land Science Investigator-led Processing System. (2025). *VIIRS/JPSS1 Lunar BRDF-Adjusted Nighttime Lights Yearly L3 Global 15 arc second Linear Lat Lon Grid* [Dataset](https://doi.org/10.5067/VIIRS/VJ146A4.002). NASA Level 1 and Atmosphere Archive and Distribution System Distributed Active Archive Center. Date Accessed: 2026-10-16
 
 ### Imagery Providers
 
