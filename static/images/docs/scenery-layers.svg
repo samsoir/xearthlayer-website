@@ -23,8 +23,8 @@
     .ort-note { fill: #cba6f7; }
 
     @media (prefers-color-scheme: light) {
-      .bg { fill: #e2e2e5; }
-      .row { fill: #e2e2e5; stroke: #a5a5ac; }
+      .bg { fill: #eff1f5; }
+      .row { fill: #eff1f5; stroke: #a5a5ac; }
       .label { fill: #36363c; }
       .note { fill: #5c5c63; }
       .axis { stroke: #737379; }

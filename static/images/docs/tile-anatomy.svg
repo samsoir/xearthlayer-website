@@ -6,7 +6,7 @@
     svg { --bg: #1d1d20; --plane: #232327; --text: #d4d4d9; --muted: #a5a5ac; --faint: #6a6a72;
           --dsf: #b4befe; --ter: #fab387; --mask: #74c7ec; --tex: #a6e3a1; --night: #f9e2af; }
     @media (prefers-color-scheme: light) {
-      svg { --bg: #e2e2e5; --plane: #d9d9dd; --text: #36363c; --muted: #4b4b52; --faint: #737379;
+      svg { --bg: #eff1f5; --plane: #d9d9dd; --text: #36363c; --muted: #4b4b52; --faint: #737379;
             --dsf: #7287fd; --ter: #fe640b; --mask: #209fb5; --tex: #40a02b; --night: #df8e1d; }
     }
   </style>
