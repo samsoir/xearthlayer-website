@@ -50,7 +50,8 @@ Push to main          ──────────────►    sync-pack
 (library updated)     repository_dispatch     │
                                               ▼
                                          Fetch library
-                                         Write data/regions.json
+                                         Write data/regions.json and
+                                         static/data/regions.geojson
                                          Commit changes
                                               │
                                               ▼
@@ -75,6 +76,7 @@ Push to main          ──────────────►    sync-pack
 | `static/packages/xearthlayer_package_library.txt` | Regional scenery repo | Package index for CLI |
 | `static/images/coverage.png` | Regional scenery repo | Coverage map image |
 | `data/regions.json` | Regional scenery repo | Region names, coverage, colours, sizes and supersedes; Hugo renders the packages page and homepage storage figures from it |
+| `static/data/regions.geojson` | Derived from the scenery repo's `coverage.geojson` by `scripts/dissolve-regions.py` | One shape per region for the packages page map |
 
 ### Data Files
 
@@ -83,8 +85,9 @@ The sync workflow uses these files from the regional-scenery repo:
 - **`xearthlayer_package_library.txt`** - Package index with versions and download URLs
 - **`region_metadata.json`** - Region names, coverage descriptions, and colors
 - **`coverage.png`** - Coverage map image
+- **`coverage.geojson`** - One polygon per 1°×1° tile, tagged with its region. Not committed; the workflow dissolves it into `static/data/regions.geojson`
 
-The region table, legend and homepage storage figures are rendered by Hugo from `data/regions.json`, so a world rebuild is a data drop, not an edit.
+The region table, legend, map and homepage storage figures are rendered by Hugo from `data/regions.json` and `static/data/regions.geojson`, so a world rebuild is a data drop, not an edit.
 
 ## App Version Sync
 
