@@ -34,6 +34,10 @@ def ring_set(ring):
 
 
 class LoadTiles(unittest.TestCase):
+    def test_rejects_empty_collection(self):
+        with self.assertRaises(dr.DissolveError):
+            dr.load_tiles(collection())
+
     def test_groups_by_region_and_dedupes(self):
         tiles = dr.load_tiles(collection(tile_feature(0, 0), tile_feature(0, 0), tile_feature(5, 5, "S")))
         self.assertEqual(tiles, {"R": {(0, 0)}, "S": {(5, 5)}})

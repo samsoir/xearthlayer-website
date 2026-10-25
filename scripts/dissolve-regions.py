@@ -40,6 +40,8 @@ def load_tiles(collection):
         if not code:
             raise DissolveError(f"feature {i}: no region property")
         tiles[code].add((int(x), int(y)))
+    if not tiles:
+        raise DissolveError("no tile features in input")
     return dict(tiles)
 
 
@@ -84,6 +86,10 @@ def assemble_rings(edges):
     Where a vertex has two outgoing edges (two tiles touching only at a
     corner), take the left turn so the walk stays on the tile it is on and
     the two tiles become two rings.
+
+    Two empty cells touching only at a corner (a hole meeting the outside,
+    or two holes meeting) still produce one ring that visits that vertex
+    twice. Leaflet renders such rings correctly and the area check holds.
     """
     outgoing = defaultdict(list)
     for a, b in edges:
@@ -175,6 +181,8 @@ def dissolve(tiles):
     rings = [rotate_to_min(merge_collinear(r)) for r in assemble_rings(boundary_edges(tiles))]
     rings.sort(key=lambda r: (-signed_area(r), r[0]))
     area = sum(signed_area(r) for r in rings)
+    # Any closed decomposition of the boundary edges sums to the tile count,
+    # so this guards against regressions in the code above, not bad data.
     if area != len(tiles):
         raise DissolveError(f"dissolved area {area} does not match {len(tiles)} tiles")
     return [[r + [r[0]] for r in polygon] for polygon in build_polygons(rings)]
