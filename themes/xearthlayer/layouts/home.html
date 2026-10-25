@@ -318,22 +318,22 @@
           <tr>
             <td>Smallest region ({{ $stats.smallest.code }})</td>
             <td>{{ partial "gb.html" $stats.smallest.installed }}</td>
-            <td>{{ partial "gb.html" (add $stats.smallest.installed $stats.smallest.download) }}</td>
+            <td>{{ partial "gb.html" (add $stats.smallest.installed (mul 3 $stats.smallest.download)) }}</td>
           </tr>
           <tr>
             <td>Largest region ({{ $stats.largest.code }})</td>
             <td>{{ partial "gb.html" $stats.largest.installed }}</td>
-            <td>{{ partial "gb.html" (add $stats.largest.installed $stats.largest.download) }}</td>
+            <td>{{ partial "gb.html" (add $stats.largest.installed (mul 3 $stats.largest.download)) }}</td>
           </tr>
           <tr class="full-library">
             <td>All {{ $stats.count }} regions, the whole Earth</td>
             <td>{{ partial "gb.html" $stats.total }}</td>
-            <td>{{ partial "gb.html" (add $stats.total $stats.max_download) }}</td>
+            <td>{{ partial "gb.html" (add $stats.total (mul 3 $stats.max_download)) }}</td>
           </tr>
         </tbody>
       </table>
 
-      <p>Installing a region needs more free space than the installed result occupies, because one download sits on disk while it is extracted. Night lighting reserves a further 5% of the cache capacity above. Every region and its size is listed on the <a href="/docs/packages/">Package Management</a> page.</p>
+      <p>Before it downloads a region, XEarthLayer checks that the disk holding your packages has room for about three times the download, which covers extraction with margin, and that the temporary folder has room for the download itself. When both are on the same disk the two add up, which is the figure above. Night lighting reserves a further 5% of the cache capacity above. Every region and its size is listed on the <a href="/docs/packages/">Package Management</a> page.</p>
     </div>
   </div>
 </section>

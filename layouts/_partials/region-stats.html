@@ -22,4 +22,8 @@
   {{- $total = add $total .installed -}}
   {{- if gt .download $maxdl -}}{{- $maxdl = .download -}}{{- end -}}
 {{- end -}}
+{{- if $rows -}}
 {{- return (dict "count" (len $rows) "smallest" (index $asc 0) "largest" (index $desc 0) "total" $total "max_download" $maxdl) -}}
+{{- else -}}
+{{- return (dict "count" 0 "smallest" (dict "code" "" "name" "" "download" 0.0 "installed" 0.0) "largest" (dict "code" "" "name" "" "download" 0.0 "installed" 0.0) "total" 0.0 "max_download" 0.0) -}}
+{{- end -}}

@@ -35,7 +35,7 @@ When X-Plane asks for a lit texture, XEarthLayer bakes it on your machine from t
 | CPU | About 150 ms per lit texture, on its own small set of permits apart from the ortho pipeline |
 | Memory | 256 MB for generated textures |
 | Disk | 5% of `cache.disk_size`, reserved whenever night lighting is enabled, whether or not any installed package carries recipes |
-| Video memory | About 2.8 MB uploaded per lit texture, whatever the quality setting |
+| Video memory | About 2.8 MB uploaded per ZL16 lit texture, whatever the quality setting |
 
 Every disk entry carries a fingerprint of what it was built from: the generator version, your brightness setting, your Laminar art and the recipe files. An X-Plane update, a package update or a brightness change regenerates the affected textures on their own. You never need to clear the cache for it.
 

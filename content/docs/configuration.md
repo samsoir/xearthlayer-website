@@ -1,6 +1,6 @@
 ---
 title: "Configuration"
-description: "Configure imagery providers, caching behavior, and performance settings."
+description: "Configure imagery providers, caching behaviour, and performance settings."
 weight: 30
 ---
 
@@ -173,7 +173,7 @@ Controls the Adaptive Prefetch System, which pre-loads tiles ahead of the aircra
 
 **Flight phase transitions:**
 
-The prefetch system detects three flight phases and adjusts behavior automatically:
+The prefetch system detects three flight phases and adjusts behaviour automatically:
 
 - **Ground** (GS < 40 kt): Full-rate prefetch using ring strategy around current position
 - **Transition** (takeoff detected): Prefetch suppressed while X-Plane loads takeoff scenery
@@ -314,7 +314,7 @@ Controls where regional scenery packages are downloaded, installed and linked. M
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `library_url` | (official library, generation v2) | URL of the package library index. Override only if you are using a custom package source. A file still naming the pre-0.5.0 library is rewritten to v2 on first start |
+| `library_url` | `https://xearthlayer.app/packages/v2/xearthlayer_package_library.txt` | URL of the package library index. Override only if you are using a custom package source. A file still naming the pre-0.5.0 library is rewritten to v2 on first start |
 | `install_location` | `~/.local/share/xearthlayer/packages` | Where installed packages are stored (`~/Library/Application Support/XEarthLayer/packages` on macOS) |
 | `custom_scenery_path` | (auto-detect) | X-Plane Custom Scenery directory used for overlay symlinks. Falls back to `xplane.scenery_dir` |
 | `auto_install_overlays` | `false` | Automatically install the matching overlay package when installing an ortho package |

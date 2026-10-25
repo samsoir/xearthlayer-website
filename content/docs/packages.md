@@ -18,7 +18,7 @@ Sizes are the ortho and overlay packages together. "Download" is what crosses th
 
 {{< regions-table >}}
 
-Installing a package needs free space for the installed result plus one download's worth of temporary space, because the download sits on disk while it is extracted. The temporary folder defaults to `~/.cache/xearthlayer/tmp` (`~/Library/Caches/XEarthLayer/tmp` on macOS) and can be moved with `packages.temp_dir`.
+Before it downloads a package, XEarthLayer checks that the disk holding your packages has room for about three times the download, which covers extraction with margin, and that the temporary folder has room for the download itself. When both are on the same disk the two add up. The temporary folder defaults to `~/.cache/xearthlayer/tmp` (`~/Library/Caches/XEarthLayer/tmp` on macOS) and can be moved with `packages.temp_dir`.
 
 ## The Package Manager
 

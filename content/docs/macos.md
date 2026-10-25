@@ -59,13 +59,19 @@ The package publishing tool has its own casks, `xearthlayer/tap/xearthlayer-publ
 
 Each release carries an Apple Silicon tarball. The binary is signed with the project's Apple Developer ID and notarized by Apple, so macOS runs it as downloaded. The first run of a browser download needs a network connection, because a bare executable cannot carry its notarization ticket and Gatekeeper fetches it once.
 
-Safari unpacks the tarball into a folder of the same name. With any other browser, unpack it first:
+Safari unpacks the tarball into a folder of the same name. In that case go straight to that folder:
+
+{{< code lang="bash" copy="true" >}}
+cd ~/Downloads/$(basename {{< download-file "macos_tarball" >}} .tar.gz)
+{{< /code >}}
+
+With any other browser, unpack it first:
 
 {{< code lang="bash" copy="true" >}}
 cd ~/Downloads && tar xzf {{< download-file "macos_tarball" >}}
 {{< /code >}}
 
-Then move the binary onto your path:
+Then, in either case, move the binary onto your path:
 
 {{< code lang="bash" copy="true" >}}
 mkdir -p ~/.local/bin && mv xearthlayer ~/.local/bin/ && xearthlayer --version
