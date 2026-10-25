@@ -3257,6 +3257,7 @@ section {
 .regions-map,
 .regions-map.leaflet-container {
   position: relative;
+  isolation: isolate;
   height: 480px;
   margin: var(--space-md) 0 var(--space-lg);
   border: 1px solid var(--ctp-surface0);

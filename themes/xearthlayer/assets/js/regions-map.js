@@ -130,6 +130,7 @@
         linkTableAndLegend();
       })
       .catch(function (err) {
+        el.classList.remove('is-ready');
         console.warn('regions-map: regions not drawn', err);
         map.remove();
       });
