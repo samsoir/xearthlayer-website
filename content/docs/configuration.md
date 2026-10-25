@@ -115,7 +115,6 @@ format = bc1
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `format` | `bc1` | `bc1` (DXT1) produces smaller tiles at ~11.2 MB per 4096x4096 tile. `bc3` (DXT5) includes an alpha channel at ~22.4 MB per tile. Use `bc1` unless you specifically need transparency |
-| `mipmaps` | `5` | Mipmap levels written per tile (1–10). Leave at the default unless you are diagnosing banding |
 
 {{< callout type="info" >}}
 Generated tiles carry a complete mipmap chain, 13 levels for a 4096x4096 texture. X-Plane clamps its sampling at the last declared level, so a full chain is what keeps distant terrain from banding along contours at grazing angles. See [How It Works](../how-it-works/).

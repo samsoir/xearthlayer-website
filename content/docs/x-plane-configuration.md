@@ -8,7 +8,7 @@ Ensure your X-Plane configuration is setup correctly for XEarthLayer to operate 
 
 ## Scenery Ordering
 
-Setting the scenery pack order in your `X-Plane 12/Custom Scenery/scenery-packs.ini` file is essential to ensure all of your scenery loads with the correct priority relative all others.
+Setting the scenery pack order in your `X-Plane 12/Custom Scenery/scenery_packs.ini` file is essential to ensure all of your scenery loads with the correct priority relative all others.
 
 ### Scenery Pack Loading Order
 
@@ -16,7 +16,7 @@ Setting the scenery pack order in your `X-Plane 12/Custom Scenery/scenery-packs.
 
 XEarthLayer uses a best effort attempt by using a specific naming convention to ensure scenery is ordered correctly in X-Plane's scenery pack file. XEarthLayer scenery files are all prefixed `zzXEL_<ortho>` or `yzXEL_<overlay>`.
 
-When X-Plane launches for the first time after any change to the Custom Scenery folder, it rebuilds the scenery-packs.ini file based on the scenery packs available. It is likely that this process will result in incorrect ordering of the scenery packs installed. 
+When X-Plane launches for the first time after any change to the Custom Scenery folder, it rebuilds the scenery_packs.ini file based on the scenery packs available. It is likely that this process will result in incorrect ordering of the scenery packs installed. 
 
 Ensure you exit from X-Plane before starting a flight, then use the reference below to order your scenery correctly in the scenery pack file.
 
@@ -43,7 +43,7 @@ SCENERY_PACK Custom Scenery/zzXEL_ortho/
 SCENERY_PACK Custom Scenery/{Libraries}
 ```
 
-The file lives in your Custom Scenery folder: typically `~/X-Plane 12/Custom Scenery/scenery_packs.ini` on Linux and `~/X-Plane 12/Custom Scenery/scenery_packs.ini` or `/Applications/X-Plane 12/Custom Scenery/scenery_packs.ini` on macOS, depending on where you installed the simulator.
+The file lives in your X-Plane Custom Scenery folder, wherever you installed the simulator: for example `~/X-Plane 12/Custom Scenery/scenery_packs.ini`, or `/Applications/X-Plane 12/Custom Scenery/scenery_packs.ini` on a Mac that installed it there.
 
 ## X-Plane Graphics Settings
 

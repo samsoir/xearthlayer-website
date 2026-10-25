@@ -71,7 +71,7 @@ On macOS the log is `~/Library/Logs/XEarthLayer/xearthlayer.log`. Only `xearthla
 
 ### How do I update to the latest version?
 
-Linux: download the latest package for your distribution from the [GitHub releases](https://github.com/samsoir/xearthlayer/releases) and install it over your existing installation. macOS: `brew upgrade`, or download the new tarball. Then read the next two answers.
+Linux: download the latest package for your distribution from the [GitHub releases](https://github.com/samsoir/xearthlayer/releases) and install it over your existing installation. macOS: `brew upgrade`, or download the new tarball. Then read the next three answers.
 
 ### My first flight after upgrading was slow. Is something wrong?
 

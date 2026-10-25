@@ -50,7 +50,7 @@ Push to main          ──────────────►    sync-pack
 (library updated)     repository_dispatch     │
                                               ▼
                                          Fetch library
-                                         Update packages.md
+                                         Write data/regions.json
                                          Commit changes
                                               │
                                               ▼

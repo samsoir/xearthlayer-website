@@ -27,7 +27,6 @@ jobs:
       # region_metadata.json is written to data/regions.json, and Hugo
       # renders the region table, legend and sizes from it.
       - name: Fetch package libraries and metadata
-        id: fetch
         run: |
           BASE=https://raw.githubusercontent.com/samsoir/xearthlayer-regional-scenery/main
           LIBRARY=xearthlayer_package_library.txt
@@ -54,7 +53,6 @@ jobs:
             SOURCE="$BASE"
             PAGE_LIBRARY="static/packages/$LIBRARY"
           fi
-          echo "library=$PAGE_LIBRARY" >> "$GITHUB_OUTPUT"
 
           # Region metadata (names and coverage descriptions) and the coverage
           # map, both of the presented generation
