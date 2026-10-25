@@ -3,7 +3,7 @@
     <tr><th>New region</th><th>Replaces</th></tr>
   </thead>
   <tbody>
-    {{- range $code, $r := site.Data.regions.regions -}}
+    {{- range $code, $r := hugo.Data.regions.regions -}}
     {{- with $r.supersedes -}}
     <tr>
       <td><code>{{ $code }}</code></td>

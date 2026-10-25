@@ -3,7 +3,7 @@
     <tr><th>Code</th><th>Region</th><th>Download</th><th>Installed</th><th>Coverage</th></tr>
   </thead>
   <tbody>
-    {{- range $code, $r := site.Data.regions.regions -}}
+    {{- range $code, $r := hugo.Data.regions.regions -}}
     {{- $dl := 0.0 -}}
     {{- $inst := 0.0 -}}
     {{- with $r.size -}}

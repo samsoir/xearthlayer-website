@@ -4,7 +4,7 @@
     <tr><th>What</th><th>Linux</th><th>macOS</th></tr>
   </thead>
   <tbody>
-    {{- range site.Data.paths.roles -}}
+    {{- range hugo.Data.paths.roles -}}
     {{- if or (not $role) (eq .key $role) -}}
     <tr>
       <td>{{ .label }}</td>
