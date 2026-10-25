@@ -1014,7 +1014,7 @@ section {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
 .download-dropdown {
