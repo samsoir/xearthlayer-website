@@ -4,7 +4,7 @@
   {{ .Content }}
 
   {{/* Pages featured in quicklinks - exclude from auto-generated list */}}
-  {{ $featured := slice "how-it-works" "getting-started" "configuration" "cli-reference" "packages" "x-plane-configuration" "custom-ortho-tiles" "faq" "about" }}
+  {{ $featured := slice "how-it-works" "getting-started" "configuration" "cli-reference" "packages" "x-plane-configuration" "custom-ortho-tiles" "faq" "about" "macos" "night-lighting" "x-world-pro" "directory-layout" }}
 
   <div class="docs-index">
     {{ range (where site.RegularPages "Section" "docs").ByWeight }}
