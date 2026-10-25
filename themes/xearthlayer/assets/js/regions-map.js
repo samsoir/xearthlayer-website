@@ -68,7 +68,8 @@
 
     function tooltipHtml(code) {
       var r = regions[code];
-      var parts = ['<code>' + escapeHtml(code) + '</code>', escapeHtml(r.download)];
+      var parts = ['<code>' + escapeHtml(code) + '</code>'];
+      if (typeof r.download === 'string' && r.download) parts.push(escapeHtml(r.download));
       if (isStaging(code)) parts.push('Staging');
       return '<strong>' + escapeHtml(r.name) + '</strong><br>' + parts.join(' · ');
     }
@@ -104,12 +105,14 @@
         return res.json();
       })
       .then(function (geojson) {
+        var drawn = 0;
         L.geoJSON(geojson, {
           filter: function (f) { return !!(f.properties && regions[f.properties.code]); },
           style: function (f) { return baseStyle(f.properties.code); },
           onEachFeature: function (f, layer) {
             var code = f.properties.code;
             layersByCode[code] = layer;
+            drawn += 1;
             layer.bindTooltip(tooltipHtml(code), { sticky: true, className: 'regions-map__tooltip' });
             layer.on({
               mouseover: function () { layer.setStyle(hoverStyle(code)); layer.bringToFront(); },
@@ -118,11 +121,17 @@
             });
           }
         }).addTo(map);
+        if (drawn === 0) {
+          console.warn('regions-map: no regions matched the page data');
+          map.remove();
+          return;
+        }
         el.classList.add('is-ready');
         linkTableAndLegend();
       })
       .catch(function (err) {
         console.warn('regions-map: regions not drawn', err);
+        map.remove();
       });
   }
 
