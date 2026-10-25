@@ -20,6 +20,8 @@ When X-Plane launches for the first time after any change to the Custom Scenery 
 
 Ensure you exit from X-Plane before starting a flight, then use the reference below to order your scenery correctly in the scenery pack file.
 
+XEarthLayer checks the order of `scenery_packs.ini` on every start. With `packages.xworld_pro` on, it requires its own entries to load after every X-World Pro layer, and when they do not it names the two lines, explains the fix, and offers to stop or continue. It never edits the file itself.
+
 ```ini
 I
 1000 Version
@@ -41,6 +43,8 @@ SCENERY_PACK Custom Scenery/zzXEL_ortho/
 SCENERY_PACK Custom Scenery/{Libraries}
 ```
 
+The file lives in your Custom Scenery folder: typically `~/X-Plane 12/Custom Scenery/scenery_packs.ini` on Linux and `~/X-Plane 12/Custom Scenery/scenery_packs.ini` or `/Applications/X-Plane 12/Custom Scenery/scenery_packs.ini` on macOS, depending on where you installed the simulator.
+
 ## X-Plane Graphics Settings
 
 X-Plane 12 offers extensive graphics customization, but pushing every slider to maximum will overwhelm even high-end systems. Finding the right balance ensures smooth framerates while still enjoying XEarthLayer's satellite imagery.
@@ -48,8 +52,9 @@ X-Plane 12 offers extensive graphics customization, but pushing every slider to 
 ### Settings That Matter Most
 
 **Texture Resolution** — This directly correlates with your GPU's VRAM capacity. If you exceed your available VRAM, X-Plane will constantly swap textures in and out of memory, causing stutters. As a general guide:
-- 8GB VRAM: Medium to High
-- 12GB+ VRAM: High to Maximum
+- 8GB VRAM: Medium. This is the minimum for XEarthLayer
+- 16GB VRAM: High. Needed if you also run SimHeaven X-World Pro
+- 24GB+ VRAM: Maximum, with everything on at 4K
 
 **Antialiasing** — X-Plane offers FSAA and MSAA options. MSAA above 2× will noticeably impact performance even on high-end graphics cards. For most systems, 2× MSAA provides a good balance between image quality and framerate.
 
@@ -75,7 +80,7 @@ Start with X-Plane's default settings for your hardware tier, then adjust indivi
 </div>
 
 {{< callout type="info" >}}
-XEarthLayer automatically reads aircraft telemetry from X-Plane 12.4.0 or later via the Web API. No configuration is required — prefetching works out of the box. On earlier releases XEarthLayer falls back to inferring position from file access patterns; see [Getting Started](/docs/getting-started/) for why.
+XEarthLayer reads aircraft telemetry from X-Plane 12.4.0 or later via the Web API. No configuration is required. On earlier releases the connection is never made and prefetch does not run; scenery still streams on demand. See [Getting Started](/docs/getting-started/).
 {{< /callout >}}
 
 ## Recommended Add-ons
@@ -84,7 +89,7 @@ XEarthLayer provides satellite imagery, but pairing it with quality scenery add-
 
 ### SimHeaven X-World (Recommended)
 
-[SimHeaven X-World](https://simheaven.com/x-world-for-xp12/) is a comprehensive free scenery enhancement that uses OpenStreetMap data combined with Microsoft building footprints to place objects realistically across the globe. Unlike automated autogen, objects are positioned based on real-world data, resulting in a more authentic look and feel.
+[SimHeaven X-World](https://simheaven.com/x-world-for-xp12/) is a comprehensive scenery enhancement that uses OpenStreetMap data combined with Microsoft building footprints to place objects realistically across the globe. It comes in a free edition and a paid edition, **X-World Pro**, sold per continent or as a world bundle.
 
 **X-World includes:**
 - Accurately placed buildings based on real-world footprints
@@ -94,8 +99,10 @@ XEarthLayer provides satellite imagery, but pairing it with quality scenery add-
 
 If you're only going to install one scenery add-on alongside XEarthLayer, we recommend X-World for its comprehensive coverage and seamless integration with satellite imagery.
 
+**With X-World Pro**, set `packages.xworld_pro = true` (or say yes when `xearthlayer setup` finds it). XEarthLayer then leaves its own overlays out on the continents X-World Pro covers, keeps them everywhere else, and checks your scenery order and X-World Pro setup on every start. See [SimHeaven X-World Pro](/docs/x-world-pro/) for the install order and the ortho library.
+
 {{< callout type="warning" >}}
-X-World includes its own road network overlays. To avoid duplicate roads and potential performance issues, disable either XEarthLayer's overlay packages or X-World's road layer—do not use both simultaneously.
+Only X-World Pro is detected. With the free X-World, avoid duplicate roads by disabling XEarthLayer's overlays worldwide with `packages.disable_overlays = true`, or by disabling X-World's road layer. Do not run both.
 {{< /callout >}}
 
 ### GeoReality Global Forests V2

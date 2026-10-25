@@ -20,7 +20,7 @@ XEarthLayer takes a just-in-time streaming approach:
 
 1. **Virtual Filesystem**: Creates a FUSE file system that X-Plane uses to read scenery tiles
 2. **Just-In-Time Fetching**: When X-Plane requests tile resources, XEarthLayer fetches it from satellite providers in real-time and then returns the tile dependencies
-3. **Layered Caching**: Three cache layers work together. Completed tiles are held in a small **memory cache**, because X-Plane requests the same tile several times in quick succession. Those completed tiles are also written to the **DDS disk cache**, which is the retention layer — it is what makes a second visit to the same place load from disk instead of the network. Underneath both, the **raw chunk disk cache** keeps the source image chunks that tiles are built from, so an interrupted tile only has to re-fetch the chunks that actually failed.
+3. **Layered Caching**: Four cache layers work together. Completed tiles are held in a small **memory cache**, because X-Plane requests the same tile several times in quick succession. Those completed tiles are also written to the **DDS disk cache**, which is the retention layer — it is what makes a second visit to the same place load from disk instead of the network. Underneath both, the **raw chunk disk cache** keeps the source image chunks that tiles are built from, so an interrupted tile only has to re-fetch the chunks that actually failed. A fourth, the **night texture cache**, holds generated lit textures for cities at night; see below.
 
 You only download the scenery you actually fly over. No wasted bandwidth or disk space on areas you'll never visit.
 
@@ -41,9 +41,17 @@ You only download the scenery you actually fly over. No wasted bandwidth or disk
 
 Every generated tile carries a **complete mipmap chain** — 13 levels for a 4096×4096 texture, down to a single pixel. X-Plane clamps its texture sampling at the last level a file declares, so a truncated chain leaves distant terrain undersampled rather than filtered, which shows up as regular banding along terrain contours at shallow viewing angles.
 
+### The Lit Texture Path
+
+X-Plane lights its terrain at night through the terrain type, and ortho scenery replaces those terrain types with its own, so cities on ortho scenery used to go dark wherever autogen lights did not reach. Packages built for 0.5.0 carry a night recipe for each tile: which Laminar urban and industrial terrain covers each part of it, and how bright the ground is at night according to NASA's Black Marble night lights.
+
+When X-Plane asks for a `_LIT.dds` texture, XEarthLayer turns the recipe into one, on your machine, from the lit art in your own X-Plane installation. That art cannot be redistributed, so no package carries it. Lit textures are served through the same mount as the ortho textures, on a separate path with its own small set of permits, so they never queue behind downloads. Each texel is computed from its ground position alone, which is why neighbouring textures and different zoom levels agree at their edges. Results are cached in memory and on disk, under 5% of the disk cache budget, with a fingerprint of everything they were built from, so an X-Plane update or a brightness change regenerates them without a cache clear. See [Night Lighting](../night-lighting/).
+
 ### Prefetching
 
-XEarthLayer reads your aircraft's position and heading directly from X-Plane's built-in Web API — no configuration required. The API is versioned, and XEarthLayer uses v3, which X-Plane added in **12.4.0**; on that release or later, prefetching works out of the box. Against an earlier sim the connection is never established and XEarthLayer falls back to inferring position from the pattern of scenery files X-Plane reads, which is workable but much less able to stay ahead of the aircraft.
+XEarthLayer reads your aircraft's position and heading directly from X-Plane's built-in Web API, with no configuration. The API is versioned, and XEarthLayer uses v3, which X-Plane added in **12.4.0**. On an earlier sim the connection is never established: scenery still streams when X-Plane asks for it, but nothing is prefetched.
+
+Prefetch runs in its own lane, with its own download, CPU and disk pools, so a prefetch backlog at a boundary crossing can never sit in front of a tile X-Plane is waiting for. While X-Plane waits on a tile, the lane admits no new work and finishes what it had started. It also watches how much memory is pinned by textures X-Plane currently has open and defers a cycle when that is high, so the busiest moment of a flight does not set the memory floor for the rest of it. The lane's capacity is a fraction of what X-Plane's own requests get, `prefetch.capacity_share`, 35% by default.
 
 The prefetch system uses two strategies, selected automatically based on flight phase:
 
@@ -83,13 +91,13 @@ XEarthLayer uses a single FUSE mount point (`zzXEL_ortho`) for all of your insta
 
 ## Performance
 
-- **Scene load**: 1-2 minutes with cached data (down from 5+ minutes when downloading chunks)
-- **Cache hits**: <10ms response time
-- **Cold download**: 1-2 seconds per tile with 1 Gig+ internet connection
+- **Scene load**: typically 1–2 minutes with a warm cache, longer on a cold one
+- **Cache hits**: under 10 ms
+- **Cold download**: on the order of a second per tile on a gigabit connection, depending on the provider
 
 ### Serving a Tile
 
-The Linux kernel caps every FUSE read at 1 MiB regardless of how much the application asked for, so X-Plane reading one 11 MB texture arrives at XEarthLayer as a series of smaller ranged requests.
+On Linux, the kernel caps every FUSE read at 1 MiB regardless of how much the application asked for, so X-Plane reading one 11 MB texture arrives at XEarthLayer as a series of smaller ranged requests. On macOS, macFUSE serves generated textures through the kernel page cache instead, so XEarthLayer sees each texture's first read only.
 
 Each request is answered with only the range asked for. Files served straight from an installed package read just that range from disk. A generated tile is resolved once when X-Plane opens the file and sliced for each read after that, and the tile data is shared from the cache to the kernel rather than copied along the way. Across a four-minute scene load this avoids roughly 24 GiB of pointless copying, which is memory bandwidth and CPU time returned to the simulator.
 
@@ -97,7 +105,7 @@ Each request is answered with only the range asked for. Files served straight fr
 
 XEarthLayer is written in Rust for performance and memory safety. Key technologies:
 
-- **fuse3**: Async FUSE filesystem implementation
+- **fuse3** on Linux and **macFUSE** on macOS: the virtual filesystem X-Plane reads from
 - **tokio**: Async runtime for concurrent I/O
 - **reqwest**: HTTP client with connection pooling
 - **image**: JPEG decoding and manipulation
