@@ -8,11 +8,15 @@ Ortho scenery in X-Plane has always gone dark at night. X-Plane lights its terra
 
 ## What you see
 
+![DA42 over San Francisco Bay Peninsula flying towards San Jose](/images/night-lights/DA42_sf_bay.webp)
+
 Urban ground glows where your X-Plane art and NASA's night lights agree a city is, with soft edges between neighbourhoods and a street pattern that does not visibly repeat. Some neighbourhoods are lit with white LED street lighting rather than sodium orange, more often downtown and in industrial areas than in suburbs, at a share and colour temperature set by the region: warmer in Europe, Asia and Oceania, cooler in the Americas and Africa. Brightness follows the real world, so a large city is brighter than a small one and open country stays dark.
 
 Close to the aircraft the lit layer fades out in two steps and switches off, because that is where X-Plane's own 3D lights take over. The handover happens at the same distance at every texture quality setting.
 
 ## Where the light comes from
+
+![Over Ontario CA, looking west](/images/night-lights/ontario-ca.webp)
 
 Night lighting is built from three sources, and only one of them is in the package.
 
@@ -28,7 +32,7 @@ When X-Plane asks for a lit texture, XEarthLayer bakes it on your machine from t
 - **An X-Plane installation behind your Custom Scenery folder.** If XEarthLayer cannot find it, lit textures stay dark whatever the setting says, and the dashboard's Status pane says so.
 - **X-Plane's texture quality setting is read once at startup**, so a change to it takes effect on the next start.
 
-## What it costs
+## Performance Cost
 
 | Resource | Cost |
 |---|---|
@@ -60,4 +64,4 @@ The dashboard's Status pane has a line for night lighting. It reads enabled or d
 
 ## Attribution
 
-> NASA VIIRS Land Science Investigator-led Processing System. (2025). *VIIRS/JPSS1 Lunar BRDF-Adjusted Nighttime Lights Yearly L3 Global 15 arc second Linear Lat Lon Grid* [Dataset]. NASA Level 1 and Atmosphere Archive and Distribution System Distributed Active Archive Center. https://doi.org/10.5067/VIIRS/VJ146A4.002 Date Accessed: 2026-10-16
+> NASA VIIRS Land Science Investigator-led Processing System. (2025). *VIIRS/JPSS1 Lunar BRDF-Adjusted Nighttime Lights Yearly L3 Global 15 arc second Linear Lat Lon Grid* [Dataset](https://doi.org/10.5067/VIIRS/VJ146A4.002). NASA Level 1 and Atmosphere Archive and Distribution System Distributed Active Archive Center. Date Accessed: 2026-10-16

@@ -153,20 +153,3 @@ If using both X-World and Global Forests V2, disable X-World's forest layer to a
 - Regional variations giving airports a unique local character
 
 AEP is compatible with other airport enhancement libraries and works seamlessly with ortho scenery. This is a paid add-on available from [X-Plane.org](https://store.x-plane.org/Airport-Enhancement-Package_p_1250.html).
-
-### Short Final Design SFD Global
-
-[SFD Global](https://store.x-plane.org/SFD-Global_p_1060.html) from Short Final Design enhances autogen buildings and landmarks across the globe with regionally appropriate variations. The package uses PBR materials and baked ambient occlusion for realistic rendering.
-
-**SFD Global includes:**
-- Eight distinct regional autogen styles: Africa & Middle East, Australia, East Asia, Mediterranean, New England, Scandinavia, South America, and US West Coast
-- Unique 3D buildings with PBR materials for each region
-- Detailed world-famous landmarks
-- 4K photorealistic terrain and forest textures
-- Seamless compatibility with ortho scenery overlays
-
-This is a paid add-on available from [X-Plane.org](https://store.x-plane.org/SFD-Global_p_1060.html).
-
-{{< callout type="info" >}}
-When using SFD Global with XEarthLayer, we recommend installing only the Autogen and Landmarks components. The terrain textures and forests are unnecessary when using satellite imagery in combination with X-World or Global Forests.
-{{< /callout >}}
