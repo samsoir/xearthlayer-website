@@ -3031,7 +3031,8 @@ section {
     --color-primary: var(--ctp-latte-mauve);
     --color-secondary: var(--ctp-latte-blue);
     --color-accent: var(--ctp-latte-lavender);
-    --color-link: var(--ctp-latte-sapphire);
+    /* Links match docs light mode (same blue as the info callout icon) */
+    --color-link: var(--ctp-latte-blue);
     --color-link-hover: var(--ctp-latte-sky);
   }
 
@@ -3051,6 +3052,34 @@ section {
   .news-page .nav-links a:hover { color: var(--ctp-latte-mauve); }
   .news-page .nav-hamburger__line { background: var(--ctp-latte-text); }
 
+  /* Headings match docs light mode: h1 is the docs reading text (#36363c),
+     h2-h4 step lighter from it. Dark mode keeps the Catppuccin accents. */
+  .news-page .news-masthead__title,
+  .news-page .news-post__title {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: initial;
+    color: #36363c;
+  }
+
+  .news-page .news-list__title,
+  .news-page .news-post__body h2 {
+    color: #55555c;
+  }
+
+  .news-page .news-list__link:hover .news-list__title {
+    color: var(--ctp-latte-blue);
+  }
+
+  .news-page .news-post__body h3 {
+    color: #64646b;
+  }
+
+  .news-page .news-post__body h4,
+  .news-page .news-post__toc h4 {
+    color: #6e6e75;
+  }
 
   .news-page .news-post__body {
     color: var(--ctp-latte-subtext1);
