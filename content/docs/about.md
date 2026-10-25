@@ -34,6 +34,8 @@ Once work was under way, Sam discovered that AutoOrtho had been forked by the co
 
 Five months later, XEarthLayer was ready for its first public release.
 
+A year on, XEarthLayer runs natively on macOS as well, and lights the world's cities at night: two things the first release could not do.
+
 ## Acknowledgments
 
 XEarthLayer wouldn't be possible without the contributions and support of many people.
@@ -43,6 +45,7 @@ XEarthLayer wouldn't be possible without the contributions and support of many p
 - [kubilus1](https://github.com/kubilus1/autoortho) for creating AutoOrtho, the original inspiration for this project
 - [xjs36uk](https://forums.x-plane.org/profile/1171657-xjs36uk/) for their testing and feedback on low specification systems that significantly improved the performance of XEarthLayer on memory constrained systems
 - [mmaechtel](https://github.com/mmaechtel) for sustained testing, for finding and fixing bugs across many releases, and for consistently excellent feedback
+- [Duane Licudi](https://github.com/dlicudi) for leading the port of XEarthLayer's FUSE layer to macFUSE, which is what makes the native macOS release possible
 
 ### Technologies
 
@@ -52,6 +55,13 @@ XEarthLayer is built with:
 - [Claude Code](https://claude.com/product/claude-code) for AI assisted pair programming and documentation
 - [GitHub](https://github.com) for source code hosting, CI/CD and releases
 - [Ortho4XP, Shred86](https://github.com/shred86/Ortho4XP) fork used to create regional scenery packages
+- [OXO, the Ortho4 XEarthLayer Orchestrator](https://github.com/XEarthLayer/ortho4-xearthlayer-orchestrator), which builds the global scenery and the night lighting recipes each package carries
+
+### Night Lighting Data
+
+Night-time brightness comes from NASA's Black Marble annual night lights, from the VIIRS instrument on NOAA-20:
+
+> NASA VIIRS Land Science Investigator-led Processing System. (2025). *VIIRS/JPSS1 Lunar BRDF-Adjusted Nighttime Lights Yearly L3 Global 15 arc second Linear Lat Lon Grid* [Dataset]. NASA Level 1 and Atmosphere Archive and Distribution System Distributed Active Archive Center. https://doi.org/10.5067/VIIRS/VJ146A4.002 Date Accessed: 2026-10-16
 
 ### Imagery Providers
 
@@ -61,6 +71,7 @@ Satellite imagery is sourced from various providers including:
 - ArcGIS
 - Bing Maps
 - Google Maps
+- Google GO2
 - MapBox
 - USGS
 

@@ -23,7 +23,13 @@ Welcome to the XEarthLayer documentation. Here you'll find guides to help you ge
 
 - [FAQ / Troubleshooting](faq/)
 
-</div>
+- [XEarthLayer on macOS](macos/)
 
-## Additional Resources
+- [Night Lighting](night-lighting/)
+
+- [SimHeaven X-World Pro](x-world-pro/)
+
+- [Where XEarthLayer Keeps Its Files](directory-layout/)
+
+</div>
 
