@@ -1,0 +1,17 @@
+{{- $role := .Get 0 -}}
+<table class="paths-table">
+  <thead>
+    <tr><th>What</th><th>Linux</th><th>macOS</th></tr>
+  </thead>
+  <tbody>
+    {{- range site.Data.paths.roles -}}
+    {{- if or (not $role) (eq .key $role) -}}
+    <tr>
+      <td>{{ .label }}</td>
+      <td><code>{{ .linux }}</code></td>
+      <td><code>{{ .macos }}</code></td>
+    </tr>
+    {{- end -}}
+    {{- end -}}
+  </tbody>
+</table>

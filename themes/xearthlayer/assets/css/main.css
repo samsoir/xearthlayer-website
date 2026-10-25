@@ -2965,3 +2965,8 @@ section {
     border-top-color: var(--ctp-latte-surface0);
   }
 }
+
+/* Directory layout table rendered by the paths shortcode */
+.paths-table code {
+  white-space: nowrap;
+}
