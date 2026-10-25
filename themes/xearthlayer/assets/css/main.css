@@ -2351,6 +2351,15 @@ section {
   .docs-page .docs-quicklinks li:hover a {
     color: var(--ctp-latte-lavender);
   }
+
+  /* Regions map in light mode: the active row uses the Latte lavender */
+  .docs-page .regions-table tr.is-active td {
+    background: rgba(114, 135, 253, 0.12);
+  }
+
+  .docs-page .regions-map.leaflet-container .leaflet-tooltip {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
 }
 
 /* ==========================================
@@ -3238,4 +3247,107 @@ section {
 .regions-table td:nth-child(3),
 .regions-table td:nth-child(4) {
   white-space: nowrap;
+}
+
+/* Regions map on the packages page (regions-map shortcode + regions-map.js).
+   The coverage PNG inside the container shows until the regions have drawn.
+   Leaflet's stylesheet loads after this one and sets its own backgrounds on
+   .leaflet-container, .leaflet-bar a and .leaflet-control-attribution, so
+   the overrides below carry .regions-map.leaflet-container to outrank it. */
+.regions-map,
+.regions-map.leaflet-container {
+  position: relative;
+  height: 480px;
+  margin: var(--space-md) 0 var(--space-lg);
+  border: 1px solid var(--ctp-surface0);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--ctp-mantle);
+}
+
+/* Outranks .docs-content img, which caps images at 75% width */
+.regions-map .regions-map__fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.regions-map.is-ready .regions-map__fallback {
+  display: none;
+}
+
+/* Leaflet chrome on the site palette. The docs light block remaps the
+   --ctp-* variables, so these rules follow the scheme on their own. */
+.regions-map.leaflet-container .leaflet-tooltip {
+  background: var(--ctp-mantle);
+  color: var(--ctp-text);
+  border: 1px solid var(--ctp-surface1);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  padding: 0.4rem 0.6rem;
+}
+
+.regions-map.leaflet-container .leaflet-tooltip::before {
+  display: none;
+}
+
+.regions-map.leaflet-container .leaflet-tooltip code {
+  font-size: 0.8em;
+}
+
+.regions-map.leaflet-container .leaflet-bar {
+  border: 1px solid var(--ctp-surface1);
+  box-shadow: none;
+}
+
+.regions-map.leaflet-container .leaflet-bar a {
+  background: var(--ctp-mantle);
+  color: var(--ctp-text);
+  border-bottom-color: var(--ctp-surface1);
+}
+
+.regions-map.leaflet-container .leaflet-bar a:hover {
+  background: var(--ctp-surface0);
+  color: var(--ctp-text);
+}
+
+.regions-map.leaflet-container .leaflet-bar a.leaflet-disabled {
+  background: var(--ctp-mantle);
+  color: var(--ctp-overlay0);
+}
+
+.regions-map.leaflet-container .leaflet-control-attribution {
+  background: var(--ctp-mantle);
+  color: var(--ctp-subtext0);
+  font-size: 0.7rem;
+}
+
+.regions-map.leaflet-container .leaflet-control-attribution a {
+  color: var(--color-link);
+}
+
+/* Table rows and legend items become clickable once the map has drawn.
+   The legend follows the map inside the same parent, so a sibling selector
+   reaches it; the table does not, so the script adds a class to it. */
+.regions-table--linked tbody tr,
+.regions-map.is-ready ~ .regions-legend li[data-region] {
+  cursor: pointer;
+}
+
+.regions-table tr.is-active td {
+  background: rgba(180, 190, 254, 0.15);
+}
+
+@media (max-width: 600px) {
+  .regions-map,
+  .regions-map.leaflet-container {
+    height: 360px;
+  }
 }
