@@ -3082,7 +3082,8 @@ section {
   }
 
   .news-page .news-post__body {
-    color: var(--ctp-latte-subtext1);
+    /* One Latte stop darker than subtext1 for article copy */
+    color: var(--ctp-latte-text);
   }
 
   .news-page .news-post__body code {
