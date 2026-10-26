@@ -70,7 +70,7 @@
       var r = regions[code];
       var parts = ['<code>' + escapeHtml(code) + '</code>'];
       if (typeof r.download === 'string' && r.download) parts.push(escapeHtml(r.download));
-      if (isStaging(code)) parts.push('Staging');
+      if (isStaging(code)) parts.push('Coming soon');
       return '<strong>' + escapeHtml(r.name) + '</strong><br>' + parts.join(' · ');
     }
 
