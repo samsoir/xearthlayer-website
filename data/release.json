@@ -7,6 +7,7 @@
     "rpm": "xearthlayer-0.5.0-1.fc44.x86_64.rpm",
     "tarball": "xearthlayer-v0.5.0-x86_64-linux.tar.gz",
     "macos_tarball": "xearthlayer-v0.5.0-arm64-macos.tar.gz",
+    "macos_pkg": "xearthlayer-v0.5.0-arm64-macos.pkg",
     "aur": "aur-package.zip"
   },
   "download_base_url": "https://github.com/samsoir/xearthlayer/releases/download/v0.5.0"

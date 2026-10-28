@@ -227,12 +227,16 @@
           </button>
 
           <div class="download-menu" id="download-menu-macos">
+            <a href="{{ hugo.Data.release.download_base_url }}/{{ hugo.Data.release.assets.macos_pkg }}" class="download-option">
+              <span class="download-option-title">Installer Package</span>
+              <span class="download-option-file">.pkg installer</span>
+            </a>
             <a href="/docs/macos/#install-with-homebrew" class="download-option">
               <span class="download-option-title">Homebrew</span>
               <span class="download-option-file">brew install</span>
             </a>
             <a href="{{ hugo.Data.release.download_base_url }}/{{ hugo.Data.release.assets.macos_tarball }}" class="download-option">
-              <span class="download-option-title">Apple Silicon</span>
+              <span class="download-option-title">Static Binary</span>
               <span class="download-option-file">.tar.gz archive</span>
             </a>
           </div>

@@ -40,6 +40,7 @@ jobs:
           RPM_FILE=$(jq -r '.assets.rpm.filename' "$VERSION_FILE")
           TARBALL_FILE=$(jq -r '.assets.tarball.filename' "$VERSION_FILE")
           MACOS_FILE=$(jq -r '.assets.macos_tarball.filename' "$VERSION_FILE")
+          MACOS_PKG_FILE=$(jq -r '.assets.macos_pkg.filename' "$VERSION_FILE")
           AUR_FILE=$(jq -r '.assets.aur.filename' "$VERSION_FILE")
           BASE_URL=$(jq -r '.download_base_url' "$VERSION_FILE")
 
@@ -50,6 +51,7 @@ jobs:
           echo "RPM: $RPM_FILE"
           echo "Tarball: $TARBALL_FILE"
           echo "macOS tarball: $MACOS_FILE"
+          echo "macOS pkg: $MACOS_PKG_FILE"
           echo "AUR: $AUR_FILE"
           echo "Base URL: $BASE_URL"
 
@@ -68,6 +70,7 @@ jobs:
               "rpm": "${RPM_FILE}",
               "tarball": "${TARBALL_FILE}",
               "macos_tarball": "${MACOS_FILE}",
+              "macos_pkg": "${MACOS_PKG_FILE}",
               "aur": "${AUR_FILE}"
             },
             "download_base_url": "${BASE_URL}"

@@ -1,6 +1,6 @@
 ---
 title: "XEarthLayer on macOS"
-description: "Install macFUSE, approve it once, then install XEarthLayer with Homebrew or from the Apple Silicon tarball."
+description: "Install macFUSE, approve it once, then install XEarthLayer with the installer package, Homebrew or the Apple Silicon tarball."
 weight: 25
 ---
 
@@ -38,6 +38,30 @@ Or download the installer from [macfuse.io](https://macfuse.io) and run it.
 3. Restart when prompted.
 
 If the approval prompt never appears, re-run the macFUSE installer after the Recovery steps. XEarthLayer checks for macFUSE every time it starts and points back here if it is missing or unapproved.
+
+XEarthLayer installs one of three ways. The installer package needs no terminal, Homebrew keeps it up to date with `brew upgrade`, and the tarball puts the binary wherever you like. Choose one.
+
+## Install with the installer package
+
+Download [{{< download-file "macos_pkg" >}}]({{< download-url "macos_pkg" >}}), double-click it and follow the Installer. It puts `xearthlayer` in `/usr/local/bin`, which is already on your `PATH`, so it runs from any new terminal:
+
+{{< code lang="bash" copy="true" >}}
+xearthlayer --version
+{{< /code >}}
+
+The package is signed with the project's Developer ID Installer certificate and notarized by Apple, with the ticket stapled to it. It installs without a network connection, and the command runs straight away with no first-run check. The binary inside is the same signed file as the one in the tarball.
+
+To update, install the next release's package over it. To remove it:
+
+{{< code lang="bash" copy="true" >}}
+sudo rm /usr/local/bin/xearthlayer && sudo pkgutil --forget net.defreyssi.xearthlayer
+{{< /code >}}
+
+{{< callout type="info" >}}
+Moving to the installer package from Homebrew or the tarball? The old copy, in `/opt/homebrew/bin` or `~/.local/bin`, usually comes first on your `PATH` and keeps answering `xearthlayer`. `which -a xearthlayer` lists every copy. Remove the ones you no longer use: `brew uninstall --cask xearthlayer` for Homebrew, or delete `~/.local/bin/xearthlayer`.
+{{< /callout >}}
+
+The package publishing tool has its own installer, `xearthlayer-publish-v<version>-arm64-macos.pkg`, on the same release page.
 
 ## Install with Homebrew
 
