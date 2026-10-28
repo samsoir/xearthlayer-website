@@ -185,6 +185,51 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ==========================================
+  // DOWNLOAD PLATFORM SWITCH
+  // ==========================================
+  const platformSegments = Array.from(document.querySelectorAll('.platform-switch__segment'));
+  const platformPanels = document.querySelectorAll('.platform-panel');
+
+  function selectPlatform(platform, focus) {
+    platformSegments.forEach(function(segment) {
+      const selected = segment.dataset.platform === platform;
+      segment.classList.toggle('active', selected);
+      segment.setAttribute('aria-selected', selected ? 'true' : 'false');
+      segment.tabIndex = selected ? 0 : -1;
+      if (selected && focus) segment.focus();
+    });
+    platformPanels.forEach(function(panel) {
+      panel.hidden = panel.dataset.platform !== platform;
+    });
+    closeAllDropdowns(null);
+  }
+
+  // Apple devices get macOS; everything else gets Linux, the default in the markup
+  function detectPlatform() {
+    const platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+    return /mac|iphone|ipad|ipod/i.test(platform) || /Macintosh|iPhone|iPad|iPod/.test(navigator.userAgent)
+      ? 'macos'
+      : 'linux';
+  }
+
+  if (platformSegments.length) {
+    selectPlatform(detectPlatform(), false);
+
+    platformSegments.forEach(function(segment, index) {
+      segment.addEventListener('click', function() {
+        selectPlatform(segment.dataset.platform, false);
+      });
+      segment.addEventListener('keydown', function(e) {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        e.preventDefault();
+        const step = e.key === 'ArrowRight' ? 1 : -1;
+        const next = platformSegments[(index + step + platformSegments.length) % platformSegments.length];
+        selectPlatform(next.dataset.platform, true);
+      });
+    });
+  }
+
+  // ==========================================
   // MOBILE HAMBURGER MENU
   // ==========================================
   const hamburger = document.getElementById('nav-hamburger');

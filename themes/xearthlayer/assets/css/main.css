@@ -24,6 +24,7 @@
   --ctp-lavender: #b4befe;
   --ctp-pink: #f5c2e7;
   --ctp-rosewater: #f5e0dc;
+  --ctp-teal: #94e2d5;
 
   /* Semantic colors */
   --color-bg: var(--ctp-base);
@@ -59,6 +60,7 @@
   --ctp-latte-lavender: #7287fd;
   --ctp-latte-pink: #ea76cb;
   --ctp-latte-rosewater: #dc8a78;
+  --ctp-latte-teal: #179299;
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -1001,8 +1003,12 @@ section {
 }
 
 /* Download Section */
+/* The features end marker above already supplies the top spacing */
 .download {
   text-align: center;
+  padding-top: 0;
+  padding-bottom: var(--space-xl);
+  scroll-margin-top: 6rem;
 }
 
 .download-cta {
@@ -1012,12 +1018,124 @@ section {
   gap: var(--space-md);
 }
 
-/* Two platform dropdowns side by side; they stack when the row is too narrow */
-.download-ctas {
-  display: flex;
-  flex-wrap: wrap;
+/* Platform segmented control: one segment per platform, each with its own panel */
+.platform-switch {
+  display: inline-flex;
+  padding: var(--space-xs);
+  background: var(--ctp-mantle);
+  border: 1px solid var(--ctp-surface0);
+  border-radius: 999px;
+  margin-bottom: var(--space-lg);
+}
+
+.platform-switch__segment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 128px;
   justify-content: center;
-  gap: var(--space-lg);
+  padding: var(--space-sm) var(--space-lg);
+  background: none;
+  border: none;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.platform-switch__segment:hover {
+  color: var(--color-text);
+}
+
+.platform-switch__segment.active {
+  background: var(--ctp-surface0);
+  color: var(--color-text);
+}
+
+.platform-switch__segment:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.platform-switch__icon {
+  flex-shrink: 0;
+}
+
+.platform-switch__badge {
+  margin-left: calc(-1 * var(--space-xs));
+  color: var(--ctp-teal);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.platform-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  max-width: 460px;
+}
+
+.platform-panel[hidden] {
+  display: none;
+}
+
+.platform-steps {
+  list-style: none;
+  counter-reset: platform-step;
+  width: 100%;
+  margin: var(--space-lg) 0 0;
+  padding: 0;
+  text-align: left;
+}
+
+.platform-steps li {
+  counter-increment: platform-step;
+  position: relative;
+  padding: var(--space-xs) 0 var(--space-xs) 2.25rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.platform-steps li::before {
+  content: counter(platform-step);
+  position: absolute;
+  left: 0;
+  top: var(--space-xs);
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--ctp-surface0);
+  color: var(--color-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  text-align: center;
+}
+
+.platform-steps code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--color-text);
+}
+
+.platform-steps a,
+.platform-guide {
+  color: var(--color-link);
+}
+
+.platform-steps a:hover,
+.platform-guide:hover {
+  color: var(--color-link-hover);
+}
+
+.platform-guide {
+  font-size: 0.9375rem;
+  font-weight: 500;
 }
 
 .download-dropdown {
@@ -1037,6 +1155,21 @@ section {
 .download-btn {
   min-width: 280px;
   justify-content: center;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .download-btn {
+    min-width: 0;
+    width: 100%;
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+
+  .download-dropdown {
+    width: 100%;
+  }
 }
 
 .download-btn .dropdown-arrow {
@@ -2074,6 +2207,7 @@ section {
     --ctp-lavender: var(--ctp-latte-lavender);
     --ctp-pink: var(--ctp-latte-pink);
     --ctp-rosewater: var(--ctp-latte-rosewater);
+    --ctp-teal: var(--ctp-latte-teal);
 
     --color-bg: var(--ctp-latte-base);
     --color-bg-alt: var(--ctp-latte-mantle);
@@ -3031,6 +3165,7 @@ section {
     --ctp-lavender: var(--ctp-latte-lavender);
     --ctp-pink: var(--ctp-latte-pink);
     --ctp-rosewater: var(--ctp-latte-rosewater);
+    --ctp-teal: var(--ctp-latte-teal);
 
     --color-bg: var(--ctp-latte-base);
     --color-bg-alt: var(--ctp-latte-mantle);
