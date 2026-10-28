@@ -551,9 +551,9 @@ tr:hover td {
 }
 
 .hero-video__platform {
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--color-text-muted);
-  margin: var(--space-xs) 0 0 0;
+  margin: var(--space-sm) 0 0 0;
   opacity: 0.8;
 }
 
