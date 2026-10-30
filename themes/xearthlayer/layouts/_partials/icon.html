@@ -1,0 +1,21 @@
+{{- /*
+  Inline an icon from assets/icons/<name>.svg so it inherits currentColor.
+
+  Usage: {{ partial "icon.html" (dict "name" "download" "size" 20 "class" "btn__icon") }}
+    name  (required) file stem under assets/icons/
+    size  (optional) width and height in px; omit when CSS sizes the icon
+    class (optional) class attribute for the <svg> element
+*/ -}}
+{{- $name := .name -}}
+{{- $icon := resources.Get (printf "icons/%s.svg" $name) -}}
+{{- if not $icon -}}
+  {{- errorf "icon partial: no icon named %q in assets/icons/" $name -}}
+{{- end -}}
+{{- $attrs := slice `aria-hidden="true"` -}}
+{{- with .size -}}
+  {{- $attrs = $attrs | append (printf `width="%v" height="%v"` . .) -}}
+{{- end -}}
+{{- with .class -}}
+  {{- $attrs = $attrs | append (printf `class="%s"` .) -}}
+{{- end -}}
+{{- $icon.Content | replaceRE `^<svg ` (printf `<svg %s ` (delimit $attrs " ")) | safeHTML -}}
