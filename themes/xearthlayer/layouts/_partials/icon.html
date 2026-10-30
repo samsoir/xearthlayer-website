@@ -1,5 +1,8 @@
 {{- /*
-  Inline an icon from assets/icons/<name>.svg so it inherits currentColor.
+  Reference an icon from the shared sprite (see icon-sprite.html). The icon
+  files live in assets/icons/<name>.svg; the page only carries a <use>
+  element, so the drawing is fetched once and cached. Paint still inherits
+  currentColor from the surrounding text.
 
   Usage: {{ partial "icon.html" (dict "name" "download" "size" 20 "class" "btn__icon") }}
     name  (required) file stem under assets/icons/
@@ -7,15 +10,11 @@
     class (optional) class attribute for the <svg> element
 */ -}}
 {{- $name := .name -}}
-{{- $icon := resources.Get (printf "icons/%s.svg" $name) -}}
-{{- if not $icon -}}
+{{- if not (resources.Get (printf "icons/%s.svg" $name)) -}}
   {{- errorf "icon partial: no icon named %q in assets/icons/" $name -}}
 {{- end -}}
-{{- $attrs := slice `aria-hidden="true"` -}}
-{{- with .size -}}
-  {{- $attrs = $attrs | append (printf `width="%v" height="%v"` . .) -}}
-{{- end -}}
-{{- with .class -}}
-  {{- $attrs = $attrs | append (printf `class="%s"` .) -}}
-{{- end -}}
-{{- $icon.Content | replaceRE `^<svg ` (printf `<svg %s ` (delimit $attrs " ")) | safeHTML -}}
+{{- $sprite := partialCached "icon-sprite.html" . -}}
+<svg aria-hidden="true"
+  {{- with .size }} width="{{ . }}" height="{{ . }}"{{ end -}}
+  {{- with .class }} class="{{ . }}"{{ end -}}
+><use href="{{ $sprite.RelPermalink }}#{{ $name }}"/></svg>
