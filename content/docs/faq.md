@@ -14,9 +14,9 @@ XEarthLayer is a just-in-time satellite imagery streaming system for X-Plane 12.
 
 ### Which operating systems are supported?
 
-Linux (amd64) and macOS 12 or later on Apple Silicon. Both ship as prebuilt binaries; see [Getting Started](/docs/getting-started/) and [XEarthLayer on macOS](/docs/macos/).
+Linux (amd64) and macOS 25 or later on Apple Silicon. Both ship as prebuilt binaries; see [Getting Started](/docs/getting-started/) and [XEarthLayer on macOS](/docs/macos/).
 
-Windows is well supported by alternative products and likely will never be supported.
+Windows support is currently under consideration.
 
 ### Does XEarthLayer run on an Intel Mac?
 
