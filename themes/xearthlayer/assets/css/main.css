@@ -750,14 +750,14 @@ html:not(.js-enabled) .scrolly__step {
   pointer-events: auto;
 }
 
-/* First-pass card. Not interactive: no hover state, no transition.
-   Styling pass to follow. */
+/* Story card: flat, opaque, off-black. Unlike the hero card there is no
+   glass, blur, shadow or lift; it reads as a solid panel over the picture.
+   Not interactive: no hover state, no transition. */
 .feature-card {
-  background: var(--color-bg);
+  background: var(--ctp-crust);
   border: 1px solid var(--ctp-surface0);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* Debug badge, only rendered with ?scrolly-debug */
