@@ -60,7 +60,7 @@
   <!-- Scroll-driven flight: a sticky stage and the steps that give it scroll length -->
   <div class="scrolly" id="scrolly" data-scrolly="{{ $scrolly | jsonify }}">
     <div class="scrolly__stage">
-      <img class="scrolly__poster" src="{{ $poster }}" alt="" decoding="async">
+      <img class="scrolly__poster" src="{{ $poster }}" alt="" decoding="async" loading="lazy">
       <canvas class="scrolly__canvas" aria-hidden="true"></canvas>
     </div>
 
@@ -74,7 +74,7 @@
       </div>
     </article>
 
-    <article class="scrolly__step scrolly__step--right" data-feature="night" style="--step-length: 300vh">
+    <article class="scrolly__step scrolly__step--right" data-feature="night" style="--step-length: 400vh">
       <div class="scrolly__card feature-card">
         <div class="feature-panel__icon">
           {{ partial "icon.html" (dict "name" "night" "size" 48) }}
@@ -84,7 +84,6 @@
       </div>
     </article>
 
-    <div class="scrolly__step scrolly__step--tail" data-feature="tail" style="--step-length: 200vh" aria-hidden="true"></div>
   </div>
 
   <!-- Remaining features: panels beside a sticky monitor -->

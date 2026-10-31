@@ -617,6 +617,7 @@ tr:hover td {
 
 .features-scroll {
   position: relative;
+  padding: 0;
   background: var(--color-bg);
   transition: background-color 0.6s ease;
 }
@@ -644,24 +645,6 @@ tr:hover td {
 
 .features-scroll[data-active-feature="encoding"] {
   background: linear-gradient(135deg, rgba(148, 226, 213, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
-}
-
-/* Section header (unused on the homepage today, kept for other layouts) */
-.features-scroll__header {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: var(--space-2xl) var(--space-lg) var(--space-xl);
-}
-
-.features-scroll__header h2 {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  margin-bottom: var(--space-md);
-}
-
-.features-scroll__header p {
-  color: var(--color-text-muted);
-  max-width: 600px;
-  margin: 0 auto;
 }
 
 /* ---- Scroll-driven flight ---- */
@@ -745,6 +728,28 @@ html:not(.js-enabled) .scrolly__step {
   opacity: 1;
 }
 
+/* With script, cards are fixed overlays so they hold still while active */
+.js-enabled .scrolly__card {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  margin: 0;
+  pointer-events: none;
+}
+
+.js-enabled .scrolly__step--right .scrolly__card {
+  right: clamp(var(--space-xl), 8vw, 140px);
+}
+
+.js-enabled .scrolly__step--left .scrolly__card {
+  left: clamp(var(--space-xl), 8vw, 140px);
+}
+
+.js-enabled .scrolly__step.is-active .scrolly__card {
+  pointer-events: auto;
+}
+
 /* First-pass card: the hero card's glass, left-aligned */
 .feature-card {
   background: rgba(30, 30, 46, 0.75);
@@ -782,7 +787,7 @@ html:not(.js-enabled) .scrolly__step {
   min-height: 100vh;
 }
 
-/* Blend the black tail of the flight into the tinted grid */
+/* Blend the dark end of the flight into the tinted grid */
 .features-scroll__grid::before {
   content: "";
   position: absolute;
@@ -980,15 +985,27 @@ img.monitor-screen {
     padding: var(--space-xl) 0;
   }
 
-  /* Card across the bottom of the picture */
-  .scrolly__card,
-  .scrolly__step--right .scrolly__card,
-  .scrolly__step--left .scrolly__card {
+  /* Card across the bottom of the picture (no-script: sticky) */
+  html:not(.js-enabled) .scrolly__card,
+  html:not(.js-enabled) .scrolly__step--right .scrolly__card,
+  html:not(.js-enabled) .scrolly__step--left .scrolly__card {
     width: auto;
     margin: 0 var(--space-md);
     top: calc(100vh - var(--space-lg));
     top: calc(100svh - var(--space-lg));
     transform: translateY(-100%);
+  }
+
+  /* With script: fixed across the bottom, inset by the side gutters */
+  .js-enabled .scrolly__card,
+  .js-enabled .scrolly__step--right .scrolly__card,
+  .js-enabled .scrolly__step--left .scrolly__card {
+    top: auto;
+    bottom: var(--space-lg);
+    left: var(--space-md);
+    right: var(--space-md);
+    width: auto;
+    transform: none;
   }
 
   .feature-card {

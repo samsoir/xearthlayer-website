@@ -130,12 +130,12 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
+    // Set initial active feature (before the module, which may report another)
+    activateFeature('streaming');
+
     // Scroll-driven flight for the first features; it reports the active
     // feature through the same activation path as the grid panels.
     const scrolly = initScrolly(scrollyRoot, { onActivate: activateFeature });
-
-    // Set initial active feature
-    activateFeature('streaming');
 
     // Progress dot click handlers
     progressDots.forEach(dot => {

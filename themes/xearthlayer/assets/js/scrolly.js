@@ -4,7 +4,10 @@
  * The track (#scrolly) holds a sticky stage with a canvas and a series of
  * steps. Each step scrubs the picture from the previous hold frame to its
  * own hold frame over the first part of its height, then holds while its
- * card is active. The manifest in data-scrolly comes from
+ * card is active. A step's hold is manifest.holds[data-hold || data-feature],
+ * so several steps can share one hold; a step with no such hold keeps showing
+ * the previous frame. A `scrolly__step--tail` scrubs to the last frame. The
+ * manifest in data-scrolly comes from
  * scripts/extract-scrolly-frames.py.
  *
  * Debug: append ?scrolly-debug=<fraction> to force progress through the
@@ -43,13 +46,16 @@ export function initScrolly(root, options = {}) {
   const plan = steps.map((el) => {
     const feature = el.dataset.feature;
     const isTail = el.classList.contains('scrolly__step--tail');
-    const to = isTail ? end : (feature in holds ? holds[feature] : end);
+    const key = el.dataset.hold || feature;
+    const to = isTail ? end : (key in holds ? holds[key] : from);
     const scrub = reduceMotion ? 0 : (isTail ? 1 : 0.6);
     const entry = { el, feature, from, to, scrub, isTail, start: 0, end: 0 };
     from = to;
     return entry;
   });
   const last = plan[plan.length - 1];
+  const maxTo = Math.max(...plan.map((p) => p.to));
+  const hasTail = plan.some((p) => p.isTail);
 
   // ---- Geometry
   let trackTop = 0;
@@ -70,7 +76,9 @@ export function initScrolly(root, options = {}) {
       if (i === plan.length - 1) p.end = Math.min(p.end, trackHeight - vh);
       if (p.end <= p.start) p.end = p.start + 1;
     });
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const aspect = manifest.source.width / manifest.source.height;
+    const coverW = Math.max(stage.clientWidth, stage.clientHeight * aspect);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2, Math.max(1, width / coverW));
     const w = Math.round(stage.clientWidth * dpr);
     const h = Math.round(stage.clientHeight * dpr);
     if (w !== cw || h !== ch) {
@@ -96,14 +104,14 @@ export function initScrolly(root, options = {}) {
     const seen = new Set();
     const order = [];
     const push = (i) => {
-      if (i >= 0 && i < total && !seen.has(i)) {
+      if (i >= 0 && i <= maxTo && i < total && !seen.has(i)) {
         seen.add(i);
         order.push(i);
       }
     };
     push(0);
     Object.keys(holds).forEach((k) => push(holds[k]));
-    push(end);
+    if (hasTail) push(end);
     [8, 4, 2, 1].forEach((d) => {
       for (let i = 0; i < total; i += d) push(i);
     });
@@ -126,9 +134,9 @@ export function initScrolly(root, options = {}) {
           : null;
         img.src = src(i);
         (settle || img.decode()).then(
-          () => { frames[i] = img; if (drawnIndex !== wanted) draw(); },
+          () => { frames[i] = img; if (drawnIndex !== wanted) schedule(); },
           () => { failed.add(i); },
-        ).then(() => {
+        ).finally(() => {
           inFlight -= 1;
           next();
         });
@@ -240,16 +248,30 @@ export function initScrolly(root, options = {}) {
     new ResizeObserver(() => { measure(); schedule(); }).observe(root);
   }
 
-  if (debug !== null || !('IntersectionObserver' in window)) {
+  // Start loading once the page has loaded (so the first requests do not
+  // compete with the hero video) and the track is near the viewport. Debug
+  // mode starts immediately.
+  let pageLoaded = document.readyState === 'complete';
+  let nearViewport = !('IntersectionObserver' in window);
+  const maybeLoad = () => { if (pageLoaded && nearViewport) loadAll(); };
+  if (debug !== null) {
     loadAll();
   } else {
-    const io = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting)) {
-        loadAll();
-        io.disconnect();
-      }
-    }, { rootMargin: '100% 0px' });
-    io.observe(root);
+    if (!pageLoaded) {
+      window.addEventListener('load', () => { pageLoaded = true; maybeLoad(); }, { once: true });
+    }
+    if (nearViewport) {
+      maybeLoad();
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          nearViewport = true;
+          maybeLoad();
+          io.disconnect();
+        }
+      }, { rootMargin: '100% 0px' });
+      io.observe(root);
+    }
   }
   update();
 
