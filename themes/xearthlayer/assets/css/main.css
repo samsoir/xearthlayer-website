@@ -250,7 +250,7 @@ tr:hover td {
   color: var(--color-text);
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-md);
 }
 
 .nav-logo:hover {
