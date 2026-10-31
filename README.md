@@ -89,6 +89,14 @@ The sync workflow uses these files from the regional-scenery repo:
 
 The region table, legend, map and homepage storage figures are rendered by Hugo from `data/regions.json` and `static/data/regions.geojson`, so a world rebuild is a data drop, not an edit.
 
+## Homepage Scroll Story
+
+The features section of the homepage scrubs through frames of a rendered flight as the visitor scrolls. The frames live in `static/images/scrolly/<width>/NNN.webp` and the manifest Hugo reads is `data/scrolly.json`. Both are generated from the ProRes master with:
+
+    python3 scripts/extract-scrolly-frames.py /path/to/Scrollytale.mov --holds streaming=99,night=377
+
+The script keeps every third frame, writes 1440 and 960 pixel wide WebP sets, and records each hold (a source frame the picture pauses on for a feature) as an index into the kept frames. Hold names must match the `data-feature` values of the steps in `themes/xearthlayer/layouts/home.html`. Re-run it whenever the master changes and commit the frames and the manifest together. Tests: `python3 -m unittest scripts/test_extract_scrolly_frames.py`.
+
 ## App Version Sync
 
 Download links on the Getting Started page are automatically updated when new XEarthLayer versions are released.

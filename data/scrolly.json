@@ -1,0 +1,20 @@
+{
+  "fps": 24,
+  "step": 3,
+  "frames": 163,
+  "source": {
+    "width": 5120,
+    "height": 2160,
+    "frames": 488
+  },
+  "widths": [
+    1440,
+    960
+  ],
+  "pad": 3,
+  "holds": {
+    "streaming": 33,
+    "night": 126
+  },
+  "end": 162
+}
