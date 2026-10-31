@@ -616,58 +616,8 @@ tr:hover td {
    ========================================== */
 
 .features-scroll {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: stretch; /* Ensure both columns are same height */
-  min-height: 100vh;
-  background: var(--color-bg);
   position: relative;
-}
-
-/* Section header */
-.features-scroll__header {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: var(--space-2xl) var(--space-lg) var(--space-xl);
-}
-
-.features-scroll__header h2 {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  margin-bottom: var(--space-md);
-}
-
-.features-scroll__header p {
-  color: var(--color-text-muted);
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-/* Feature panels (left side) */
-.features-scroll__content {
-  display: flex;
-  flex-direction: column;
-  padding: 0 var(--space-xl);
-  padding-left: 10%;
-}
-
-.feature-panel {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: var(--space-xl) var(--space-xl);
-  opacity: 0.3;
-  transition: opacity 0.5s ease, background-color 0.5s ease;
-  margin: 0 calc(-1 * var(--space-xl));
-  border-radius: var(--radius-lg);
-}
-
-.feature-panel.active {
-  opacity: 1;
-}
-
-/* Full-width background colors - applied to entire section via JS */
-.features-scroll {
+  background: var(--color-bg);
   transition: background-color 0.6s ease;
 }
 
@@ -696,6 +646,178 @@ tr:hover td {
   background: linear-gradient(135deg, rgba(148, 226, 213, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
 }
 
+/* Section header (unused on the homepage today, kept for other layouts) */
+.features-scroll__header {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--space-2xl) var(--space-lg) var(--space-xl);
+}
+
+.features-scroll__header h2 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  margin-bottom: var(--space-md);
+}
+
+.features-scroll__header p {
+  color: var(--color-text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ---- Scroll-driven flight ---- */
+
+.scrolly {
+  position: relative;
+  background: #000;
+}
+
+.scrolly__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: #000;
+}
+
+.scrolly__poster,
+.scrolly__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scrolly__canvas {
+  display: none;
+}
+
+.js-enabled .scrolly.is-ready .scrolly__canvas {
+  display: block;
+}
+
+.scrolly.is-ready .scrolly__poster {
+  visibility: hidden;
+}
+
+/* Steps give the track its scroll length; the first one tucks under the stage */
+.scrolly__step {
+  position: relative;
+  min-height: var(--step-length, 200vh);
+  pointer-events: none;
+}
+
+.scrolly__stage + .scrolly__step {
+  margin-top: -100vh;
+  margin-top: -100svh;
+}
+
+html:not(.js-enabled) .scrolly__step {
+  min-height: 100vh;
+}
+
+.scrolly__card {
+  position: sticky;
+  top: 50vh;
+  top: 50svh;
+  transform: translateY(-50%);
+  width: min(440px, 42vw);
+  pointer-events: auto;
+}
+
+.scrolly__step--right .scrolly__card {
+  margin-left: auto;
+  margin-right: clamp(var(--space-xl), 8vw, 140px);
+}
+
+.scrolly__step--left .scrolly__card {
+  margin-right: auto;
+  margin-left: clamp(var(--space-xl), 8vw, 140px);
+}
+
+.js-enabled .scrolly__card {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.scrolly__step.is-active .scrolly__card {
+  opacity: 1;
+}
+
+/* First-pass card: the hero card's glass, left-aligned */
+.feature-card {
+  background: rgba(30, 30, 46, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Debug badge, only rendered with ?scrolly-debug */
+.scrolly__badge {
+  position: absolute;
+  left: var(--space-md);
+  bottom: var(--space-md);
+  padding: 0.25rem 0.5rem;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font: 14px/1.4 monospace;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ---- Remaining features: panels beside a sticky monitor ---- */
+
+.features-scroll__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  min-height: 100vh;
+}
+
+/* Blend the black tail of the flight into the tinted grid */
+.features-scroll__grid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20vh;
+  background: linear-gradient(#000, transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.features-scroll__content {
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--space-xl);
+  padding-left: 10%;
+}
+
+.feature-panel {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-xl);
+  opacity: 0.3;
+  transition: opacity 0.5s ease, background-color 0.5s ease;
+  margin: 0 calc(-1 * var(--space-xl));
+  border-radius: var(--radius-lg);
+}
+
+.feature-panel.active {
+  opacity: 1;
+}
+
 .feature-panel__icon {
   width: 64px;
   height: 64px;
@@ -708,13 +830,15 @@ tr:hover td {
   height: 100%;
 }
 
-.feature-panel h3 {
+.feature-panel h3,
+.feature-card h3 {
   font-size: 1.75rem;
   margin-bottom: var(--space-md);
   color: var(--color-text);
 }
 
-.feature-panel p {
+.feature-panel p,
+.feature-card p {
   font-size: 1.125rem;
   color: var(--color-text-muted);
   line-height: 1.7;
@@ -829,7 +953,7 @@ img.monitor-screen {
    ========================================== */
 
 @media (max-width: 900px) {
-  .features-scroll {
+  .features-scroll__grid {
     display: block;
   }
 
@@ -854,6 +978,21 @@ img.monitor-screen {
 
   .features-end {
     padding: var(--space-xl) 0;
+  }
+
+  /* Card across the bottom of the picture */
+  .scrolly__card,
+  .scrolly__step--right .scrolly__card,
+  .scrolly__step--left .scrolly__card {
+    width: auto;
+    margin: 0 var(--space-md);
+    top: calc(100vh - var(--space-lg));
+    top: calc(100svh - var(--space-lg));
+    transform: translateY(-100%);
+  }
+
+  .feature-card {
+    padding: var(--space-lg);
   }
 }
 

@@ -40,6 +40,12 @@
 </section>
 
 <!-- Features Scrollytelling Section -->
+{{- $scrolly := hugo.Data.scrolly }}
+{{- if not $scrolly }}
+  {{- errorf "data/scrolly.json is missing: run scripts/extract-scrolly-frames.py (see README, Homepage Scroll Story)" }}
+{{- end }}
+{{- $posterWidth := index $scrolly.widths 0 }}
+{{- $poster := printf "/images/scrolly/%v/%0*d.webp" $posterWidth (int $scrolly.pad) (int $scrolly.holds.streaming) }}
 <section class="features-scroll" id="features">
   <!-- Progress dots navigation (right side) -->
   <nav class="features-progress" id="features-progress" aria-label="Feature navigation">
@@ -51,67 +57,80 @@
     <button class="features-progress__dot" data-feature="encoding" aria-label="SIMD and GPU Acceleration"></button>
   </nav>
 
-  <!-- Feature panels (left side) -->
-  <div class="features-scroll__content">
-    <article class="feature-panel" data-feature="streaming">
-      <div class="feature-panel__icon">
-        {{ partial "icon.html" (dict "name" "streaming" "size" 48) }}
+  <!-- Scroll-driven flight: a sticky stage and the steps that give it scroll length -->
+  <div class="scrolly" id="scrolly" data-scrolly="{{ $scrolly | jsonify }}">
+    <div class="scrolly__stage">
+      <img class="scrolly__poster" src="{{ $poster }}" alt="" decoding="async">
+      <canvas class="scrolly__canvas" aria-hidden="true"></canvas>
+    </div>
+
+    <article class="scrolly__step scrolly__step--right" data-feature="streaming" style="--step-length: 220vh">
+      <div class="scrolly__card feature-card">
+        <div class="feature-panel__icon">
+          {{ partial "icon.html" (dict "name" "streaming" "size" 48) }}
+        </div>
+        <h3>High-Quality Streaming Ortho</h3>
+        <p>Satellite imagery streams in as you fly and is built into full-resolution textures on your machine. Packages carry only the terrain, so a whole region fits in a few gigabytes, and five of the imagery providers need no account.</p>
       </div>
-      <h3>High-Quality Streaming Ortho</h3>
-      <p>Satellite imagery streams in as you fly and is built into full-resolution textures on your machine. Packages carry only the terrain, so a whole region fits in a few gigabytes, and five of the imagery providers need no account.</p>
     </article>
 
-    <article class="feature-panel" data-feature="night">
-      <div class="feature-panel__icon">
-        {{ partial "icon.html" (dict "name" "night" "size" 48) }}
+    <article class="scrolly__step scrolly__step--right" data-feature="night" style="--step-length: 300vh">
+      <div class="scrolly__card feature-card">
+        <div class="feature-panel__icon">
+          {{ partial "icon.html" (dict "name" "night" "size" 48) }}
+        </div>
+        <h3>Cities Light Up at Night</h3>
+        <p>Ortho scenery used to leave cities dark after sunset. XEarthLayer lights them from NASA's night lights and your own X-Plane art, so a large city glows brighter than a small one and open country stays dark.</p>
       </div>
-      <h3>Cities Light Up at Night</h3>
-      <p>Ortho scenery used to leave cities dark after sunset. XEarthLayer lights them from NASA's night lights and your own X-Plane art, so a large city glows brighter than a small one and open country stays dark.</p>
     </article>
 
-    <article class="feature-panel" data-feature="packages">
-      <div class="feature-panel__icon">
-        {{ partial "icon.html" (dict "name" "packages" "size" 48) }}
-      </div>
-      <h3>Easy Package Management</h3>
-      <p>Choose from seventeen regions in a full-screen package manager, and install, update or remove them in a few keystrokes. Fly with SimHeaven X-World Pro? XEarthLayer steps aside for it on the continents it covers.</p>
-    </article>
-
-    <article class="feature-panel" data-feature="dashboard">
-      <div class="feature-panel__icon">
-        {{ partial "icon.html" (dict "name" "dashboard" "size" 48) }}
-      </div>
-      <h3>Live Terminal Dashboard</h3>
-      <p>See what is happening as you fly: cache use, downloads, your aircraft's position, pipeline health and X-Plane's frame rate, all in your terminal.</p>
-    </article>
-
-    <article class="feature-panel" data-feature="prefetch">
-      <div class="feature-panel__icon">
-        {{ partial "icon.html" (dict "name" "prefetch" "size" 48) }}
-      </div>
-      <h3>Efficient Prefetching</h3>
-      <p>XEarthLayer follows your aircraft through X-Plane and loads tiles ahead of it, in a lane of its own that never delays a tile X-Plane is waiting for. It holds back on takeoff, so departure scenery loads first.</p>
-    </article>
-
-    <article class="feature-panel" data-feature="encoding">
-      <div class="feature-panel__icon">
-        {{ partial "icon.html" (dict "name" "encoding" "size" 48) }}
-      </div>
-      <h3>SIMD and GPU Acceleration</h3>
-      <p>Textures are compressed with SIMD kernels, five to ten times faster than plain software encoding. With a spare GPU, XEarthLayer can encode there instead and leave your main card to X-Plane.</p>
-    </article>
+    <div class="scrolly__step scrolly__step--tail" data-feature="tail" style="--step-length: 200vh" aria-hidden="true"></div>
   </div>
 
-  <!-- Sticky monitor (right side) -->
-  <div class="features-scroll__monitor" id="features-monitor">
-    <div class="monitor-sticky">
-      <div class="monitor-frame">
-        <img class="monitor-screen active" data-feature="streaming" src="/images/features/streaming.svg" alt="Streaming ortho scenery">
-        <img class="monitor-screen" data-feature="night" src="/images/features/night.svg" alt="Night lighting">
-        <img class="monitor-screen" data-feature="packages" src="/images/features/packages.svg" alt="Package management">
-        <img class="monitor-screen" data-feature="dashboard" src="/images/features/dashboard.svg" alt="Terminal dashboard">
-        <img class="monitor-screen" data-feature="prefetch" src="/images/features/prefetch.svg" alt="Predictive prefetching">
-        <img class="monitor-screen" data-feature="encoding" src="/images/features/encoding.svg" alt="SIMD and GPU texture encoding">
+  <!-- Remaining features: panels beside a sticky monitor -->
+  <div class="features-scroll__grid">
+    <div class="features-scroll__content">
+      <article class="feature-panel" data-feature="packages">
+        <div class="feature-panel__icon">
+          {{ partial "icon.html" (dict "name" "packages" "size" 48) }}
+        </div>
+        <h3>Easy Package Management</h3>
+        <p>Choose from seventeen regions in a full-screen package manager, and install, update or remove them in a few keystrokes. Fly with SimHeaven X-World Pro? XEarthLayer steps aside for it on the continents it covers.</p>
+      </article>
+
+      <article class="feature-panel" data-feature="dashboard">
+        <div class="feature-panel__icon">
+          {{ partial "icon.html" (dict "name" "dashboard" "size" 48) }}
+        </div>
+        <h3>Live Terminal Dashboard</h3>
+        <p>See what is happening as you fly: cache use, downloads, your aircraft's position, pipeline health and X-Plane's frame rate, all in your terminal.</p>
+      </article>
+
+      <article class="feature-panel" data-feature="prefetch">
+        <div class="feature-panel__icon">
+          {{ partial "icon.html" (dict "name" "prefetch" "size" 48) }}
+        </div>
+        <h3>Efficient Prefetching</h3>
+        <p>XEarthLayer follows your aircraft through X-Plane and loads tiles ahead of it, in a lane of its own that never delays a tile X-Plane is waiting for. It holds back on takeoff, so departure scenery loads first.</p>
+      </article>
+
+      <article class="feature-panel" data-feature="encoding">
+        <div class="feature-panel__icon">
+          {{ partial "icon.html" (dict "name" "encoding" "size" 48) }}
+        </div>
+        <h3>SIMD and GPU Acceleration</h3>
+        <p>Textures are compressed with SIMD kernels, five to ten times faster than plain software encoding. With a spare GPU, XEarthLayer can encode there instead and leave your main card to X-Plane.</p>
+      </article>
+    </div>
+
+    <div class="features-scroll__monitor" id="features-monitor">
+      <div class="monitor-sticky">
+        <div class="monitor-frame">
+          <img class="monitor-screen active" data-feature="packages" src="/images/features/packages.svg" alt="Package management">
+          <img class="monitor-screen" data-feature="dashboard" src="/images/features/dashboard.svg" alt="Terminal dashboard">
+          <img class="monitor-screen" data-feature="prefetch" src="/images/features/prefetch.svg" alt="Predictive prefetching">
+          <img class="monitor-screen" data-feature="encoding" src="/images/features/encoding.svg" alt="SIMD and GPU texture encoding">
+        </div>
       </div>
     </div>
   </div>
@@ -125,8 +144,8 @@
 <!-- Fallback features grid for no-JS -->
 <noscript>
   <style>
-    .features-scroll { display: block !important; }
-    .features-scroll__content { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important; gap: 2rem !important; padding: 4rem 2rem !important; }
+    .features-scroll__grid { display: block !important; }
+    .features-scroll__content { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important; gap: 2rem !important; padding: 2rem !important; }
     .features-scroll__monitor { display: none !important; }
     .features-progress { display: none !important; }
     .feature-panel { min-height: auto !important; opacity: 1 !important; }
