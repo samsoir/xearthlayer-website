@@ -750,17 +750,14 @@ html:not(.js-enabled) .scrolly__step {
   pointer-events: auto;
 }
 
-/* First-pass card: the hero card's glass, left-aligned */
+/* First-pass card. Not interactive: no hover state, no transition.
+   Styling pass to follow. */
 .feature-card {
-  background: rgba(30, 30, 46, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-xl);
-  padding: var(--space-xl);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: var(--color-bg);
+  border: 1px solid var(--ctp-surface0);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* Debug badge, only rendered with ?scrolly-debug */
@@ -848,6 +845,16 @@ html:not(.js-enabled) .scrolly__step {
   color: var(--color-text-muted);
   line-height: 1.7;
   max-width: 450px;
+}
+
+/* Card overrides come after the shared panel typography so they win */
+.feature-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: var(--space-sm);
+}
+
+.feature-card p {
+  margin: 0;
 }
 
 /* Progress indicator dots (right side) */
@@ -1100,58 +1107,6 @@ section {
   font-size: 1.125rem;
   max-width: 600px;
   margin: 0 auto;
-}
-
-/* Features Section */
-.features {
-  background: var(--color-bg-alt);
-}
-
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--space-lg);
-}
-
-.feature-card {
-  background: var(--color-bg);
-  padding: var(--space-lg);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--ctp-surface0);
-  transition: all 0.2s ease;
-}
-
-.feature-card:hover {
-  border-color: var(--ctp-mauve);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-}
-
-.feature-icon {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, var(--ctp-mauve), var(--ctp-blue));
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: var(--space-md);
-  color: var(--ctp-crust);
-}
-
-.feature-icon svg {
-  width: 24px;
-  height: 24px;
-}
-
-.feature-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: var(--space-sm);
-}
-
-.feature-card p {
-  color: var(--color-text-muted);
-  margin: 0;
 }
 
 /* Download Section */
@@ -2251,10 +2206,6 @@ section {
 
   .hero h1 {
     font-size: 2rem;
-  }
-
-  .features-grid {
-    grid-template-columns: 1fr;
   }
 
   .docs-layout {
