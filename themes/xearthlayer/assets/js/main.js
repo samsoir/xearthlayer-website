@@ -1,3 +1,5 @@
+import { initScrolly } from './scrolly.js';
+
 document.addEventListener('DOMContentLoaded', function() {
   // Enable JS-enhanced features
   document.documentElement.classList.add('js-enabled');
@@ -60,8 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const progressNav = document.getElementById('features-progress');
   const progressDots = document.querySelectorAll('.features-progress__dot');
   const monitorScreens = document.querySelectorAll('.monitor-screen');
+  const scrollyRoot = document.getElementById('scrolly');
 
-  if (featuresSection && featurePanels.length > 0) {
+  if (featuresSection && (featurePanels.length > 0 || scrollyRoot)) {
     // Show/hide progress dots based on section visibility
     const progressObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -127,6 +130,10 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
+    // Scroll-driven flight for the first features; it reports the active
+    // feature through the same activation path as the grid panels.
+    const scrolly = initScrolly(scrollyRoot, { onActivate: activateFeature });
+
     // Set initial active feature
     activateFeature('streaming');
 
@@ -134,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
     progressDots.forEach(dot => {
       dot.addEventListener('click', function() {
         const feature = this.dataset.feature;
+        if (scrolly && scrolly.scrollToHold(feature)) return;
         const targetPanel = document.querySelector(`.feature-panel[data-feature="${feature}"]`);
         if (targetPanel) {
           targetPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
