@@ -774,6 +774,33 @@ html:not(.js-enabled) .scrolly__step {
   z-index: 2;
 }
 
+/* Scroll hint: scrolly.js shows it when the stage is pinned and the reader
+   has not scrolled for a while, so a pause on a card does not read as the
+   end of the page. Hidden without script. */
+.scrolly__hint {
+  position: absolute;
+  bottom: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.js-enabled .scrolly__hint.is-visible {
+  opacity: 1;
+  animation: bounce 2s infinite;
+}
+
 /* ---- Remaining features: panels beside a sticky monitor ---- */
 
 .features-scroll__grid {
@@ -1018,6 +1045,12 @@ img.monitor-screen {
   .feature-card {
     padding: var(--space-lg);
   }
+
+  /* The card takes the bottom of the picture; the hint sits under the header */
+  .scrolly__hint {
+    bottom: auto;
+    top: calc(var(--space-xl) + 3rem);
+  }
 }
 
 /* Reduced motion */
@@ -1030,7 +1063,8 @@ img.monitor-screen {
     background: url('/images/hero-poster.jpg') center/cover no-repeat;
   }
 
-  .hero-video__scroll-hint {
+  .hero-video__scroll-hint,
+  .js-enabled .scrolly__hint.is-visible {
     animation: none;
   }
 

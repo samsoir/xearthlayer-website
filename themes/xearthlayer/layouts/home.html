@@ -62,6 +62,11 @@
     <div class="scrolly__stage">
       <img class="scrolly__poster" src="{{ $poster }}" alt="" decoding="async" loading="lazy">
       <canvas class="scrolly__canvas" aria-hidden="true"></canvas>
+      <!-- Shown by scrolly.js when the reader pauses on the pinned stage -->
+      <div class="scrolly__hint" aria-hidden="true">
+        <span>Scroll to continue</span>
+        {{ partial "icon.html" (dict "name" "chevron-down" "size" 24) }}
+      </div>
     </div>
 
     <article class="scrolly__step scrolly__step--right" data-feature="streaming" style="--step-length: 220vh">

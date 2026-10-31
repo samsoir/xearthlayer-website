@@ -65,7 +65,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const scrollyRoot = document.getElementById('scrolly');
 
   if (featuresSection && (featurePanels.length > 0 || scrollyRoot)) {
-    // Show/hide progress dots based on section visibility
+    // Show the progress dots while any part of the section is on screen.
+    // The section is many viewports tall, so a fractional threshold
+    // could never be met and the dots would stay hidden.
     const progressObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (progressNav) {
@@ -76,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0 });
 
     progressObserver.observe(featuresSection);
 

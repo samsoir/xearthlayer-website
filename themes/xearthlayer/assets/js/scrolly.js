@@ -12,10 +12,15 @@
  * waiting for it to pin. The manifest in data-scrolly comes from
  * scripts/extract-scrolly-frames.py.
  *
+ * A `.scrolly__hint` inside the stage is shown when the reader has not
+ * moved for a while with the stage pinned, so a pause on a card does not
+ * read as the end of the page. It hides as soon as the scroll position
+ * changes or the track is left.
+ *
  * Debug: append ?scrolly-debug=<fraction> to force progress through the
  * track and show a badge with the frame index and active feature. Frames
  * are then marked on load rather than decode so headless screenshots catch
- * the drawn canvas.
+ * the drawn canvas, and the hint shows without its idle delay.
  */
 export function initScrolly(root, options = {}) {
   if (!root) return null;
@@ -199,6 +204,7 @@ export function initScrolly(root, options = {}) {
     wanted = Math.round(p.from + (p.to - p.from) * t);
 
     const inTrack = s >= 0 && s < last.end;
+    trackIdle(s, inTrack);
     const next = (inTrack && !p.isTail && q >= p.scrub) ? p : null;
     if (next !== activeStep) {
       plan.forEach((x) => x.el.classList.toggle('is-active', x === next));
@@ -213,6 +219,22 @@ export function initScrolly(root, options = {}) {
     if (rafPending) return;
     rafPending = true;
     window.requestAnimationFrame(update);
+  }
+
+  // ---- Scroll hint
+  const hint = root.querySelector('.scrolly__hint');
+  const HINT_DELAY_MS = debug !== null ? 0 : 2500;
+  let hintTimer = 0;
+  let lastPosition = null;
+
+  function trackIdle(s, inTrack) {
+    if (!hint || s === lastPosition) return;
+    lastPosition = s;
+    hint.classList.remove('is-visible');
+    window.clearTimeout(hintTimer);
+    if (inTrack) {
+      hintTimer = window.setTimeout(() => hint.classList.add('is-visible'), HINT_DELAY_MS);
+    }
   }
 
   // ---- Debug badge
