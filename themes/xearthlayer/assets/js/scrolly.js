@@ -7,7 +7,9 @@
  * card is active. A step's hold is manifest.holds[data-hold || data-feature],
  * so several steps can share one hold; a step with no such hold keeps showing
  * the previous frame. A `scrolly__step--tail` scrubs to the last frame. The
- * manifest in data-scrolly comes from
+ * first step's range begins one viewport before the track top, so the
+ * opening frames advance while the stage slides into view instead of
+ * waiting for it to pin. The manifest in data-scrolly comes from
  * scripts/extract-scrolly-frames.py.
  *
  * Debug: append ?scrolly-debug=<fraction> to force progress through the
@@ -71,8 +73,8 @@ export function initScrolly(root, options = {}) {
     trackHeight = root.offsetHeight;
     vh = window.innerHeight;
     plan.forEach((p, i) => {
-      p.start = p.el.offsetTop;
-      p.end = p.start + p.el.offsetHeight;
+      p.start = i === 0 ? -vh : p.el.offsetTop;
+      p.end = p.el.offsetTop + p.el.offsetHeight;
       if (i === plan.length - 1) p.end = Math.min(p.end, trackHeight - vh);
       if (p.end <= p.start) p.end = p.start + 1;
     });
@@ -189,7 +191,7 @@ export function initScrolly(root, options = {}) {
     if (s >= last.end) {
       p = last;
       q = 1;
-    } else if (s > 0) {
+    } else if (s > plan[0].start) {
       p = plan.find((x) => s < x.end) || last;
       q = Math.min(Math.max((s - p.start) / (p.end - p.start), 0), 1);
     }
