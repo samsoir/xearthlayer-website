@@ -12,6 +12,12 @@
  * waiting for it to pin. The manifest in data-scrolly comes from
  * scripts/extract-scrolly-frames.py.
  *
+ * A step may name a scene with `data-scene`; while such a step is current
+ * the root carries `is-<scene>` and options.onScene(scene) is called, which
+ * the terminal steps use to show the terminal layer over the picture. A
+ * step that moves no frames activates after a quarter of its height
+ * rather than after the scrub.
+ *
  * A `.scrolly__hint` inside the stage is shown when the reader has not
  * moved for a while with the stage pinned, so a pause on a card does not
  * read as the end of the page. It hides as soon as the scroll position
@@ -38,6 +44,7 @@ export function initScrolly(root, options = {}) {
   if (!ctx) return null;
 
   const onActivate = typeof options.onActivate === 'function' ? options.onActivate : () => {};
+  const onScene = typeof options.onScene === 'function' ? options.onScene : () => {};
   const debugMatch = /[?&]scrolly-debug=([0-9.]+)/.exec(window.location.search);
   const debug = debugMatch ? Math.min(Math.max(parseFloat(debugMatch[1]) || 0, 0), 1) : null;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -55,8 +62,9 @@ export function initScrolly(root, options = {}) {
     const isTail = el.classList.contains('scrolly__step--tail');
     const key = el.dataset.hold || feature;
     const to = isTail ? end : (key in holds ? holds[key] : from);
-    const scrub = reduceMotion ? 0 : (isTail ? 1 : 0.6);
-    const entry = { el, feature, from, to, scrub, isTail, start: 0, end: 0 };
+    const scrub = reduceMotion ? 0 : (isTail ? 1 : (to === from ? 0.25 : 0.6));
+    const scene = el.dataset.scene || null;
+    const entry = { el, feature, from, to, scrub, isTail, scene, start: 0, end: 0 };
     from = to;
     return entry;
   });
@@ -181,6 +189,7 @@ export function initScrolly(root, options = {}) {
 
   // ---- Progress
   let activeStep = null;
+  let activeScene = null;
   let rafPending = false;
 
   function progressPosition() {
@@ -205,6 +214,13 @@ export function initScrolly(root, options = {}) {
 
     const inTrack = s >= 0 && s < last.end;
     trackIdle(s, inTrack);
+    const scene = s > plan[0].start ? p.scene : null;
+    if (scene !== activeScene) {
+      if (activeScene) root.classList.remove(`is-${activeScene}`);
+      if (scene) root.classList.add(`is-${scene}`);
+      activeScene = scene;
+      onScene(scene);
+    }
     const next = (inTrack && !p.isTail && q >= p.scrub) ? p : null;
     if (next !== activeStep) {
       plan.forEach((x) => x.el.classList.toggle('is-active', x === next));

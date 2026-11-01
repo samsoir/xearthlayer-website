@@ -62,6 +62,31 @@
     <div class="scrolly__stage">
       <img class="scrolly__poster" src="{{ $poster }}" alt="" decoding="async" loading="lazy">
       <canvas class="scrolly__canvas" aria-hidden="true"></canvas>
+      <!-- Terminal scene: a Ptyxis window over the section tint, shown for the
+           terminal steps below; each clip plays when its card appears -->
+      <div class="scrolly__terminal" aria-hidden="true">
+        <div class="terminal-window">
+          <img class="terminal-window__frame" src="/images/ptyxis.webp" alt="" decoding="async" loading="lazy">
+          <div class="terminal-window__body">
+          <video class="terminal-window__clip" data-feature="packages" muted playsinline preload="metadata" poster="/images/terminal/packages.webp">
+            <source src="/video/terminal-packages.webm" type="video/webm">
+            <source src="/video/terminal-packages.mp4" type="video/mp4">
+          </video>
+          <video class="terminal-window__clip" data-feature="dashboard" muted playsinline preload="metadata" poster="/images/terminal/dashboard.webp">
+            <source src="/video/terminal-dashboard.webm" type="video/webm">
+            <source src="/video/terminal-dashboard.mp4" type="video/mp4">
+          </video>
+          <video class="terminal-window__clip" data-feature="prefetch" muted playsinline preload="metadata" poster="/images/terminal/prefetch.webp">
+            <source src="/video/terminal-prefetch.webm" type="video/webm">
+            <source src="/video/terminal-prefetch.mp4" type="video/mp4">
+          </video>
+          <video class="terminal-window__clip" data-feature="encoding" muted playsinline preload="metadata" poster="/images/terminal/encoding.webp">
+            <source src="/video/terminal-encoding.webm" type="video/webm">
+            <source src="/video/terminal-encoding.mp4" type="video/mp4">
+          </video>
+          </div>
+        </div>
+      </div>
       <!-- Shown by scrolly.js when the reader pauses on the pinned stage -->
       <div class="scrolly__hint" aria-hidden="true">
         <span>Scroll to continue</span>
@@ -71,7 +96,7 @@
 
     <article class="scrolly__step scrolly__step--right" data-feature="streaming" style="--step-length: 220vh">
       <div class="scrolly__card feature-card">
-        <div class="feature-panel__icon">
+        <div class="feature-card__icon">
           {{ partial "icon.html" (dict "name" "streaming" "size" 48) }}
         </div>
         <h3>High-Quality Streaming Ortho</h3>
@@ -80,9 +105,9 @@
       </div>
     </article>
 
-    <article class="scrolly__step scrolly__step--right" data-feature="night" style="--step-length: 400vh">
+    <article class="scrolly__step scrolly__step--right" data-feature="night" style="--step-length: 220vh">
       <div class="scrolly__card feature-card">
-        <div class="feature-panel__icon">
+        <div class="feature-card__icon">
           {{ partial "icon.html" (dict "name" "night" "size" 48) }}
         </div>
         <h3>Cities Light Up at Night</h3>
@@ -91,73 +116,50 @@
       </div>
     </article>
 
-  </div>
-
-  <!-- Remaining features: panels beside a sticky monitor -->
-  <div class="features-scroll__grid">
-    <div class="features-scroll__content">
-      <article class="feature-panel" data-feature="packages">
-        <div class="feature-panel__icon">
+    <!-- Terminal steps: the stage shows the terminal scene from here on -->
+    <article class="scrolly__step scrolly__step--left" data-feature="packages" data-scene="terminal" style="--step-length: 160vh">
+      <div class="scrolly__card feature-card">
+        <div class="feature-card__icon">
           {{ partial "icon.html" (dict "name" "packages" "size" 48) }}
         </div>
         <h3>Easy Package Management</h3>
         <p>Choose the regions you want to fly in a full-screen TUI package manager, ensuring that installing, updating or removing global scenery is easy. Fly with SimHeaven X-World Pro? XEarthLayer steps aside for it on the continents it covers.</p>
-      </article>
+      </div>
+    </article>
 
-      <article class="feature-panel" data-feature="dashboard">
-        <div class="feature-panel__icon">
+    <article class="scrolly__step scrolly__step--left" data-feature="dashboard" data-scene="terminal" style="--step-length: 160vh">
+      <div class="scrolly__card feature-card">
+        <div class="feature-card__icon">
           {{ partial "icon.html" (dict "name" "dashboard" "size" 48) }}
         </div>
         <h3>Live Terminal Dashboard</h3>
         <p>See what is happening as you fly: cache use, downloads, your aircraft's position, pipeline health and X-Plane's frame rate, all in your terminal.</p>
-      </article>
+      </div>
+    </article>
 
-      <article class="feature-panel" data-feature="prefetch">
-        <div class="feature-panel__icon">
+    <article class="scrolly__step scrolly__step--left" data-feature="prefetch" data-scene="terminal" style="--step-length: 160vh">
+      <div class="scrolly__card feature-card">
+        <div class="feature-card__icon">
           {{ partial "icon.html" (dict "name" "prefetch" "size" 48) }}
         </div>
         <h3>Efficient Prefetching</h3>
         <p>XEarthLayer follows your aircraft through X-Plane and prepares the world before the simulator needs it, reducing sim stalls, stutters and freezes that can occur with these systems.</p>
         <p>Already know your flight route before departure? XEarthLayer can preload the departure scenery before you start flying for faster startup times.</p>
-      </article>
+      </div>
+    </article>
 
-      <article class="feature-panel" data-feature="encoding">
-        <div class="feature-panel__icon">
+    <article class="scrolly__step scrolly__step--left" data-feature="encoding" data-scene="terminal" style="--step-length: 160vh">
+      <div class="scrolly__card feature-card">
+        <div class="feature-card__icon">
           {{ partial "icon.html" (dict "name" "encoding" "size" 48) }}
         </div>
         <h3>Hardware Acceleration</h3>
         <p>Textures are compressed for X-Plane in real time using hardware acceleration on the CPU, five to ten times faster than plain software encoding. If you have a spare integrated GPU, XEarthLayer uses this to encode even faster while leaving your main graphics card for X-Plane.</p>
-      </article>
-    </div>
-
-    <div class="features-scroll__monitor" id="features-monitor">
-      <div class="monitor-sticky">
-        <div class="monitor-frame">
-          <img class="monitor-screen active" data-feature="packages" src="/images/features/packages.svg" alt="Package management">
-          <img class="monitor-screen" data-feature="dashboard" src="/images/features/dashboard.svg" alt="Terminal dashboard">
-          <img class="monitor-screen" data-feature="prefetch" src="/images/features/prefetch.svg" alt="Predictive prefetching">
-          <img class="monitor-screen" data-feature="encoding" src="/images/features/encoding.svg" alt="SIMD and GPU texture encoding">
-        </div>
       </div>
-    </div>
+    </article>
+
   </div>
 </section>
-
-<!-- Features section end marker -->
-<div class="features-end">
-  <div class="features-end__line"></div>
-</div>
-
-<!-- Fallback features grid for no-JS -->
-<noscript>
-  <style>
-    .features-scroll__grid { display: block !important; }
-    .features-scroll__content { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important; gap: 2rem !important; padding: 2rem !important; }
-    .features-scroll__monitor { display: none !important; }
-    .features-progress { display: none !important; }
-    .feature-panel { min-height: auto !important; opacity: 1 !important; }
-  </style>
-</noscript>
 
 <!-- Download Section -->
 <section class="download" id="download">

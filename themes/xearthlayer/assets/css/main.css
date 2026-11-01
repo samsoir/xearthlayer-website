@@ -618,33 +618,7 @@ tr:hover td {
 .features-scroll {
   position: relative;
   padding: 0;
-  background: var(--color-bg);
-  transition: background-color 0.6s ease;
-}
-
-/* Background colors per feature - Catppuccin Mocha palette (increased saturation) */
-.features-scroll[data-active-feature="streaming"] {
-  background: linear-gradient(135deg, rgba(137, 220, 235, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
-}
-
-.features-scroll[data-active-feature="night"] {
-  background: linear-gradient(135deg, rgba(249, 226, 175, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
-}
-
-.features-scroll[data-active-feature="packages"] {
-  background: linear-gradient(135deg, rgba(203, 166, 247, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
-}
-
-.features-scroll[data-active-feature="dashboard"] {
-  background: linear-gradient(135deg, rgba(245, 224, 220, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
-}
-
-.features-scroll[data-active-feature="prefetch"] {
-  background: linear-gradient(135deg, rgba(235, 160, 172, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
-}
-
-.features-scroll[data-active-feature="encoding"] {
-  background: linear-gradient(135deg, rgba(148, 226, 213, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
+  background: var(--ctp-crust);
 }
 
 /* ---- Scroll-driven flight ---- */
@@ -694,6 +668,13 @@ tr:hover td {
 .scrolly__stage + .scrolly__step {
   margin-top: -100vh;
   margin-top: -100svh;
+}
+
+/* The stage unpins a viewport before the track ends, so the last step gets
+   a viewport more to keep its card on screen as long as the others */
+.scrolly__step:last-child {
+  min-height: calc(var(--step-length, 200vh) + 100vh);
+  min-height: calc(var(--step-length, 200vh) + 100svh);
 }
 
 html:not(.js-enabled) .scrolly__step {
@@ -801,86 +782,110 @@ html:not(.js-enabled) .scrolly__step {
   animation: bounce 2s infinite;
 }
 
-/* ---- Remaining features: panels beside a sticky monitor ---- */
+/* ---- Terminal scene: a Ptyxis window over the section tint ---- */
 
-.features-scroll__grid {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: stretch;
-  min-height: 100vh;
-}
-
-/* Blend the dark end of the flight into the tinted grid */
-.features-scroll__grid::before {
-  content: "";
+/* Covers the picture once the story reaches the terminal steps */
+.scrolly__terminal {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 20vh;
-  background: linear-gradient(#000, transparent);
+  inset: 0;
+  background: var(--ctp-crust);
+  opacity: 0;
+  transition: opacity 0.6s ease;
   pointer-events: none;
-  z-index: 1;
 }
 
-.features-scroll__content {
-  display: flex;
-  flex-direction: column;
-  padding: 0 var(--space-xl);
-  padding-left: 10%;
-}
-
-.feature-panel {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: var(--space-xl) var(--space-xl);
-  opacity: 0.3;
-  transition: opacity 0.5s ease, background-color 0.5s ease;
-  margin: 0 calc(-1 * var(--space-xl));
-  border-radius: var(--radius-lg);
-}
-
-.feature-panel.active {
+.js-enabled .scrolly.is-terminal .scrolly__terminal {
   opacity: 1;
 }
 
-.feature-panel__icon {
+/* A hint of each feature's colour over opaque crust, darker than the old grid */
+.features-scroll[data-active-feature="packages"] .scrolly__terminal {
+  background: linear-gradient(135deg, rgba(203, 166, 247, 0.14), transparent 70%) var(--ctp-crust);
+}
+
+.features-scroll[data-active-feature="dashboard"] .scrolly__terminal {
+  background: linear-gradient(135deg, rgba(245, 224, 220, 0.14), transparent 70%) var(--ctp-crust);
+}
+
+.features-scroll[data-active-feature="prefetch"] .scrolly__terminal {
+  background: linear-gradient(135deg, rgba(235, 160, 172, 0.14), transparent 70%) var(--ctp-crust);
+}
+
+.features-scroll[data-active-feature="encoding"] .scrolly__terminal {
+  background: linear-gradient(135deg, rgba(148, 226, 213, 0.14), transparent 70%) var(--ctp-crust);
+}
+
+/* The window keeps the frame image's proportions and sits clear of the
+   left-hand cards. Container units size the body's corner radius. */
+.terminal-window {
+  position: absolute;
+  top: 50%;
+  right: clamp(var(--space-xl), 8vw, 140px);
+  width: min(52vw, 1000px);
+  aspect-ratio: 1427 / 892;
+  transform: translateY(-50%);
+  container-type: inline-size;
+}
+
+.terminal-window__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* The frame's body area as fractions of the image (measured from ptyxis.webp);
+   the clips letterbox inside it on the terminal's own background colour */
+.terminal-window__body {
+  position: absolute;
+  left: 1.822%;
+  top: 8.072%;
+  width: 96.356%;
+  height: 89.013%;
+  overflow: hidden;
+  background: #1c1c1e;
+  border-radius: 0 0 0.85cqw 0.85cqw;
+}
+
+.terminal-window__clip {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.terminal-window__clip.is-active {
+  opacity: 1;
+}
+
+/* ---- Card typography ---- */
+
+.feature-card__icon {
   width: 64px;
   height: 64px;
   color: var(--ctp-mauve);
   margin-bottom: var(--space-lg);
 }
 
-.feature-panel__icon svg {
+.feature-card__icon svg {
   width: 100%;
   height: 100%;
 }
 
-.feature-panel h3,
 .feature-card h3 {
-  font-size: 1.75rem;
-  margin-bottom: var(--space-md);
+  font-size: 1.25rem;
+  margin-bottom: var(--space-sm);
   color: var(--color-text);
 }
 
-.feature-panel p,
 .feature-card p {
   font-size: 1.125rem;
   color: var(--color-text-muted);
   line-height: 1.7;
   max-width: 450px;
-}
-
-/* Card overrides come after the shared panel typography so they win */
-.feature-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: var(--space-sm);
-}
-
-.feature-card p {
   margin: 0 0 var(--space-sm);
 }
 
@@ -928,99 +933,22 @@ html:not(.js-enabled) .scrolly__step {
   transform: scale(1.3);
 }
 
-/* Sticky monitor (right side) */
-.features-scroll__monitor {
-  padding: var(--space-xl);
-  padding-right: var(--space-2xl);
-  padding-top: 50vh; /* Monitor scrolls up into view */
-  padding-bottom: 15vh; /* Monitor releases earlier to scroll out with content */
-}
-
-/* Wrapper for sticky positioning */
-.monitor-sticky {
-  position: sticky;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 100%;
-  max-width: 600px;
-}
-
-/* Simple 16:9 monitor with thin dark bezel, no rounding */
-.monitor-frame {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #0a0a12;
-  border: 4px solid #0a0a12;
-  box-shadow: 0 0 60px rgba(203, 166, 247, 0.3);
-}
-
-.monitor-screen {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  background: #181825;
-}
-
-.monitor-screen.active {
-  opacity: 1;
-}
-
-.monitor-screen img,
-img.monitor-screen {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Features section end marker */
-.features-end {
-  padding: var(--space-2xl) 0;
-  display: flex;
-  justify-content: center;
-  background: var(--color-bg);
-}
-
-.features-end__line {
-  width: 100px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--ctp-mauve), var(--ctp-blue));
-  border-radius: 2px;
-  opacity: 0.5;
-}
-
 /* ==========================================
    RESPONSIVE - FEATURES SCROLL
    ========================================== */
 
 @media (max-width: 900px) {
-  .features-scroll__grid {
-    display: block;
-  }
-
-  .features-scroll__monitor {
-    display: none;
-  }
-
   .features-progress {
     display: none;
   }
 
-  .feature-panel {
-    min-height: auto;
-    opacity: 1;
-    padding: var(--space-xl) var(--space-lg);
-    margin: 0;
-  }
-
-  .features-scroll__content {
-    padding: 0;
-  }
-
-  .features-end {
-    padding: var(--space-xl) 0;
+  /* The window sits in the upper half, under the header and the hint */
+  .terminal-window {
+    top: calc(var(--space-xl) + 6rem);
+    right: var(--space-md);
+    left: var(--space-md);
+    width: auto;
+    transform: none;
   }
 
   /* Card across the bottom of the picture (no-script: sticky) */
@@ -1070,6 +998,11 @@ img.monitor-screen {
   .hero-video__scroll-hint,
   .js-enabled .scrolly__hint.is-visible {
     animation: none;
+  }
+
+  .scrolly__terminal,
+  .terminal-window__clip {
+    transition: none;
   }
 
   .hero-video__card {

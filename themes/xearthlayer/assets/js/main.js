@@ -58,13 +58,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // FEATURES SCROLLYTELLING
   // ==========================================
   const featuresSection = document.querySelector('.features-scroll');
-  const featurePanels = document.querySelectorAll('.feature-panel');
   const progressNav = document.getElementById('features-progress');
   const progressDots = document.querySelectorAll('.features-progress__dot');
-  const monitorScreens = document.querySelectorAll('.monitor-screen');
   const scrollyRoot = document.getElementById('scrolly');
+  const terminalClips = document.querySelectorAll('.terminal-window__clip');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (featuresSection && (featurePanels.length > 0 || scrollyRoot)) {
+  if (featuresSection && scrollyRoot) {
     // Show the progress dots while any part of the section is on screen.
     // The section is many viewports tall, so a fractional threshold
     // could never be met and the dots would stay hidden.
@@ -82,72 +82,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     progressObserver.observe(featuresSection);
 
-    // Feature panel activation
-    const panelObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const feature = entry.target.dataset.feature;
-          activateFeature(feature);
-        }
-      });
-    }, {
-      threshold: 0.5,
-      rootMargin: '-20% 0px -20% 0px'
-    });
+    function pauseClips() {
+      terminalClips.forEach(clip => { if (!clip.paused) clip.pause(); });
+    }
 
-    featurePanels.forEach(panel => {
-      panelObserver.observe(panel);
-    });
-
-    // Activate feature function
+    // A feature's card has appeared: tint the section, light its dot and,
+    // for the terminal features, show its clip and play it from the start.
+    // Clips hold on their last frame; reduced motion shows the poster only.
     function activateFeature(featureName) {
-      // Update section background color
       featuresSection.dataset.activeFeature = featureName;
 
-      // Update panels
-      featurePanels.forEach(panel => {
-        if (panel.dataset.feature === featureName) {
-          panel.classList.add('active');
-        } else {
-          panel.classList.remove('active');
-        }
-      });
-
-      // Update progress dots
       progressDots.forEach(dot => {
-        if (dot.dataset.feature === featureName) {
-          dot.classList.add('active');
-        } else {
-          dot.classList.remove('active');
-        }
+        dot.classList.toggle('active', dot.dataset.feature === featureName);
       });
 
-      // Update monitor screens
-      monitorScreens.forEach(screen => {
-        if (screen.dataset.feature === featureName) {
-          screen.classList.add('active');
-        } else {
-          screen.classList.remove('active');
+      terminalClips.forEach(clip => {
+        const active = clip.dataset.feature === featureName;
+        clip.classList.toggle('is-active', active);
+        if (!active) {
+          if (!clip.paused) clip.pause();
+          return;
         }
+        if (reduceMotion) return;
+        try { clip.currentTime = 0; } catch (e) { /* not loaded yet: starts at 0 anyway */ }
+        const playing = clip.play();
+        if (playing && playing.catch) playing.catch(() => {});
       });
     }
 
     // Set initial active feature (before the module, which may report another)
     activateFeature('streaming');
 
-    // Scroll-driven flight for the first features; it reports the active
-    // feature through the same activation path as the grid panels.
-    const scrolly = initScrolly(scrollyRoot, { onActivate: activateFeature });
+    // Scroll-driven story; it reports the active feature and scene changes.
+    const scrolly = initScrolly(scrollyRoot, {
+      onActivate: activateFeature,
+      onScene: (scene) => { if (scene !== 'terminal') pauseClips(); },
+    });
 
     // Progress dot click handlers
     progressDots.forEach(dot => {
       dot.addEventListener('click', function() {
         const feature = this.dataset.feature;
         if (scrolly && scrolly.scrollToHold(feature)) return;
-        const targetPanel = document.querySelector(`.feature-panel[data-feature="${feature}"]`);
-        if (targetPanel) {
-          targetPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        featuresSection.scrollIntoView({ behavior: 'smooth' });
       });
     });
   }
