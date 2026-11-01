@@ -12,6 +12,10 @@
  * waiting for it to pin. The manifest in data-scrolly comes from
  * scripts/extract-scrolly-frames.py.
  *
+ * options.onTrack(inTrack) reports when the stage pins and unpins, so the
+ * page can show things, such as the progress dots, only while the story
+ * is running.
+ *
  * A step may name a scene with `data-scene`; while such a step is current
  * the root carries `is-<scene>` and options.onScene(scene) is called, which
  * the terminal steps use to show the terminal layer over the picture. A
@@ -45,6 +49,7 @@ export function initScrolly(root, options = {}) {
 
   const onActivate = typeof options.onActivate === 'function' ? options.onActivate : () => {};
   const onScene = typeof options.onScene === 'function' ? options.onScene : () => {};
+  const onTrack = typeof options.onTrack === 'function' ? options.onTrack : () => {};
   const debugMatch = /[?&]scrolly-debug=([0-9.]+)/.exec(window.location.search);
   const debug = debugMatch ? Math.min(Math.max(parseFloat(debugMatch[1]) || 0, 0), 1) : null;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -190,6 +195,7 @@ export function initScrolly(root, options = {}) {
   // ---- Progress
   let activeStep = null;
   let activeScene = null;
+  let wasInTrack = null;
   let rafPending = false;
 
   function progressPosition() {
@@ -213,6 +219,10 @@ export function initScrolly(root, options = {}) {
     wanted = Math.round(p.from + (p.to - p.from) * t);
 
     const inTrack = s >= 0 && s < last.end;
+    if (inTrack !== wasInTrack) {
+      wasInTrack = inTrack;
+      onTrack(inTrack);
+    }
     trackIdle(s, inTrack);
     const scene = s > plan[0].start ? p.scene : null;
     if (scene !== activeScene) {

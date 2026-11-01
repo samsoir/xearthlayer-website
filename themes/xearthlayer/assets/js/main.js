@@ -65,23 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (featuresSection && scrollyRoot) {
-    // Show the progress dots while any part of the section is on screen.
-    // The section is many viewports tall, so a fractional threshold
-    // could never be met and the dots would stay hidden.
-    const progressObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (progressNav) {
-          if (entry.isIntersecting) {
-            progressNav.classList.add('visible');
-          } else {
-            progressNav.classList.remove('visible');
-          }
-        }
-      });
-    }, { threshold: 0 });
-
-    progressObserver.observe(featuresSection);
-
     function pauseClips() {
       terminalClips.forEach(clip => { if (!clip.paused) clip.pause(); });
     }
@@ -116,6 +99,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Scroll-driven story; it reports the active feature and scene changes.
     const scrolly = initScrolly(scrollyRoot, {
       onActivate: activateFeature,
+      // The dots show only while the stage is pinned, which is the story
+      // proper: not the hero, not the sections after it.
+      onTrack: (inTrack) => { if (progressNav) progressNav.classList.toggle('visible', inTrack); },
       onScene: (scene) => {
         if (scene !== 'terminal') {
           pauseClips();
