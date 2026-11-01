@@ -54,7 +54,7 @@
     <button class="features-progress__dot" data-feature="packages" aria-label="Easy Package Management"></button>
     <button class="features-progress__dot" data-feature="dashboard" aria-label="Live Terminal Dashboard"></button>
     <button class="features-progress__dot" data-feature="prefetch" aria-label="Efficient Prefetching"></button>
-    <button class="features-progress__dot" data-feature="encoding" aria-label="SIMD and GPU Acceleration"></button>
+    <button class="features-progress__dot" data-feature="encoding" aria-label="Hardware Acceleration"></button>
   </nav>
 
   <!-- Scroll-driven flight: a sticky stage and the steps that give it scroll length -->
@@ -75,7 +75,8 @@
           {{ partial "icon.html" (dict "name" "streaming" "size" 48) }}
         </div>
         <h3>High-Quality Streaming Ortho</h3>
-        <p>Satellite imagery streams in as you fly and is built into full-resolution textures on your machine. Packages carry only the terrain, so a whole region fits in a few gigabytes, and five of the imagery providers need no account.</p>
+        <p>Satellite imagery streams in as you fly from popular mapping services to create the world around you.</p>
+        <p>Scenery packages carry only the terrain data, ensuring whole regions easily fit on your disk.</p>
       </div>
     </article>
 
@@ -85,7 +86,8 @@
           {{ partial "icon.html" (dict "name" "night" "size" 48) }}
         </div>
         <h3>Cities Light Up at Night</h3>
-        <p>Ortho scenery used to leave cities dark after sunset. XEarthLayer lights them from NASA's night lights and your own X-Plane art, so a large city glows brighter than a small one and open country stays dark.</p>
+        <p>Ortho scenery used to leave cities in the dark after sunset. XEarthLayer lights urban life using real-world luminance data from NASA's Black Marble program combined with the existing X-Plane night lighting artwork.</p>
+        <p>NASA's luminance data ensures that large city centers glow brighter than residential suburbs, and the lighting color adopts the appropriate hue for the type of district across the globe.</p>
       </div>
     </article>
 
@@ -99,7 +101,7 @@
           {{ partial "icon.html" (dict "name" "packages" "size" 48) }}
         </div>
         <h3>Easy Package Management</h3>
-        <p>Choose from seventeen regions in a full-screen package manager, and install, update or remove them in a few keystrokes. Fly with SimHeaven X-World Pro? XEarthLayer steps aside for it on the continents it covers.</p>
+        <p>Choose the regions you want to fly in a full-screen TUI package manager, ensuring that installing, updating or removing global scenery is easy. Fly with SimHeaven X-World Pro? XEarthLayer steps aside for it on the continents it covers.</p>
       </article>
 
       <article class="feature-panel" data-feature="dashboard">
@@ -115,15 +117,16 @@
           {{ partial "icon.html" (dict "name" "prefetch" "size" 48) }}
         </div>
         <h3>Efficient Prefetching</h3>
-        <p>XEarthLayer follows your aircraft through X-Plane and loads tiles ahead of it, in a lane of its own that never delays a tile X-Plane is waiting for. It holds back on takeoff, so departure scenery loads first.</p>
+        <p>XEarthLayer follows your aircraft through X-Plane and prepares the world before the simulator needs it, reducing sim stalls, stutters and freezes that can occur with these systems.</p>
+        <p>Already know your flight route before departure? XEarthLayer can preload the departure scenery before you start flying for faster startup times.</p>
       </article>
 
       <article class="feature-panel" data-feature="encoding">
         <div class="feature-panel__icon">
           {{ partial "icon.html" (dict "name" "encoding" "size" 48) }}
         </div>
-        <h3>SIMD and GPU Acceleration</h3>
-        <p>Textures are compressed with SIMD kernels, five to ten times faster than plain software encoding. With a spare GPU, XEarthLayer can encode there instead and leave your main card to X-Plane.</p>
+        <h3>Hardware Acceleration</h3>
+        <p>Textures are compressed for X-Plane in real time using hardware acceleration on the CPU, five to ten times faster than plain software encoding. If you have a spare integrated GPU, XEarthLayer uses this to encode even faster while leaving your main graphics card for X-Plane.</p>
       </article>
     </div>
 
