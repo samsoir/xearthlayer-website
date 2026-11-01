@@ -116,8 +116,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Scroll-driven story; it reports the active feature and scene changes.
     const scrolly = initScrolly(scrollyRoot, {
       onActivate: activateFeature,
-      onScene: (scene) => { if (scene !== 'terminal') pauseClips(); },
+      onScene: (scene) => {
+        if (scene !== 'terminal') {
+          pauseClips();
+          return;
+        }
+        // Entering the terminal scene: start fetching the clips, and show the
+        // first poster so the window is not empty before its card lands.
+        terminalClips.forEach(clip => { clip.preload = 'auto'; });
+        const shown = Array.from(terminalClips).some(clip => clip.classList.contains('is-active'));
+        if (!shown && terminalClips[0]) terminalClips[0].classList.add('is-active');
+      },
     });
+
+    // Without the module (bad manifest, no canvas) the cards would never
+    // activate; show them all so the section still reads.
+    if (!scrolly) {
+      scrollyRoot.querySelectorAll('.scrolly__step').forEach(step => step.classList.add('is-active'));
+    }
 
     // Progress dot click handlers
     progressDots.forEach(dot => {

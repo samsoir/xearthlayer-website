@@ -816,12 +816,13 @@ html:not(.js-enabled) .scrolly__step {
 }
 
 /* The window keeps the frame image's proportions and sits clear of the
-   left-hand cards. Container units size the body's corner radius. */
+   left-hand cards: the third width term is the room left beside a card.
+   Container units size the body's corner radius. */
 .terminal-window {
   position: absolute;
   top: 50%;
   right: clamp(var(--space-xl), 8vw, 140px);
-  width: min(52vw, 1000px);
+  width: min(52vw, 1000px, calc(100vw - 2 * clamp(var(--space-xl), 8vw, 140px) - min(440px, 42vw) - var(--space-lg)));
   aspect-ratio: 1427 / 892;
   transform: translateY(-50%);
   container-type: inline-size;
@@ -944,7 +945,7 @@ html:not(.js-enabled) .scrolly__step {
 
   /* The window sits in the upper half, under the header and the hint */
   .terminal-window {
-    top: calc(var(--space-xl) + 6rem);
+    top: 8.5rem;
     right: var(--space-md);
     left: var(--space-md);
     width: auto;
@@ -974,14 +975,19 @@ html:not(.js-enabled) .scrolly__step {
     transform: none;
   }
 
+  /* Shorter cards leave more of the picture and the window uncovered */
   .feature-card {
     padding: var(--space-lg);
+  }
+
+  .feature-card__icon {
+    display: none;
   }
 
   /* The card takes the bottom of the picture; the hint sits under the header */
   .scrolly__hint {
     bottom: auto;
-    top: calc(var(--space-xl) + 3rem);
+    top: calc(var(--space-xl) + 1.5rem);
   }
 }
 

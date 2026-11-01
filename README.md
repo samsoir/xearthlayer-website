@@ -110,7 +110,7 @@ For each clip, with `FROM` and `TO` in seconds:
 
     ffmpeg -ss FROM -to TO -i Scrollytale-terminal.mov -an -vf "scale=1920:-2,format=yuv420p" -c:v libx264 -preset slow -crf 22 -movflags +faststart static/video/terminal-NAME.mp4
     ffmpeg -ss FROM -to TO -i Scrollytale-terminal.mov -an -vf "scale=1920:-2,format=yuv420p" -c:v libvpx-vp9 -crf 32 -b:v 0 -row-mt 1 static/video/terminal-NAME.webm
-    ffmpeg -ss FROM -i Scrollytale-terminal.mov -frames:v 1 -vf scale=1920:-2 -c:v libwebp -quality 82 static/images/terminal/NAME.webp
+    ffmpeg -ss FROM -i Scrollytale-terminal.mov -frames:v 1 -vf scale=1920:-2 -c:v libwebp -quality 70 static/images/terminal/NAME.webp
 
 ## App Version Sync
 

@@ -239,7 +239,9 @@ export function initScrolly(root, options = {}) {
 
   // ---- Scroll hint
   const hint = root.querySelector('.scrolly__hint');
-  const HINT_DELAY_MS = debug !== null ? 0 : 2500;
+  // A scene (the terminal clips) is worth watching for a while, so the hint
+  // waits longer there than on a held picture.
+  const hintDelay = () => (debug !== null ? 0 : (activeScene ? 8000 : 2500));
   let hintTimer = 0;
   let lastPosition = null;
 
@@ -249,7 +251,7 @@ export function initScrolly(root, options = {}) {
     hint.classList.remove('is-visible');
     window.clearTimeout(hintTimer);
     if (inTrack) {
-      hintTimer = window.setTimeout(() => hint.classList.add('is-visible'), HINT_DELAY_MS);
+      hintTimer = window.setTimeout(() => hint.classList.add('is-visible'), hintDelay());
     }
   }
 
