@@ -1090,7 +1090,6 @@ section {
 /* The features end marker above already supplies the top spacing */
 .download {
   text-align: center;
-  padding-top: 0;
   padding-bottom: var(--space-xl);
   scroll-margin-top: 6rem;
 }
