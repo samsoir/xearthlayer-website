@@ -19,7 +19,7 @@ Patched regions completely replace package files for those 1 degree by 1 degree 
 Place your Ortho4XP output folders inside the patches directory:
 
 {{< code lang="text" copy="false" >}}
-~/.xearthlayer/patches/
+~/.local/share/xearthlayer/patches/
 ├── A_MyRegion/
 │   ├── Earth nav data/
 │   │   └── +40-080/
@@ -46,18 +46,24 @@ Alphabetical naming controls priority when patches overlap. A folder named `A_Hi
 
 ## Configuration
 
-Patches are enabled by default. The relevant settings live in the `[patches]` section of `~/.xearthlayer/config.ini`:
+Patches are enabled by default. The relevant settings live in the `[patches]` section of `config.ini`, and the patches directory is in XEarthLayer's data directory:
+
+{{< paths "data" >}}
 
 {{< code lang="ini" copy="true" >}}
 [patches]
 enabled = true
-directory = ~/.xearthlayer/patches
+directory = ~/.local/share/xearthlayer/patches
 {{< /code >}}
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `enabled` | `true` | Enable or disable the patches system |
-| `directory` | `~/.xearthlayer/patches` | Path to the directory containing your patch folders |
+| `directory` | `~/.local/share/xearthlayer/patches` (`~/Library/Application Support/XEarthLayer/patches` on macOS) | Path to the directory containing your patch folders |
+
+{{< callout type="warning" >}}
+The 0.5.0 migration never moves patches: they are the one thing on disk that cannot be regenerated. If yours are still in `~/.xearthlayer/patches`, that path is pinned in your configuration and keeps working. Move them yourself if you want them in the new location, and set `patches.directory` in the same breath.
+{{< /callout >}}
 
 You can also manage patches from the command line. See the [CLI Reference](/docs/cli-reference/) for available `xearthlayer patches` commands.
 

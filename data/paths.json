@@ -1,0 +1,28 @@
+{
+  "roles": [
+    {
+      "key": "config",
+      "label": "Configuration",
+      "linux": "~/.config/xearthlayer/",
+      "macos": "~/Library/Application Support/XEarthLayer/"
+    },
+    {
+      "key": "cache",
+      "label": "Tile cache and indexes",
+      "linux": "~/.cache/xearthlayer/",
+      "macos": "~/Library/Caches/XEarthLayer/"
+    },
+    {
+      "key": "data",
+      "label": "Packages and patches",
+      "linux": "~/.local/share/xearthlayer/",
+      "macos": "~/Library/Application Support/XEarthLayer/"
+    },
+    {
+      "key": "state",
+      "label": "Logs and run state",
+      "linux": "~/.local/state/xearthlayer/",
+      "macos": "~/Library/Logs/XEarthLayer/"
+    }
+  ]
+}

@@ -24,6 +24,7 @@
   --ctp-lavender: #b4befe;
   --ctp-pink: #f5c2e7;
   --ctp-rosewater: #f5e0dc;
+  --ctp-teal: #94e2d5;
 
   /* Semantic colors */
   --color-bg: var(--ctp-base);
@@ -59,6 +60,7 @@
   --ctp-latte-lavender: #7287fd;
   --ctp-latte-pink: #ea76cb;
   --ctp-latte-rosewater: #dc8a78;
+  --ctp-latte-teal: #179299;
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -248,15 +250,16 @@ tr:hover td {
   color: var(--color-text);
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-md);
 }
 
 .nav-logo:hover {
   color: var(--color-primary);
 }
 
-.nav-logo svg {
-  width: 32px;
+.nav-logo img {
+  display: block;
+  width: auto;
   height: 32px;
 }
 
@@ -509,9 +512,11 @@ tr:hover td {
   margin: 0 auto var(--space-md);
 }
 
-.hero-video__logo svg {
-  width: 100%;
+.hero-video__logo img {
+  display: block;
+  width: auto;
   height: 100%;
+  margin: 0 auto;
 }
 
 .hero-video__card h1 {
@@ -546,9 +551,9 @@ tr:hover td {
 }
 
 .hero-video__platform {
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--color-text-muted);
-  margin: var(--space-xs) 0 0 0;
+  margin: var(--space-sm) 0 0 0;
   opacity: 0.8;
 }
 
@@ -611,113 +616,282 @@ tr:hover td {
    ========================================== */
 
 .features-scroll {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: stretch; /* Ensure both columns are same height */
-  min-height: 100vh;
-  background: var(--color-bg);
   position: relative;
+  padding: 0;
+  background: var(--ctp-crust);
 }
 
-/* Section header */
-.features-scroll__header {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: var(--space-2xl) var(--space-lg) var(--space-xl);
+/* ---- Scroll-driven flight ---- */
+
+.scrolly {
+  position: relative;
+  background: #000;
 }
 
-.features-scroll__header h2 {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  margin-bottom: var(--space-md);
+.scrolly__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: #000;
 }
 
-.features-scroll__header p {
-  color: var(--color-text-muted);
-  max-width: 600px;
-  margin: 0 auto;
+.scrolly__poster,
+.scrolly__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-/* Feature panels (left side) */
-.features-scroll__content {
-  display: flex;
-  flex-direction: column;
-  padding: 0 var(--space-xl);
-  padding-left: 10%;
+.scrolly__canvas {
+  display: none;
 }
 
-.feature-panel {
+.js-enabled .scrolly.is-ready .scrolly__canvas {
+  display: block;
+}
+
+.scrolly.is-ready .scrolly__poster {
+  visibility: hidden;
+}
+
+/* Steps give the track its scroll length; the first one tucks under the stage */
+.scrolly__step {
+  position: relative;
+  min-height: var(--step-length, 200vh);
+  pointer-events: none;
+}
+
+.scrolly__stage + .scrolly__step {
+  margin-top: -100vh;
+  margin-top: -100svh;
+}
+
+/* The stage unpins a viewport before the track ends, so the last step gets
+   a viewport more to keep its card on screen as long as the others */
+.scrolly__step:last-child {
+  min-height: calc(var(--step-length, 200vh) + 100vh);
+  min-height: calc(var(--step-length, 200vh) + 100svh);
+}
+
+html:not(.js-enabled) .scrolly__step {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: var(--space-xl) var(--space-xl);
-  opacity: 0.3;
-  transition: opacity 0.5s ease, background-color 0.5s ease;
-  margin: 0 calc(-1 * var(--space-xl));
-  border-radius: var(--radius-lg);
 }
 
-.feature-panel.active {
+.scrolly__card {
+  position: sticky;
+  top: 50vh;
+  top: 50svh;
+  transform: translateY(-50%);
+  width: min(440px, 42vw);
+  pointer-events: auto;
+}
+
+.scrolly__step--right .scrolly__card {
+  margin-left: auto;
+  margin-right: clamp(var(--space-xl), 8vw, 140px);
+}
+
+.scrolly__step--left .scrolly__card {
+  margin-right: auto;
+  margin-left: clamp(var(--space-xl), 8vw, 140px);
+}
+
+.js-enabled .scrolly__card {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.scrolly__step.is-active .scrolly__card {
   opacity: 1;
 }
 
-/* Full-width background colors - applied to entire section via JS */
-.features-scroll {
-  transition: background-color 0.6s ease;
+/* With script, cards are fixed overlays so they hold still while active */
+.js-enabled .scrolly__card {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  margin: 0;
+  pointer-events: none;
 }
 
-/* Background colors per feature - Catppuccin Mocha palette (increased saturation) */
-.features-scroll[data-active-feature="streaming"] {
-  background: linear-gradient(135deg, rgba(137, 220, 235, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
+.js-enabled .scrolly__step--right .scrolly__card {
+  right: clamp(var(--space-xl), 8vw, 140px);
 }
 
-.features-scroll[data-active-feature="providers"] {
-  background: linear-gradient(135deg, rgba(148, 226, 213, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
+.js-enabled .scrolly__step--left .scrolly__card {
+  left: clamp(var(--space-xl), 8vw, 140px);
 }
 
-.features-scroll[data-active-feature="loading"] {
-  background: linear-gradient(135deg, rgba(249, 226, 175, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
+.js-enabled .scrolly__step.is-active .scrolly__card {
+  pointer-events: auto;
 }
 
-.features-scroll[data-active-feature="caching"] {
-  background: linear-gradient(135deg, rgba(250, 179, 135, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
+/* Story card: flat, opaque, off-black. Unlike the hero card there is no
+   glass, blur, shadow or lift; it reads as a solid panel over the picture.
+   Not interactive: no hover state, no transition. */
+.feature-card {
+  background: var(--ctp-crust);
+  border: 1px solid var(--ctp-surface0);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
 }
 
-.features-scroll[data-active-feature="prefetch"] {
-  background: linear-gradient(135deg, rgba(235, 160, 172, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
+/* Debug badge, only rendered with ?scrolly-debug */
+.scrolly__badge {
+  position: absolute;
+  left: var(--space-md);
+  bottom: var(--space-md);
+  padding: 0.25rem 0.5rem;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font: 14px/1.4 monospace;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 2;
 }
 
-.features-scroll[data-active-feature="dashboard"] {
-  background: linear-gradient(135deg, rgba(245, 224, 220, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
+/* Scroll hint: scrolly.js shows it when the stage is pinned and the reader
+   has not scrolled for a while, so a pause on a card does not read as the
+   end of the page. Hidden without script. */
+.scrolly__hint {
+  position: absolute;
+  bottom: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
-.features-scroll[data-active-feature="packages"] {
-  background: linear-gradient(135deg, rgba(203, 166, 247, 0.15) 0%, rgba(30, 30, 46, 0.98) 100%);
+.js-enabled .scrolly__hint.is-visible {
+  opacity: 1;
+  animation: bounce 2s infinite;
 }
 
-.feature-panel__icon {
+/* ---- Terminal scene: a Ptyxis window over the section tint ---- */
+
+/* Covers the picture once the story reaches the terminal steps */
+.scrolly__terminal {
+  position: absolute;
+  inset: 0;
+  background: var(--ctp-crust);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+.js-enabled .scrolly.is-terminal .scrolly__terminal {
+  opacity: 1;
+}
+
+/* A hint of each feature's colour over opaque crust, darker than the old grid */
+.features-scroll[data-active-feature="packages"] .scrolly__terminal {
+  background: linear-gradient(135deg, rgba(203, 166, 247, 0.14), transparent 70%) var(--ctp-crust);
+}
+
+.features-scroll[data-active-feature="dashboard"] .scrolly__terminal {
+  background: linear-gradient(135deg, rgba(245, 224, 220, 0.14), transparent 70%) var(--ctp-crust);
+}
+
+.features-scroll[data-active-feature="prefetch"] .scrolly__terminal {
+  background: linear-gradient(135deg, rgba(235, 160, 172, 0.14), transparent 70%) var(--ctp-crust);
+}
+
+.features-scroll[data-active-feature="encoding"] .scrolly__terminal {
+  background: linear-gradient(135deg, rgba(148, 226, 213, 0.14), transparent 70%) var(--ctp-crust);
+}
+
+/* The window keeps the frame image's proportions and sits clear of the
+   left-hand cards: the third width term is the room left beside a card.
+   Container units size the body's corner radius. */
+.terminal-window {
+  position: absolute;
+  top: 50%;
+  right: clamp(var(--space-xl), 8vw, 140px);
+  width: min(52vw, 1000px, calc(100vw - 2 * clamp(var(--space-xl), 8vw, 140px) - min(440px, 42vw) - var(--space-lg)));
+  aspect-ratio: 1427 / 892;
+  transform: translateY(-50%);
+  container-type: inline-size;
+}
+
+.terminal-window__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* The frame's body area as fractions of the image (measured from ptyxis.webp);
+   the clips letterbox inside it on the terminal's own background colour */
+.terminal-window__body {
+  position: absolute;
+  left: 1.822%;
+  top: 8.072%;
+  width: 96.356%;
+  height: 89.013%;
+  overflow: hidden;
+  background: #1c1c1e;
+  border-radius: 0 0 0.85cqw 0.85cqw;
+}
+
+.terminal-window__clip {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.terminal-window__clip.is-active {
+  opacity: 1;
+}
+
+/* ---- Card typography ---- */
+
+.feature-card__icon {
   width: 64px;
   height: 64px;
   color: var(--ctp-mauve);
   margin-bottom: var(--space-lg);
 }
 
-.feature-panel__icon svg {
+.feature-card__icon svg {
   width: 100%;
   height: 100%;
 }
 
-.feature-panel h3 {
-  font-size: 1.75rem;
-  margin-bottom: var(--space-md);
+.feature-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: var(--space-sm);
   color: var(--color-text);
 }
 
-.feature-panel p {
+.feature-card p {
   font-size: 1.125rem;
   color: var(--color-text-muted);
   line-height: 1.7;
   max-width: 450px;
+  margin: 0 0 var(--space-sm);
+}
+
+.feature-card p:last-child {
+  margin-bottom: 0;
 }
 
 /* Progress indicator dots (right side) */
@@ -760,99 +934,60 @@ tr:hover td {
   transform: scale(1.3);
 }
 
-/* Sticky monitor (right side) */
-.features-scroll__monitor {
-  padding: var(--space-xl);
-  padding-right: var(--space-2xl);
-  padding-top: 50vh; /* Monitor scrolls up into view */
-  padding-bottom: 15vh; /* Monitor releases earlier to scroll out with content */
-}
-
-/* Wrapper for sticky positioning */
-.monitor-sticky {
-  position: sticky;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 100%;
-  max-width: 600px;
-}
-
-/* Simple 16:9 monitor with thin dark bezel, no rounding */
-.monitor-frame {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #0a0a12;
-  border: 4px solid #0a0a12;
-  box-shadow: 0 0 60px rgba(203, 166, 247, 0.3);
-}
-
-.monitor-screen {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  background: #181825;
-}
-
-.monitor-screen.active {
-  opacity: 1;
-}
-
-.monitor-screen img,
-img.monitor-screen {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Features section end marker */
-.features-end {
-  padding: var(--space-2xl) 0;
-  display: flex;
-  justify-content: center;
-  background: var(--color-bg);
-}
-
-.features-end__line {
-  width: 100px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--ctp-mauve), var(--ctp-blue));
-  border-radius: 2px;
-  opacity: 0.5;
-}
-
 /* ==========================================
    RESPONSIVE - FEATURES SCROLL
    ========================================== */
 
 @media (max-width: 900px) {
-  .features-scroll {
-    display: block;
-  }
-
-  .features-scroll__monitor {
-    display: none;
-  }
-
   .features-progress {
     display: none;
   }
 
-  .feature-panel {
-    min-height: auto;
-    opacity: 1;
-    padding: var(--space-xl) var(--space-lg);
-    margin: 0;
+  /* The window sits in the upper half, under the header and the hint */
+  .terminal-window {
+    top: 8.5rem;
+    right: var(--space-md);
+    left: var(--space-md);
+    width: auto;
+    transform: none;
   }
 
-  .features-scroll__content {
-    padding: 0;
+  /* Card across the bottom of the picture (no-script: sticky) */
+  html:not(.js-enabled) .scrolly__card,
+  html:not(.js-enabled) .scrolly__step--right .scrolly__card,
+  html:not(.js-enabled) .scrolly__step--left .scrolly__card {
+    width: auto;
+    margin: 0 var(--space-md);
+    top: calc(100vh - var(--space-lg));
+    top: calc(100svh - var(--space-lg));
+    transform: translateY(-100%);
   }
 
-  .features-end {
-    padding: var(--space-xl) 0;
+  /* With script: fixed across the bottom, inset by the side gutters */
+  .js-enabled .scrolly__card,
+  .js-enabled .scrolly__step--right .scrolly__card,
+  .js-enabled .scrolly__step--left .scrolly__card {
+    top: auto;
+    bottom: var(--space-lg);
+    left: var(--space-md);
+    right: var(--space-md);
+    width: auto;
+    transform: none;
+  }
+
+  /* Shorter cards leave more of the picture and the window uncovered */
+  .feature-card {
+    padding: var(--space-lg);
+  }
+
+  .feature-card__icon {
+    display: none;
+  }
+
+  /* The card takes the bottom of the picture; the hint sits under the header */
+  .scrolly__hint {
+    bottom: auto;
+    top: calc(var(--space-xl) + 1.5rem);
   }
 }
 
@@ -866,8 +1001,14 @@ img.monitor-screen {
     background: url('/images/hero-poster.jpg') center/cover no-repeat;
   }
 
-  .hero-video__scroll-hint {
+  .hero-video__scroll-hint,
+  .js-enabled .scrolly__hint.is-visible {
     animation: none;
+  }
+
+  .scrolly__terminal,
+  .terminal-window__clip {
+    transition: none;
   }
 
   .hero-video__card {
@@ -945,61 +1086,12 @@ section {
   margin: 0 auto;
 }
 
-/* Features Section */
-.features {
-  background: var(--color-bg-alt);
-}
-
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--space-lg);
-}
-
-.feature-card {
-  background: var(--color-bg);
-  padding: var(--space-lg);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--ctp-surface0);
-  transition: all 0.2s ease;
-}
-
-.feature-card:hover {
-  border-color: var(--ctp-mauve);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-}
-
-.feature-icon {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, var(--ctp-mauve), var(--ctp-blue));
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: var(--space-md);
-  color: var(--ctp-crust);
-}
-
-.feature-icon svg {
-  width: 24px;
-  height: 24px;
-}
-
-.feature-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: var(--space-sm);
-}
-
-.feature-card p {
-  color: var(--color-text-muted);
-  margin: 0;
-}
-
 /* Download Section */
+/* The features end marker above already supplies the top spacing */
 .download {
   text-align: center;
+  padding-bottom: var(--space-xl);
+  scroll-margin-top: 6rem;
 }
 
 .download-cta {
@@ -1009,9 +1101,133 @@ section {
   gap: var(--space-md);
 }
 
+/* Platform segmented control: one segment per platform, each with its own panel */
+.platform-switch {
+  display: inline-flex;
+  padding: var(--space-xs);
+  background: var(--ctp-mantle);
+  border: 1px solid var(--ctp-surface0);
+  border-radius: 999px;
+  margin-bottom: var(--space-lg);
+}
+
+.platform-switch__segment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 128px;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-lg);
+  background: none;
+  border: none;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.platform-switch__segment:hover {
+  color: var(--color-text);
+}
+
+.platform-switch__segment.active {
+  background: var(--ctp-surface0);
+  color: var(--color-text);
+}
+
+.platform-switch__segment:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.platform-switch__icon {
+  flex-shrink: 0;
+}
+
+.platform-switch__badge {
+  margin-left: calc(-1 * var(--space-xs));
+  color: var(--ctp-teal);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.platform-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  max-width: 460px;
+}
+
+.platform-panel[hidden] {
+  display: none;
+}
+
+.platform-steps {
+  list-style: none;
+  counter-reset: platform-step;
+  width: 100%;
+  margin: var(--space-lg) 0 0;
+  padding: 0;
+  text-align: left;
+}
+
+.platform-steps li {
+  counter-increment: platform-step;
+  position: relative;
+  padding: var(--space-xs) 0 var(--space-xs) 2.25rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.platform-steps li::before {
+  content: counter(platform-step);
+  position: absolute;
+  left: 0;
+  top: var(--space-xs);
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--ctp-surface0);
+  color: var(--color-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  text-align: center;
+}
+
+.platform-steps code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--color-text);
+}
+
+.platform-steps a,
+.platform-guide {
+  color: var(--color-link);
+}
+
+.platform-steps a:hover,
+.platform-guide:hover {
+  color: var(--color-link-hover);
+}
+
+.platform-guide {
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
 .download-dropdown {
   position: relative;
   display: inline-block;
+}
+
+.download-btn__icon {
+  flex-shrink: 0;
 }
 
 .btn-large {
@@ -1022,6 +1238,21 @@ section {
 .download-btn {
   min-width: 280px;
   justify-content: center;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .download-btn {
+    min-width: 0;
+    width: 100%;
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+
+  .download-dropdown {
+    width: 100%;
+  }
 }
 
 .download-btn .dropdown-arrow {
@@ -1175,6 +1406,14 @@ section {
   font-size: 1.1rem;
   font-weight: 500;
   letter-spacing: 0.05em;
+}
+
+.requirements-note {
+  max-width: 900px;
+  margin: var(--space-lg) auto 0;
+  text-align: center;
+  color: var(--ctp-subtext1);
+  font-size: 0.95rem;
 }
 
 .requirement-card li.optional {
@@ -1389,10 +1628,24 @@ section {
 .docs-layout {
   display: grid;
   grid-template-columns: 250px 1fr;
-  gap: var(--space-xl);
+  /* Horizontal space around the content column lives entirely in
+     .docs-content's padding, so it is equal on both sides */
+  gap: 0;
   padding-top: 80px;
   min-height: 100vh;
-  padding-right: var(--space-lg);
+  --docs-gutter: 7.5rem;
+}
+
+@media (max-width: 1100px) {
+  .docs-layout {
+    --docs-gutter: 4.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .docs-layout {
+    --docs-gutter: 24px;
+  }
 }
 
 .docs-sidebar {
@@ -1458,9 +1711,17 @@ section {
 }
 
 .docs-content {
-  padding: var(--space-lg);
+  padding: var(--space-lg) var(--docs-gutter);
   min-width: 0;
   overflow-x: auto;
+  /* Reading text: above the 16px site default, looser leading */
+  font-size: 19px;
+  line-height: 1.7;
+}
+
+/* Paragraph spacing follows the docs text size rather than the root rem */
+.docs-content p {
+  margin-bottom: 1em;
 }
 
 .docs-content h1 {
@@ -1471,7 +1732,10 @@ section {
 }
 
 .docs-content h2 {
-  margin-top: var(--space-xl);
+  /* A little more than --space-xl (4rem) to separate sections */
+  margin-top: 4.75rem;
+  /* Breathing room before the section's first paragraph */
+  margin-bottom: 1.5rem;
   color: #b4befe;
 }
 
@@ -1495,10 +1759,17 @@ section {
   border-radius: var(--radius-md);
 }
 
+/* The tile anatomy diagram is dense; at 75% its labels get too small */
+.docs-content img[src$="tile-anatomy.svg"] {
+  max-width: 100%;
+}
+
 /* Docs description */
 .docs-description {
   color: var(--ctp-subtext0);
-  font-size: 1.1rem;
+  /* Lede: clearly larger than the 19px body copy, same weight */
+  font-size: 1.45rem;
+  line-height: 1.45;
   margin-bottom: var(--space-lg);
 }
 
@@ -1565,10 +1836,6 @@ section {
 
 .docs-layout--with-toc .docs-toc-sidebar {
   border-right: 1px solid var(--ctp-surface0);
-}
-
-.docs-layout--with-toc .docs-content {
-  padding-left: var(--space-xl);
 }
 
 .docs-toc-sidebar {
@@ -1676,44 +1943,70 @@ section {
   background-position: center;
 }
 
+/* Per-page icons, keyed on data-doc="<slug>" emitted by layouts/docs/list.html
+   from the quicklinks list in content/docs/_index.md. Reordering the list does
+   not affect which icon a card gets. */
+
 /* Lightbulb icon for How It Works */
-.docs-quicklinks li:nth-child(1)::before {
+.docs-quicklinks li[data-doc="how-it-works"]::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23f9e2af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5'%3E%3C/path%3E%3Cpath d='M9 18h6'%3E%3C/path%3E%3Cpath d='M10 22h4'%3E%3C/path%3E%3C/svg%3E");
 }
 
 /* Rocket icon for Getting Started */
-.docs-quicklinks li:nth-child(2)::before {
+.docs-quicklinks li[data-doc="getting-started"]::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2389b4fa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z'%3E%3C/path%3E%3Cpath d='m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z'%3E%3C/path%3E%3Cpath d='M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0'%3E%3C/path%3E%3Cpath d='M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5'%3E%3C/path%3E%3C/svg%3E");
 }
 
 /* Cog/Settings icon for Configuration */
-.docs-quicklinks li:nth-child(3)::before {
+.docs-quicklinks li[data-doc="configuration"]::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a6e3a1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z'%3E%3C/path%3E%3Ccircle cx='12' cy='12' r='3'%3E%3C/circle%3E%3C/svg%3E");
 }
 
 /* Terminal icon for CLI Reference */
-.docs-quicklinks li:nth-child(4)::before {
+.docs-quicklinks li[data-doc="cli-reference"]::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fab387' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 17 10 11 4 5'%3E%3C/polyline%3E%3Cline x1='12' x2='20' y1='19' y2='19'%3E%3C/line%3E%3C/svg%3E");
 }
 
 /* Package icon for Package Management */
-.docs-quicklinks li:nth-child(5)::before {
+.docs-quicklinks li[data-doc="packages"]::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23cba6f7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7.5 4.27 9 5.15'%3E%3C/path%3E%3Cpath d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z'%3E%3C/path%3E%3Cpath d='m3.3 7 8.7 5 8.7-5'%3E%3C/path%3E%3Cpath d='M12 22V12'%3E%3C/path%3E%3C/svg%3E");
 }
 
 /* Monitor icon for X-Plane 12 Setup */
-.docs-quicklinks li:nth-child(6)::before {
+.docs-quicklinks li[data-doc="x-plane-configuration"]::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394e2d5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='20' height='14' x='2' y='3' rx='2'%3E%3C/rect%3E%3Cline x1='8' x2='16' y1='21' y2='21'%3E%3C/line%3E%3Cline x1='12' x2='12' y1='17' y2='21'%3E%3C/line%3E%3C/svg%3E");
 }
 
 /* Map icon for Custom Ortho Tiles */
-.docs-quicklinks li:nth-child(7)::before {
+.docs-quicklinks li[data-doc="custom-ortho-tiles"]::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23f5c2e7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z'%3E%3C/path%3E%3Cpath d='M15 5.764v15'%3E%3C/path%3E%3Cpath d='M9 3.236v15'%3E%3C/path%3E%3C/svg%3E");
 }
 
 /* CircleHelp icon for FAQ / Troubleshooting */
-.docs-quicklinks li:nth-child(8)::before {
+.docs-quicklinks li[data-doc="faq"]::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23f2cdcd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpath d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3'%3E%3C/path%3E%3Cpath d='M12 17h.01'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* Apple logo for XEarthLayer on macOS (Simple Icons path). It is a filled
+   glyph, so the viewBox is padded to match the visual weight of the
+   stroked icons around it. */
+.docs-quicklinks li[data-doc="macos"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='-2 -2 28 28' fill='%2389dceb'%3E%3Cpath d='M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701'/%3E%3C/svg%3E");
+}
+
+/* Moon icon for Night Lighting */
+.docs-quicklinks li[data-doc="night-lighting"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23f9e2af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* Layers icon for X-World Pro */
+.docs-quicklinks li[data-doc="x-world-pro"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a6e3a1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z'%3E%3C/path%3E%3Cpath d='m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65'%3E%3C/path%3E%3Cpath d='m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* Folder icon for Where XEarthLayer Keeps Its Files */
+.docs-quicklinks li[data-doc="directory-layout"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fab387' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z'%3E%3C/path%3E%3C/svg%3E");
 }
 
 /* Stretched link - makes entire card clickable */
@@ -1891,10 +2184,6 @@ section {
     font-size: 2rem;
   }
 
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-
   .docs-layout {
     grid-template-columns: 1fr;
   }
@@ -1915,6 +2204,61 @@ section {
 .mb-1 { margin-bottom: var(--space-md); }
 .mb-2 { margin-bottom: var(--space-lg); }
 .mb-3 { margin-bottom: var(--space-xl); }
+
+/* ==========================================
+   DOCS NEUTRAL PALETTE
+   Docs pages swap the blue-violet Catppuccin
+   neutrals (backgrounds, borders, body text)
+   for near-greys carrying only a faint trace of
+   the original hue. Accents stay Catppuccin.
+   Must sit before DOCS LIGHT MODE so the light
+   block's --ctp-* remapping wins there.
+   ========================================== */
+
+.docs-page {
+  /* Dark neutrals (replace Mocha) */
+  --ctp-crust: #121214;
+  --ctp-mantle: #18181b;
+  --ctp-base: #1d1d20;
+  --ctp-surface0: #2e2e33;
+  --ctp-surface1: #414147;
+  --ctp-surface2: #55555c;
+  --ctp-overlay0: #6a6a72;
+  --ctp-overlay1: #7e7e86;
+  --ctp-overlay2: #93939a;
+  --ctp-subtext0: #a5a5ac;
+  --ctp-subtext1: #babac0;
+  --ctp-text: #d4d4d9;
+
+  /* Light neutrals (replace Latte; picked up by DOCS LIGHT MODE) */
+  --ctp-latte-base: #eff1f5;   /* Catppuccin Latte base, shared with the news section */
+  --ctp-latte-mantle: #d9d9dd;
+  --ctp-latte-crust: #d0d0d4;
+  --ctp-latte-surface0: #c4c4c9;
+  --ctp-latte-surface1: #b5b5bb;
+  --ctp-latte-surface2: #a5a5ac;
+  --ctp-latte-overlay0: #8c8c93;
+  --ctp-latte-overlay1: #737379;
+  --ctp-latte-overlay2: #67676e;
+  --ctp-latte-subtext0: #5c5c63;
+  --ctp-latte-subtext1: #4b4b52;
+  --ctp-latte-text: #36363c;
+
+  /* :root resolved these against Mocha, so restate them here */
+  --color-bg: var(--ctp-base);
+  --color-bg-alt: var(--ctp-mantle);
+  --color-bg-dark: var(--ctp-crust);
+  --color-text: var(--ctp-text);
+  --color-text-muted: var(--ctp-subtext0);
+}
+
+.docs-page .site-header {
+  background: rgba(29, 29, 32, 0.9);
+}
+
+.docs-page .docs-toc-sidebar {
+  background: #1a1a1d;
+}
 
 /* ==========================================
    DOCS LIGHT MODE (Catppuccin Latte)
@@ -1942,6 +2286,7 @@ section {
     --ctp-lavender: var(--ctp-latte-lavender);
     --ctp-pink: var(--ctp-latte-pink);
     --ctp-rosewater: var(--ctp-latte-rosewater);
+    --ctp-teal: var(--ctp-latte-teal);
 
     --color-bg: var(--ctp-latte-base);
     --color-bg-alt: var(--ctp-latte-mantle);
@@ -1951,7 +2296,8 @@ section {
     --color-primary: var(--ctp-latte-mauve);
     --color-secondary: var(--ctp-latte-blue);
     --color-accent: var(--ctp-latte-lavender);
-    --color-link: var(--ctp-latte-sapphire);
+    /* Same blue as the info callout icon */
+    --color-link: var(--ctp-latte-blue);
     --color-link-hover: var(--ctp-latte-sky);
   }
 
@@ -1997,28 +2343,25 @@ section {
     color: var(--ctp-latte-subtext0);
   }
 
+  /* Light-mode sidebar stays greyscale: dark grey instead of mauve */
   .docs-page .docs-nav a:hover,
   .docs-page .docs-nav a.active {
     background: var(--ctp-latte-surface0);
-    color: var(--ctp-latte-mauve);
+    color: var(--ctp-latte-text);
+  }
+
+  .docs-page .docs-home:hover,
+  .docs-page .docs-home.active {
+    color: var(--ctp-latte-text);
+    border-color: var(--ctp-latte-text);
   }
 
   /* TOC sidebar in light mode */
   .docs-page .docs-toc-sidebar {
-    background: #e0e3ea !important;
+    background: #d5d5d9 !important;
     border-right-color: var(--ctp-latte-surface0);
   }
 
-  /* Logo layers in light mode - darker at top, lighter at bottom */
-  .docs-page .nav-logo svg g:nth-child(1) polygon:nth-child(1) { fill: #bcc0cc; }
-  .docs-page .nav-logo svg g:nth-child(1) polygon:nth-child(2) { fill: #ccd0da; }
-  .docs-page .nav-logo svg g:nth-child(1) polygon:nth-child(3) { fill: #dce0e8; }
-  .docs-page .nav-logo svg g:nth-child(2) polygon:nth-child(1) { fill: #9ca0b0; }
-  .docs-page .nav-logo svg g:nth-child(2) polygon:nth-child(2) { fill: #acb0be; }
-  .docs-page .nav-logo svg g:nth-child(2) polygon:nth-child(3) { fill: #bcc0cc; }
-  .docs-page .nav-logo svg g:nth-child(3) polygon:nth-child(1) { fill: #40a02b; }
-  .docs-page .nav-logo svg g:nth-child(3) polygon:nth-child(2) { fill: #5c4030; }
-  .docs-page .nav-logo svg g:nth-child(3) polygon:nth-child(3) { fill: #4a3428; }
 
   .docs-page .docs-toc--sticky {
     background: transparent !important;
@@ -2050,16 +2393,17 @@ section {
     border-bottom-color: var(--ctp-latte-surface0);
   }
 
+  /* Headings step lighter from the h1 (--ctp-latte-text, #36363c) */
   .docs-page .docs-content h2 {
-    color: var(--ctp-latte-lavender);
+    color: #55555c;
   }
 
   .docs-page .docs-content h3 {
-    color: var(--ctp-latte-mauve);
+    color: #64646b;
   }
 
   .docs-page .docs-content h4 {
-    color: var(--ctp-latte-pink);
+    color: #6e6e75;
   }
 
   .docs-page .docs-description {
@@ -2206,12 +2550,28 @@ section {
     border-color: var(--ctp-latte-lavender);
   }
 
+  /* Icons are data-URI SVGs with Mocha pastel strokes baked in, which wash
+     out on light grey. Flatten them to black, then lift to a mid grey
+     (~#5c5c5c) close to --ctp-latte-subtext0. */
+  .docs-page .docs-quicklinks li::before {
+    filter: brightness(0) invert(36%);
+  }
+
   .docs-page .docs-quicklinks li a {
     color: var(--ctp-latte-text);
   }
 
   .docs-page .docs-quicklinks li:hover a {
     color: var(--ctp-latte-lavender);
+  }
+
+  /* Regions map in light mode: the active row uses the Latte lavender */
+  .docs-page .regions-table tr.is-active td {
+    background: rgba(114, 135, 253, 0.12);
+  }
+
+  .docs-page .regions-map.leaflet-container .leaflet-tooltip {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   }
 }
 
@@ -2884,6 +3244,7 @@ section {
     --ctp-lavender: var(--ctp-latte-lavender);
     --ctp-pink: var(--ctp-latte-pink);
     --ctp-rosewater: var(--ctp-latte-rosewater);
+    --ctp-teal: var(--ctp-latte-teal);
 
     --color-bg: var(--ctp-latte-base);
     --color-bg-alt: var(--ctp-latte-mantle);
@@ -2893,7 +3254,8 @@ section {
     --color-primary: var(--ctp-latte-mauve);
     --color-secondary: var(--ctp-latte-blue);
     --color-accent: var(--ctp-latte-lavender);
-    --color-link: var(--ctp-latte-sapphire);
+    /* Links match docs light mode (same blue as the info callout icon) */
+    --color-link: var(--ctp-latte-blue);
     --color-link-hover: var(--ctp-latte-sky);
   }
 
@@ -2913,19 +3275,38 @@ section {
   .news-page .nav-links a:hover { color: var(--ctp-latte-mauve); }
   .news-page .nav-hamburger__line { background: var(--ctp-latte-text); }
 
-  /* Logo layers in light mode — mirror docs treatment */
-  .news-page .nav-logo svg g:nth-child(1) polygon:nth-child(1) { fill: #bcc0cc; }
-  .news-page .nav-logo svg g:nth-child(1) polygon:nth-child(2) { fill: #ccd0da; }
-  .news-page .nav-logo svg g:nth-child(1) polygon:nth-child(3) { fill: #dce0e8; }
-  .news-page .nav-logo svg g:nth-child(2) polygon:nth-child(1) { fill: #9ca0b0; }
-  .news-page .nav-logo svg g:nth-child(2) polygon:nth-child(2) { fill: #acb0be; }
-  .news-page .nav-logo svg g:nth-child(2) polygon:nth-child(3) { fill: #bcc0cc; }
-  .news-page .nav-logo svg g:nth-child(3) polygon:nth-child(1) { fill: #40a02b; }
-  .news-page .nav-logo svg g:nth-child(3) polygon:nth-child(2) { fill: #5c4030; }
-  .news-page .nav-logo svg g:nth-child(3) polygon:nth-child(3) { fill: #4a3428; }
+  /* Headings match docs light mode: h1 is the docs reading text (#36363c),
+     h2-h4 step lighter from it. Dark mode keeps the Catppuccin accents. */
+  .news-page .news-masthead__title,
+  .news-page .news-post__title {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: initial;
+    color: #36363c;
+  }
+
+  .news-page .news-list__title,
+  .news-page .news-post__body h2 {
+    color: #55555c;
+  }
+
+  .news-page .news-list__link:hover .news-list__title {
+    color: var(--ctp-latte-blue);
+  }
+
+  .news-page .news-post__body h3 {
+    color: #64646b;
+  }
+
+  .news-page .news-post__body h4,
+  .news-page .news-post__toc h4 {
+    color: #6e6e75;
+  }
 
   .news-page .news-post__body {
-    color: var(--ctp-latte-subtext1);
+    /* One Latte stop darker than subtext1 for article copy */
+    color: var(--ctp-latte-text);
   }
 
   .news-page .news-post__body code {
@@ -2963,5 +3344,225 @@ section {
   .news-page .footer-bottom {
     color: var(--ctp-latte-subtext0);
     border-top-color: var(--ctp-latte-surface0);
+  }
+}
+
+/* Directory layout table rendered by the paths shortcode */
+.paths-table code {
+  white-space: nowrap;
+}
+
+/* The tab panel already supplies the frame and padding */
+.paths-tabs .paths-table {
+  margin: 0;
+}
+
+/* scenery_packs.ini example from the scenery-packs shortcode. Matches the
+   Prism code blocks' frame, with lines coloured like the scenery order
+   diagram (static/images/docs/scenery-layers.svg). */
+.scenery-packs {
+  background: var(--ctp-crust) !important;
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 1rem 0;
+  margin: 0 0 var(--space-lg);
+}
+
+.scenery-packs code {
+  /* Stretch to the widest line so line bands span the scrolled width */
+  display: inline-block;
+  min-width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--ctp-text);
+}
+
+.sp-line {
+  display: block;
+  padding: 0 1rem;
+  white-space: pre;
+}
+
+.sp-line--xwp,
+.sp-line--ovl,
+.sp-line--ort {
+  border-left: 3px solid;
+  padding-left: calc(1rem - 3px);
+}
+
+.sp-line--xwp {
+  color: #a6e3a1;
+  background: rgba(166, 227, 161, 0.10);
+  border-left-color: #a6e3a1;
+}
+
+.sp-line--ovl {
+  color: #89dceb;
+  background: rgba(137, 180, 250, 0.12);
+  border-left-color: #89b4fa;
+}
+
+.sp-line--ort {
+  color: #f5c2e7;
+  background: rgba(203, 166, 247, 0.12);
+  border-left-color: #cba6f7;
+}
+
+.sp-line--disabled {
+  opacity: 0.55;
+}
+
+@media (prefers-color-scheme: light) {
+  .docs-page .sp-line--xwp {
+    color: #2f7a20;
+    background: rgba(64, 160, 43, 0.10);
+    border-left-color: #40a02b;
+  }
+
+  .docs-page .sp-line--ovl {
+    color: #1e66f5;
+    background: rgba(30, 102, 245, 0.08);
+    border-left-color: #1e66f5;
+  }
+
+  .docs-page .sp-line--ort {
+    color: #8839ef;
+    background: rgba(136, 57, 239, 0.08);
+    border-left-color: #8839ef;
+  }
+}
+
+/* Coverage map legend rendered by the regions-legend shortcode */
+.regions-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+  list-style: none;
+  padding: 0;
+  margin: var(--space-sm) 0 var(--space-lg);
+  font-size: 0.9rem;
+}
+
+.regions-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.regions-legend__swatch {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  border-radius: 2px;
+  border: 1px solid var(--ctp-surface1);
+}
+
+.regions-table td:nth-child(3),
+.regions-table td:nth-child(4) {
+  white-space: nowrap;
+}
+
+/* Regions map on the packages page (regions-map shortcode + regions-map.js).
+   The coverage PNG inside the container shows until the regions have drawn.
+   Leaflet's stylesheet loads after this one and sets its own backgrounds on
+   .leaflet-container, .leaflet-bar a and .leaflet-control-attribution, so
+   the overrides below carry .regions-map.leaflet-container to outrank it. */
+.regions-map,
+.regions-map.leaflet-container {
+  position: relative;
+  isolation: isolate;
+  height: 480px;
+  margin: var(--space-md) 0 var(--space-lg);
+  border: 1px solid var(--ctp-surface0);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--ctp-mantle);
+}
+
+/* Outranks .docs-content img, which caps images at 75% width */
+.regions-map .regions-map__fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.regions-map.is-ready .regions-map__fallback {
+  display: none;
+}
+
+/* Leaflet chrome on the site palette. The docs light block remaps the
+   --ctp-* variables, so these rules follow the scheme on their own. */
+.regions-map.leaflet-container .leaflet-tooltip {
+  background: var(--ctp-mantle);
+  color: var(--ctp-text);
+  border: 1px solid var(--ctp-surface1);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  padding: 0.4rem 0.6rem;
+}
+
+.regions-map.leaflet-container .leaflet-tooltip::before {
+  display: none;
+}
+
+.regions-map.leaflet-container .leaflet-tooltip code {
+  font-size: 0.8em;
+}
+
+.regions-map.leaflet-container .leaflet-bar {
+  border: 1px solid var(--ctp-surface1);
+  box-shadow: none;
+}
+
+.regions-map.leaflet-container .leaflet-bar a {
+  background: var(--ctp-mantle);
+  color: var(--ctp-text);
+  border-bottom-color: var(--ctp-surface1);
+}
+
+.regions-map.leaflet-container .leaflet-bar a:hover {
+  background: var(--ctp-surface0);
+  color: var(--ctp-text);
+}
+
+.regions-map.leaflet-container .leaflet-bar a.leaflet-disabled {
+  background: var(--ctp-mantle);
+  color: var(--ctp-overlay0);
+}
+
+.regions-map.leaflet-container .leaflet-control-attribution {
+  background: var(--ctp-mantle);
+  color: var(--ctp-subtext0);
+  font-size: 0.7rem;
+}
+
+.regions-map.leaflet-container .leaflet-control-attribution a {
+  color: var(--color-link);
+}
+
+/* Table rows and legend items become clickable once the map has drawn.
+   The legend follows the map inside the same parent, so a sibling selector
+   reaches it; the table does not, so the script adds a class to it. */
+.regions-table--linked tbody tr,
+.regions-map.is-ready ~ .regions-legend li[data-region] {
+  cursor: pointer;
+}
+
+.regions-table tr.is-active td {
+  background: rgba(180, 190, 254, 0.15);
+}
+
+@media (max-width: 600px) {
+  .regions-map,
+  .regions-map.leaflet-container {
+    height: 360px;
   }
 }

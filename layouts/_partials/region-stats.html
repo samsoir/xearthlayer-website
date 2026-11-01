@@ -1,0 +1,29 @@
+{{- $rows := slice -}}
+{{- range $code, $r := hugo.Data.regions.regions -}}
+  {{- $dl := 0.0 -}}
+  {{- $inst := 0.0 -}}
+  {{- with $r.size -}}
+    {{- with .ortho -}}
+      {{- $dl = add $dl (float (default 0 .download_bytes)) -}}
+      {{- $inst = add $inst (float (default 0 .installed_bytes)) -}}
+    {{- end -}}
+    {{- with .overlay -}}
+      {{- $dl = add $dl (float (default 0 .download_bytes)) -}}
+      {{- $inst = add $inst (float (default 0 .installed_bytes)) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $rows = $rows | append (dict "code" $code "name" $r.name "download" $dl "installed" $inst) -}}
+{{- end -}}
+{{- $asc := sort $rows "installed" "asc" -}}
+{{- $desc := sort $rows "installed" "desc" -}}
+{{- $total := 0.0 -}}
+{{- $maxdl := 0.0 -}}
+{{- range $rows -}}
+  {{- $total = add $total .installed -}}
+  {{- if gt .download $maxdl -}}{{- $maxdl = .download -}}{{- end -}}
+{{- end -}}
+{{- if $rows -}}
+{{- return (dict "count" (len $rows) "smallest" (index $asc 0) "largest" (index $desc 0) "total" $total "max_download" $maxdl) -}}
+{{- else -}}
+{{- return (dict "count" 0 "smallest" (dict "code" "" "name" "" "download" 0.0 "installed" 0.0) "largest" (dict "code" "" "name" "" "download" 0.0 "installed" 0.0) "total" 0.0 "max_download" 0.0) -}}
+{{- end -}}

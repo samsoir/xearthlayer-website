@@ -1,0 +1,17 @@
+{{- /*
+  Build one SVG sprite from every assets/icons/<name>.svg and return it as a
+  fingerprinted resource. Each file becomes a <symbol id="<name>"> carrying
+  its own viewBox and paint attributes. Call through partialCached so the
+  sprite is assembled once per build.
+*/ -}}
+{{- $symbols := slice -}}
+{{- range resources.Match "icons/*.svg" -}}
+  {{- $name := path.BaseName .Name -}}
+  {{- $symbol := .Content
+        | replaceRE `^<svg\s+` (printf `<symbol id="%s" ` $name)
+        | replaceRE `\s*xmlns="[^"]*"` ""
+        | replaceRE `</svg>\s*$` "</symbol>" -}}
+  {{- $symbols = $symbols | append $symbol -}}
+{{- end -}}
+{{- $sprite := printf `<svg xmlns="http://www.w3.org/2000/svg">%s</svg>` (delimit $symbols "") -}}
+{{- return (resources.FromString "icons.svg" $sprite | fingerprint) -}}

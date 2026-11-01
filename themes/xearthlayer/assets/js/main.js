@@ -1,3 +1,5 @@
+import { initScrolly } from './scrolly.js';
+
 document.addEventListener('DOMContentLoaded', function() {
   // Enable JS-enhanced features
   document.documentElement.classList.add('js-enabled');
@@ -56,88 +58,75 @@ document.addEventListener('DOMContentLoaded', function() {
   // FEATURES SCROLLYTELLING
   // ==========================================
   const featuresSection = document.querySelector('.features-scroll');
-  const featurePanels = document.querySelectorAll('.feature-panel');
   const progressNav = document.getElementById('features-progress');
   const progressDots = document.querySelectorAll('.features-progress__dot');
-  const monitorScreens = document.querySelectorAll('.monitor-screen');
+  const scrollyRoot = document.getElementById('scrolly');
+  const terminalClips = document.querySelectorAll('.terminal-window__clip');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (featuresSection && featurePanels.length > 0) {
-    // Show/hide progress dots based on section visibility
-    const progressObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (progressNav) {
-          if (entry.isIntersecting) {
-            progressNav.classList.add('visible');
-          } else {
-            progressNav.classList.remove('visible');
-          }
-        }
-      });
-    }, { threshold: 0.1 });
+  if (featuresSection && scrollyRoot) {
+    function pauseClips() {
+      terminalClips.forEach(clip => { if (!clip.paused) clip.pause(); });
+    }
 
-    progressObserver.observe(featuresSection);
-
-    // Feature panel activation
-    const panelObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const feature = entry.target.dataset.feature;
-          activateFeature(feature);
-        }
-      });
-    }, {
-      threshold: 0.5,
-      rootMargin: '-20% 0px -20% 0px'
-    });
-
-    featurePanels.forEach(panel => {
-      panelObserver.observe(panel);
-    });
-
-    // Activate feature function
+    // A feature's card has appeared: tint the section, light its dot and,
+    // for the terminal features, show its clip and play it from the start.
+    // Clips hold on their last frame; reduced motion shows the poster only.
     function activateFeature(featureName) {
-      // Update section background color
       featuresSection.dataset.activeFeature = featureName;
 
-      // Update panels
-      featurePanels.forEach(panel => {
-        if (panel.dataset.feature === featureName) {
-          panel.classList.add('active');
-        } else {
-          panel.classList.remove('active');
-        }
-      });
-
-      // Update progress dots
       progressDots.forEach(dot => {
-        if (dot.dataset.feature === featureName) {
-          dot.classList.add('active');
-        } else {
-          dot.classList.remove('active');
-        }
+        dot.classList.toggle('active', dot.dataset.feature === featureName);
       });
 
-      // Update monitor screens
-      monitorScreens.forEach(screen => {
-        if (screen.dataset.feature === featureName) {
-          screen.classList.add('active');
-        } else {
-          screen.classList.remove('active');
+      terminalClips.forEach(clip => {
+        const active = clip.dataset.feature === featureName;
+        clip.classList.toggle('is-active', active);
+        if (!active) {
+          if (!clip.paused) clip.pause();
+          return;
         }
+        if (reduceMotion) return;
+        try { clip.currentTime = 0; } catch (e) { /* not loaded yet: starts at 0 anyway */ }
+        const playing = clip.play();
+        if (playing && playing.catch) playing.catch(() => {});
       });
     }
 
-    // Set initial active feature
+    // Set initial active feature (before the module, which may report another)
     activateFeature('streaming');
+
+    // Scroll-driven story; it reports the active feature and scene changes.
+    const scrolly = initScrolly(scrollyRoot, {
+      onActivate: activateFeature,
+      // The dots show only while the stage is pinned, which is the story
+      // proper: not the hero, not the sections after it.
+      onTrack: (inTrack) => { if (progressNav) progressNav.classList.toggle('visible', inTrack); },
+      onScene: (scene) => {
+        if (scene !== 'terminal') {
+          pauseClips();
+          return;
+        }
+        // Entering the terminal scene: start fetching the clips, and show the
+        // first poster so the window is not empty before its card lands.
+        terminalClips.forEach(clip => { clip.preload = 'auto'; });
+        const shown = Array.from(terminalClips).some(clip => clip.classList.contains('is-active'));
+        if (!shown && terminalClips[0]) terminalClips[0].classList.add('is-active');
+      },
+    });
+
+    // Without the module (bad manifest, no canvas) the cards would never
+    // activate; show them all so the section still reads.
+    if (!scrolly) {
+      scrollyRoot.querySelectorAll('.scrolly__step').forEach(step => step.classList.add('is-active'));
+    }
 
     // Progress dot click handlers
     progressDots.forEach(dot => {
       dot.addEventListener('click', function() {
         const feature = this.dataset.feature;
-        const targetPanel = document.querySelector(`.feature-panel[data-feature="${feature}"]`);
-        if (targetPanel) {
-          targetPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        if (scrolly && scrolly.scrollToHold(feature)) return;
+        featuresSection.scrollIntoView({ behavior: 'smooth' });
       });
     });
   }
@@ -145,25 +134,87 @@ document.addEventListener('DOMContentLoaded', function() {
   // ==========================================
   // DOWNLOAD DROPDOWN
   // ==========================================
-  const downloadDropdown = document.querySelector('.download-dropdown');
-  const downloadBtn = document.getElementById('download-btn');
+  const downloadDropdowns = Array.from(document.querySelectorAll('.download-dropdown'));
 
-  if (downloadDropdown && downloadBtn) {
-    downloadBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      downloadDropdown.classList.toggle('open');
+  function setDropdownOpen(dropdown, open) {
+    dropdown.classList.toggle('open', open);
+    const btn = dropdown.querySelector('.download-btn');
+    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function closeAllDropdowns(except) {
+    downloadDropdowns.forEach(function(d) {
+      if (d !== except) setDropdownOpen(d, false);
+    });
+  }
+
+  if (downloadDropdowns.length) {
+    downloadDropdowns.forEach(function(dropdown) {
+      const btn = dropdown.querySelector('.download-btn');
+      if (!btn) return;
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const willOpen = !dropdown.classList.contains('open');
+        closeAllDropdowns(dropdown);
+        setDropdownOpen(dropdown, willOpen);
+      });
     });
 
     document.addEventListener('click', function(e) {
-      if (!downloadDropdown.contains(e.target)) {
-        downloadDropdown.classList.remove('open');
+      if (!downloadDropdowns.some(function(d) { return d.contains(e.target); })) {
+        closeAllDropdowns(null);
       }
     });
 
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
-        downloadDropdown.classList.remove('open');
+        closeAllDropdowns(null);
       }
+    });
+  }
+
+  // ==========================================
+  // DOWNLOAD PLATFORM SWITCH
+  // ==========================================
+  const platformSegments = Array.from(document.querySelectorAll('.platform-switch__segment'));
+  const platformPanels = document.querySelectorAll('.platform-panel');
+
+  function selectPlatform(platform, focus) {
+    platformSegments.forEach(function(segment) {
+      const selected = segment.dataset.platform === platform;
+      segment.classList.toggle('active', selected);
+      segment.setAttribute('aria-selected', selected ? 'true' : 'false');
+      segment.tabIndex = selected ? 0 : -1;
+      if (selected && focus) segment.focus();
+    });
+    platformPanels.forEach(function(panel) {
+      panel.hidden = panel.dataset.platform !== platform;
+    });
+    closeAllDropdowns(null);
+  }
+
+  // Apple devices get macOS; everything else gets Linux, the default in the markup
+  function detectPlatform() {
+    const platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+    return /mac|iphone|ipad|ipod/i.test(platform) || /Macintosh|iPhone|iPad|iPod/.test(navigator.userAgent)
+      ? 'macos'
+      : 'linux';
+  }
+
+  if (platformSegments.length) {
+    selectPlatform(detectPlatform(), false);
+
+    platformSegments.forEach(function(segment, index) {
+      segment.addEventListener('click', function() {
+        selectPlatform(segment.dataset.platform, false);
+      });
+      segment.addEventListener('keydown', function(e) {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        e.preventDefault();
+        const step = e.key === 'ArrowRight' ? 1 : -1;
+        const next = platformSegments[(index + step + platformSegments.length) % platformSegments.length];
+        selectPlatform(next.dataset.platform, true);
+      });
     });
   }
 

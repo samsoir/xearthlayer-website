@@ -1,0 +1,17 @@
+<table class="regions-table">
+  <thead>
+    <tr><th>Code</th><th>Region</th><th>Download</th><th>Installed</th><th>Coverage</th></tr>
+  </thead>
+  <tbody>
+    {{- range $code, $r := hugo.Data.regions.regions -}}
+    {{- $size := partial "region-size.html" $r -}}
+    <tr data-region="{{ $code }}">
+      <td><code>{{ $code }}</code></td>
+      <td>{{ $r.name }}</td>
+      <td>{{ partial "gb.html" $size.download }}</td>
+      <td>{{ partial "gb.html" $size.installed }}</td>
+      <td>{{ $r.coverage }}</td>
+    </tr>
+    {{- end -}}
+  </tbody>
+</table>

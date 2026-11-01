@@ -1,5 +1,6 @@
 ---
 title: "X-Plane 12 Configuration"
+linkTitle: "X-Plane 12 Setup"
 description: "How to configure X-Plane 12 for the best results"
 weight: 50
 ---
@@ -8,38 +9,60 @@ Ensure your X-Plane configuration is setup correctly for XEarthLayer to operate 
 
 ## Scenery Ordering
 
-Setting the scenery pack order in your `X-Plane 12/Custom Scenery/scenery-packs.ini` file is essential to ensure all of your scenery loads with the correct priority relative all others.
+Setting the scenery pack order in your `X-Plane 12/Custom Scenery/scenery_packs.ini` file is essential to ensure all of your scenery loads with the correct priority relative all others.
 
-### Scenery Pack Loading Order
+### Scenery Pack Order
 
-![Scenery pack loading order](/images/docs/scenery-layers.svg)
+![Scenery pack order](/images/docs/scenery-layers.svg)
 
-XEarthLayer uses a best effort attempt by using a specific naming convention to ensure scenery is ordered correctly in X-Plane's scenery pack file. XEarthLayer scenery files are all prefixed `zzXEL_<ortho>` or `yzXEL_<overlay>`.
+X-Plane gives priority to the packs listed first. Sort the file from small, local scenery at the top to progressively larger areas below: airports and landmarks, then X-Plane's global airports, then continent-wide overlays such as SimHeaven X-World Pro, then meshes and libraries. XEarthLayer's two entries come last.
 
-When X-Plane launches for the first time after any change to the Custom Scenery folder, it rebuilds the scenery-packs.ini file based on the scenery packs available. It is likely that this process will result in incorrect ordering of the scenery packs installed. 
+XEarthLayer installs exactly two entries, and their names are chosen to sort to the end of the file:
 
-Ensure you exit from X-Plane before starting a flight, then use the reference below to order your scenery correctly in the scenery pack file.
+- `yzXEL_overlay` holds the overlays from every installed package: roads, forests and buildings.
+- `zzXEL_ortho` holds the satellite imagery for every installed package, and must be the very last entry.
 
-```ini
+When X-Plane starts after any change to the Custom Scenery folder, it adds the new packs to `scenery_packs.ini`, and the order it picks is often wrong. Start X-Plane once, quit before flying, then check the file against the example below and fix the order by hand.
+
+{{< scenery-packs >}}
 I
 1000 Version
 SCENERY
 
-SCENERY_PACK Custom Scenery/{Airports, landmarks, other object based scenery}
-SCENERY_PACK Custom Scenery/{Airport Overlays}
-SCENERY_PACK Custom Scenery/{Airport Mesh}
-SCENERY_PACK Custom Scenery/{Sim Heaven X-World, other layers (SFP Global etc)}
-SCENERY_PACK Custom Scenery/X-Plane Airports
+SCENERY_PACK Custom Scenery/{Your airports, landmarks and regional scenery}/
+SCENERY_PACK Custom Scenery/X-Plane Airports - {Airport}/
+SCENERY_PACK Custom Scenery/X-Plane Landmarks - {City}/
 SCENERY_PACK *GLOBAL_AIRPORTS*
-SCENERY_PACK Custom Scenery/X-Plane Landmarks
 
-# XEarthLayer Start
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-01-bridges_O4XP-Mesh/
+SCENERY_PACK_DISABLED Custom Scenery/simHeaven_X-WORLD-Pro_Europe-01-bridges_XP12-Mesh/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-02-fountains/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-03-vfr/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-04-regions/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-05-details/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-06-extras1/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-07-extras2/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-08-footprints/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-09-scenery/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-10-forests/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-11-net1-aerials/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-12-net2-ships/
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Europe-13-net3-roads/
+
+SCENERY_PACK Custom Scenery/{Regional and airport meshes}/
+
+SCENERY_PACK Custom Scenery/simHeaven_X-WORLD-Pro_Library/
+SCENERY_PACK Custom Scenery/{Other libraries}/
+
 SCENERY_PACK Custom Scenery/yzXEL_overlay/
 SCENERY_PACK Custom Scenery/zzXEL_ortho/
-# XEarthLayer End
+{{< /scenery-packs >}}
 
-SCENERY_PACK Custom Scenery/{Libraries}
-```
+The X-World Pro lines follow the order in the X-World Pro manual, using Europe as the example. Other continents have up to thirteen layers, named the same way. In X-World Pro 1.1, only Europe's bridges layer comes in two versions: enable the `_O4XP-Mesh` one, because XEarthLayer packages use Ortho4XP meshes, and disable its `_XP12-Mesh` twin. Leave the X-World Pro lines out if you do not use it.
+
+XEarthLayer never edits `scenery_packs.ini`. With `packages.xworld_pro` on, it checks the order on every start, and when its own entries load before any X-World Pro layer it names the two lines and offers to stop or continue. See [SimHeaven X-World Pro](../x-world-pro/) for the details.
+
+The file lives in your X-Plane Custom Scenery folder, wherever you installed the simulator: for example `~/X-Plane 12/Custom Scenery/scenery_packs.ini`, or `/Applications/X-Plane 12/Custom Scenery/scenery_packs.ini` on a Mac that installed it there.
 
 ## X-Plane Graphics Settings
 
@@ -48,8 +71,9 @@ X-Plane 12 offers extensive graphics customization, but pushing every slider to 
 ### Settings That Matter Most
 
 **Texture Resolution** — This directly correlates with your GPU's VRAM capacity. If you exceed your available VRAM, X-Plane will constantly swap textures in and out of memory, causing stutters. As a general guide:
-- 8GB VRAM: Medium to High
-- 12GB+ VRAM: High to Maximum
+- 8GB VRAM: Medium. This is the minimum for XEarthLayer
+- 16GB VRAM: High. Needed if you also run SimHeaven X-World Pro
+- 24GB+ VRAM: Maximum, with everything on at 4K
 
 **Antialiasing** — X-Plane offers FSAA and MSAA options. MSAA above 2× will noticeably impact performance even on high-end graphics cards. For most systems, 2× MSAA provides a good balance between image quality and framerate.
 
@@ -75,7 +99,7 @@ Start with X-Plane's default settings for your hardware tier, then adjust indivi
 </div>
 
 {{< callout type="info" >}}
-XEarthLayer automatically reads aircraft telemetry from X-Plane 12.4.0 or later via the Web API. No configuration is required — prefetching works out of the box. On earlier releases XEarthLayer falls back to inferring position from file access patterns; see [Getting Started](/docs/getting-started/) for why.
+XEarthLayer reads aircraft telemetry from X-Plane 12.4.0 or later via the Web API. No configuration is required. On earlier releases the connection is never made and prefetch does not run; scenery still streams on demand. See [Getting Started](/docs/getting-started/).
 {{< /callout >}}
 
 ## Recommended Add-ons
@@ -84,7 +108,7 @@ XEarthLayer provides satellite imagery, but pairing it with quality scenery add-
 
 ### SimHeaven X-World (Recommended)
 
-[SimHeaven X-World](https://simheaven.com/x-world-for-xp12/) is a comprehensive free scenery enhancement that uses OpenStreetMap data combined with Microsoft building footprints to place objects realistically across the globe. Unlike automated autogen, objects are positioned based on real-world data, resulting in a more authentic look and feel.
+[SimHeaven X-World](https://simheaven.com/x-world-for-xp12/) is a comprehensive scenery enhancement that uses OpenStreetMap data combined with Microsoft building footprints to place objects realistically across the globe. It comes in a free edition and a paid edition, **X-World Pro**, sold per continent or as a world bundle.
 
 **X-World includes:**
 - Accurately placed buildings based on real-world footprints
@@ -94,8 +118,10 @@ XEarthLayer provides satellite imagery, but pairing it with quality scenery add-
 
 If you're only going to install one scenery add-on alongside XEarthLayer, we recommend X-World for its comprehensive coverage and seamless integration with satellite imagery.
 
+**With X-World Pro**, set `packages.xworld_pro = true` (or say yes when `xearthlayer setup` finds it). XEarthLayer then leaves its own overlays out on the continents X-World Pro covers, keeps them everywhere else, and checks your scenery order and X-World Pro setup on every start. See [SimHeaven X-World Pro](/docs/x-world-pro/) for the install order and the ortho library.
+
 {{< callout type="warning" >}}
-X-World includes its own road network overlays. To avoid duplicate roads and potential performance issues, disable either XEarthLayer's overlay packages or X-World's road layer—do not use both simultaneously.
+Only X-World Pro is detected. With the free X-World, avoid duplicate roads by disabling XEarthLayer's overlays worldwide with `packages.disable_overlays = true`, or by disabling X-World's road layer. Do not run both.
 {{< /callout >}}
 
 ### GeoReality Global Forests V2
@@ -127,20 +153,3 @@ If using both X-World and Global Forests V2, disable X-World's forest layer to a
 - Regional variations giving airports a unique local character
 
 AEP is compatible with other airport enhancement libraries and works seamlessly with ortho scenery. This is a paid add-on available from [X-Plane.org](https://store.x-plane.org/Airport-Enhancement-Package_p_1250.html).
-
-### Short Final Design SFD Global
-
-[SFD Global](https://store.x-plane.org/SFD-Global_p_1060.html) from Short Final Design enhances autogen buildings and landmarks across the globe with regionally appropriate variations. The package uses PBR materials and baked ambient occlusion for realistic rendering.
-
-**SFD Global includes:**
-- Eight distinct regional autogen styles: Africa & Middle East, Australia, East Asia, Mediterranean, New England, Scandinavia, South America, and US West Coast
-- Unique 3D buildings with PBR materials for each region
-- Detailed world-famous landmarks
-- 4K photorealistic terrain and forest textures
-- Seamless compatibility with ortho scenery overlays
-
-This is a paid add-on available from [X-Plane.org](https://store.x-plane.org/SFD-Global_p_1060.html).
-
-{{< callout type="info" >}}
-When using SFD Global with XEarthLayer, we recommend installing only the Autogen and Landmarks components. The terrain textures and forests are unnecessary when using satellite imagery in combination with X-World or Global Forests.
-{{< /callout >}}

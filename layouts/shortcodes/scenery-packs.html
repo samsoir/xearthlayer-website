@@ -1,0 +1,23 @@
+{{- /*
+  A scenery_packs.ini example whose lines are coloured like the scenery
+  order diagram (static/images/docs/scenery-layers.svg):
+    X-World Pro layers  -> green
+    yzXEL_ overlay      -> blue
+    zzXEL_ ortho        -> mauve
+  SCENERY_PACK_DISABLED lines are dimmed. Deliberately not a .highlight
+  block, so the docs Prism script leaves it alone.
+*/ -}}
+{{- $lines := split (trim .Inner "\n") "\n" -}}
+<pre class="scenery-packs"><code>
+{{- range $lines -}}
+{{- $kind := "" -}}
+{{- if and (in . "simHeaven_X-WORLD-Pro_") (not (in . "_Library")) -}}
+  {{- $kind = "xwp" -}}
+{{- else if in . "yzXEL_" -}}
+  {{- $kind = "ovl" -}}
+{{- else if in . "zzXEL_" -}}
+  {{- $kind = "ort" -}}
+{{- end -}}
+<span class="sp-line{{ with $kind }} sp-line--{{ . }}{{ end }}{{ if in . "SCENERY_PACK_DISABLED" }} sp-line--disabled{{ end }}">{{ with . }}{{ . }}{{ else }} {{ end }}</span>
+{{- end -}}
+</code></pre>

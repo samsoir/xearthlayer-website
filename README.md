@@ -50,7 +50,8 @@ Push to main          ──────────────►    sync-pack
 (library updated)     repository_dispatch     │
                                               ▼
                                          Fetch library
-                                         Update packages.md
+                                         Write data/regions.json and
+                                         static/data/regions.geojson
                                          Commit changes
                                               │
                                               ▼
@@ -74,7 +75,8 @@ Push to main          ──────────────►    sync-pack
 |------|--------|-------------|
 | `static/packages/xearthlayer_package_library.txt` | Regional scenery repo | Package index for CLI |
 | `static/images/coverage.png` | Regional scenery repo | Coverage map image |
-| `content/docs/packages.md` | Auto-generated | Regions table, coverage map, legend |
+| `data/regions.json` | Regional scenery repo | Region names, coverage, colours, sizes and supersedes; Hugo renders the packages page and homepage storage figures from it |
+| `static/data/regions.geojson` | Derived from the scenery repo's `coverage.geojson` by `scripts/dissolve-regions.py` | One shape per region for the packages page map |
 
 ### Data Files
 
@@ -83,8 +85,32 @@ The sync workflow uses these files from the regional-scenery repo:
 - **`xearthlayer_package_library.txt`** - Package index with versions and download URLs
 - **`region_metadata.json`** - Region names, coverage descriptions, and colors
 - **`coverage.png`** - Coverage map image
+- **`coverage.geojson`** - One polygon per 1°×1° tile, tagged with its region. Not committed; the workflow dissolves it into `static/data/regions.geojson`
 
-The legend (e.g., "NA in blue, EU in orange") is generated dynamically from `region_metadata.json`.
+The region table, legend, map and homepage storage figures are rendered by Hugo from `data/regions.json` and `static/data/regions.geojson`, so a world rebuild is a data drop, not an edit.
+
+## Homepage Scroll Story
+
+The features section of the homepage scrubs through frames of a rendered flight as the visitor scrolls. The frames live in `static/images/scrolly/<width>/NNN.webp` and the manifest Hugo reads is `data/scrolly.json`. Both are generated from the ProRes master with:
+
+    python3 scripts/extract-scrolly-frames.py /path/to/Scrollytale.mov --holds streaming=99,night=377
+
+The script keeps every third frame, writes 1440 and 960 pixel wide WebP sets, and records each hold (a source frame the picture pauses on for a feature) as an index into the kept frames. Hold names must match the `data-feature` values of the steps in `themes/xearthlayer/layouts/home.html`. Re-run it whenever the master changes and commit the frames and the manifest together. Tests: `python3 -m unittest scripts/test_extract_scrolly_frames.py`.
+
+The last four features play short terminal clips inside a Ptyxis window frame (`static/images/ptyxis.webp`). The clips in `static/video/terminal-<feature>.{mp4,webm}` and their posters in `static/images/terminal/` are cut from the terminal master, `Scrollytale-terminal.mov`, at these times:
+
+| Feature | From | To |
+|---|---|---|
+| packages | 0:00.000 | 0:28.000 |
+| dashboard | 0:28.000 | 0:46.458 |
+| prefetch | 0:46.458 | 1:25.625 |
+| encoding | 1:25.625 | end |
+
+For each clip, with `FROM` and `TO` in seconds:
+
+    ffmpeg -ss FROM -to TO -i Scrollytale-terminal.mov -an -vf "scale=1920:-2,format=yuv420p" -c:v libx264 -preset slow -crf 22 -movflags +faststart static/video/terminal-NAME.mp4
+    ffmpeg -ss FROM -to TO -i Scrollytale-terminal.mov -an -vf "scale=1920:-2,format=yuv420p" -c:v libvpx-vp9 -crf 32 -b:v 0 -row-mt 1 static/video/terminal-NAME.webm
+    ffmpeg -ss FROM -i Scrollytale-terminal.mov -frames:v 1 -vf scale=1920:-2 -c:v libwebp -quality 70 static/images/terminal/NAME.webp
 
 ## App Version Sync
 
@@ -111,7 +137,7 @@ Release v0.x.x        ──────────────►   sync-versi
 
 ### Files Updated
 
-- `content/docs/getting-started.md` - Download links with correct version numbers
+- `data/release.json` and `hugo.toml` - Version, date and asset filenames the download links are built from
 
 ### Data File
 
@@ -119,11 +145,14 @@ The main xearthlayer repo contains `version.json` with current release info:
 
 ```json
 {
-  "version": "0.2.9",
-  "tag": "v0.2.9",
+  "version": "0.5.0",
+  "tag": "v0.5.0",
   "assets": {
-    "deb": { "filename": "xearthlayer_0.2.9-1_amd64.deb" },
-    "rpm": { "filename": "xearthlayer-0.2.9-1.fc43.x86_64.rpm" }
+    "deb": { "filename": "xearthlayer_0.5.0-1_amd64.deb" },
+    "rpm": { "filename": "xearthlayer-0.5.0-1.fc44.x86_64.rpm" },
+    "tarball": { "filename": "xearthlayer-v0.5.0-x86_64-linux.tar.gz" },
+    "macos_tarball": { "filename": "xearthlayer-v0.5.0-arm64-macos.tar.gz" },
+    "aur": { "filename": "aur-package.zip" }
   }
 }
 ```
