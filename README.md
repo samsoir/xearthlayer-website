@@ -97,6 +97,21 @@ The features section of the homepage scrubs through frames of a rendered flight 
 
 The script keeps every third frame, writes 1440 and 960 pixel wide WebP sets, and records each hold (a source frame the picture pauses on for a feature) as an index into the kept frames. Hold names must match the `data-feature` values of the steps in `themes/xearthlayer/layouts/home.html`. Re-run it whenever the master changes and commit the frames and the manifest together. Tests: `python3 -m unittest scripts/test_extract_scrolly_frames.py`.
 
+The last four features play short terminal clips inside a Ptyxis window frame (`static/images/ptyxis.webp`). The clips in `static/video/terminal-<feature>.{mp4,webm}` and their posters in `static/images/terminal/` are cut from the terminal master, `Scrollytale-terminal.mov`, at these times:
+
+| Feature | From | To |
+|---|---|---|
+| packages | 0:00.000 | 0:28.000 |
+| dashboard | 0:28.000 | 0:46.458 |
+| prefetch | 0:46.458 | 1:25.625 |
+| encoding | 1:25.625 | end |
+
+For each clip, with `FROM` and `TO` in seconds:
+
+    ffmpeg -ss FROM -to TO -i Scrollytale-terminal.mov -an -vf "scale=1920:-2,format=yuv420p" -c:v libx264 -preset slow -crf 22 -movflags +faststart static/video/terminal-NAME.mp4
+    ffmpeg -ss FROM -to TO -i Scrollytale-terminal.mov -an -vf "scale=1920:-2,format=yuv420p" -c:v libvpx-vp9 -crf 32 -b:v 0 -row-mt 1 static/video/terminal-NAME.webm
+    ffmpeg -ss FROM -i Scrollytale-terminal.mov -frames:v 1 -vf scale=1920:-2 -c:v libwebp -quality 82 static/images/terminal/NAME.webp
+
 ## App Version Sync
 
 Download links on the Getting Started page are automatically updated when new XEarthLayer versions are released.
