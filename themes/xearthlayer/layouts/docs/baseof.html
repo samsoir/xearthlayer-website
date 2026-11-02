@@ -9,7 +9,11 @@
   </header>
   <div class="docs-layout{{ if .Params.toc }} docs-layout--with-toc{{ end }}">
     <aside class="docs-sidebar">
-      <nav>
+      <button class="docs-sidebar__toggle" type="button" aria-expanded="false" aria-controls="docs-nav">
+        Documentation
+        {{ partial "icon.html" (dict "name" "chevron-down" "size" 18) }}
+      </button>
+      <nav id="docs-nav" class="docs-sidebar__nav">
         {{ $docsHome := site.GetPage "/docs" }}
         <a href="{{ $docsHome.RelPermalink }}" class="docs-home{{ if eq $docsHome.RelPermalink .RelPermalink }} active{{ end }}">
           {{ partial "icon.html" (dict "name" "home" "size" 16) }}
@@ -29,7 +33,11 @@
     </aside>
     {{ if .Params.toc }}
     <aside class="docs-toc-sidebar">
-      <nav class="docs-toc docs-toc--sticky">
+      <button class="docs-sidebar__toggle" type="button" aria-expanded="false" aria-controls="docs-toc">
+        On this page
+        {{ partial "icon.html" (dict "name" "chevron-down" "size" 18) }}
+      </button>
+      <nav id="docs-toc" class="docs-toc docs-toc--sticky">
         {{ .TableOfContents }}
       </nav>
     </aside>

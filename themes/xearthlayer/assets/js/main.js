@@ -269,6 +269,24 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ==========================================
+  // DOCS COLLAPSIBLE NAVIGATION (small screens)
+  // ==========================================
+  document.querySelectorAll('.docs-sidebar__toggle').forEach(function(toggle) {
+    const nav = document.getElementById(toggle.getAttribute('aria-controls'));
+    toggle.addEventListener('click', function() {
+      toggle.setAttribute('aria-expanded', toggle.getAttribute('aria-expanded') !== 'true');
+    });
+    // A same-page link (the TOC) should reveal the content it points at
+    if (nav) {
+      nav.querySelectorAll('a[href^="#"]').forEach(function(link) {
+        link.addEventListener('click', function() {
+          toggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+  });
+
+  // ==========================================
   // TABS COMPONENT
   // ==========================================
   const tabContainers = document.querySelectorAll('.tabs');
