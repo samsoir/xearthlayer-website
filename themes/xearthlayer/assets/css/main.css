@@ -225,14 +225,15 @@ tr:hover td {
   background: rgba(30, 30, 46, 0.9);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--ctp-surface0);
-  transform: translateY(-100%);
-  opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.site-header.visible {
-  transform: translateY(0);
-  opacity: 1;
+/* Only the homepage hides the header, until the reader scrolls past the
+   hero and the script marks it visible. Every other page shows it from the
+   first paint, script or not. */
+.js-enabled .home-page .site-header:not(.visible) {
+  transform: translateY(-100%);
+  opacity: 0;
 }
 
 
