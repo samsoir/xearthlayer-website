@@ -112,6 +112,19 @@ For each clip, with `FROM` and `TO` in seconds:
     ffmpeg -ss FROM -to TO -i Scrollytale-terminal.mov -an -vf "scale=1920:-2,format=yuv420p" -c:v libvpx-vp9 -crf 32 -b:v 0 -row-mt 1 static/video/terminal-NAME.webm
     ffmpeg -ss FROM -i Scrollytale-terminal.mov -frames:v 1 -vf scale=1920:-2 -c:v libwebp -quality 70 static/images/terminal/NAME.webp
 
+## Social Preview Card
+
+Link previews (Open Graph and Twitter cards) use `static/images/social-card.png`, a 1200×630 card built from a frame of the hero video with the logo, wordmark and tagline over it. The head partial points every page at it unless the page names its own picture in front matter, for example `images = ['/images/news/ff777-sunset.jpg']` on a news article. News articles are tagged as `article` with their published time; everything else is `website`.
+
+The card's layout is `scripts/social-card.svg`. It expects `frame.jpg` (the cropped background) and `logo.svg` beside it, so rebuild it in a scratch directory with the Inter font installed:
+
+    ffmpeg -ss 70.5 -i static/video/hero.mp4 -frames:v 1 frame-src.png
+    magick frame-src.png -crop 2560x1344+0+64 +repage -resize 1200x630! -brightness-contrast 3x8 -modulate 100,112 -quality 92 frame.jpg
+    cp static/logo.svg scripts/social-card.svg .
+    rsvg-convert -w 1200 -h 630 social-card.svg -o static/images/social-card.png
+
+Change the wordmark or tagline in the SVG, not in the PNG. If the picture changes, update the `og:image:alt` text in `themes/xearthlayer/layouts/_partials/head.html` to match.
+
 ## App Version Sync
 
 Download links on the Getting Started page are automatically updated when new XEarthLayer versions are released.

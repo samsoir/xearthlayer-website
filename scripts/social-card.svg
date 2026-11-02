@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="top" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#11111b" stop-opacity="0.80"/>
+      <stop offset="0.42" stop-color="#11111b" stop-opacity="0.55"/>
+      <stop offset="0.75" stop-color="#11111b" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="left" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#11111b" stop-opacity="0.55"/>
+      <stop offset="0.55" stop-color="#11111b" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="word" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#cdd6f4"/>
+      <stop offset="0.5" stop-color="#b4befe"/>
+      <stop offset="1" stop-color="#cba6f7"/>
+    </linearGradient>
+  </defs>
+  <image href="frame.jpg" x="0" y="0" width="1200" height="630"/>
+  <rect width="1200" height="630" fill="url(#top)"/>
+  <rect width="1200" height="630" fill="url(#left)"/>
+  <image href="logo.svg" x="76" y="70" width="104" height="104"/>
+  <text x="76" y="286" font-family="Inter" font-weight="800" font-size="96" letter-spacing="-2" fill="url(#word)">XEarthLayer</text>
+  <text x="80" y="342" font-family="Inter" font-weight="400" font-size="34" fill="#cdd6f4">Stunning photoreal scenery for X-Plane 12</text>
+</svg>
