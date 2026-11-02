@@ -58,7 +58,15 @@ export function initScrolly(root, options = {}) {
   const end = manifest.end;
   const holds = manifest.holds || {};
   const pad = manifest.pad || 3;
-  const width = (window.innerWidth <= 960 && manifest.widths.includes(960)) ? 960 : manifest.widths[0];
+  // The frame set is chosen by what the stage actually draws: the picture
+  // covers the stage, so a tall phone screen needs frames as wide as its
+  // height times the aspect, at device pixels. Smallest set that covers it,
+  // else the largest.
+  const sourceAspect = manifest.source.width / manifest.source.height;
+  const coverPx = Math.max(stage.clientWidth, stage.clientHeight * sourceAspect)
+    * Math.min(window.devicePixelRatio || 1, 2);
+  const widths = manifest.widths.slice().sort((a, b) => a - b);
+  const width = widths.find((w) => w >= coverPx) || widths[widths.length - 1];
 
   // ---- Step plan: frame range and scrub fraction per step
   let from = 0;
@@ -96,8 +104,7 @@ export function initScrolly(root, options = {}) {
       if (i === plan.length - 1) p.end = Math.min(p.end, trackHeight - vh);
       if (p.end <= p.start) p.end = p.start + 1;
     });
-    const aspect = manifest.source.width / manifest.source.height;
-    const coverW = Math.max(stage.clientWidth, stage.clientHeight * aspect);
+    const coverW = Math.max(stage.clientWidth, stage.clientHeight * sourceAspect);
     const dpr = Math.min(window.devicePixelRatio || 1, 2, Math.max(1, width / coverW));
     const w = Math.round(stage.clientWidth * dpr);
     const h = Math.round(stage.clientHeight * dpr);
@@ -275,7 +282,7 @@ export function initScrolly(root, options = {}) {
   }
   function updateBadge() {
     if (!badge) return;
-    badge.textContent = `frame ${drawnIndex < 0 ? '-' : drawnIndex} · ${activeStep ? activeStep.feature : 'none'}`;
+    badge.textContent = `frame ${drawnIndex < 0 ? '-' : drawnIndex} · ${activeStep ? activeStep.feature : 'none'} · ${width}w`;
   }
 
   // ---- Public helpers
