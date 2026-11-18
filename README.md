@@ -123,6 +123,8 @@ The card's layout is `scripts/social-card.svg`. It expects `frame.jpg` (the crop
     cp static/logo.svg scripts/social-card.svg .
     rsvg-convert -w 1200 -h 630 social-card.svg -o static/images/social-card.png
 
+An article can have its own card built the same way: `scripts/xearthlayer-one-year-card.svg` lays the logo and wordmark over a 1200×630 crop of the post's cake photo (`magick static/images/news/xearthlayer-cake.webp -crop 1536x806+0+0 +repage -resize 1200x630! frame.jpg`), rendered with `rsvg-convert` and saved as a JPEG in `static/images/news/`.
+
 Change the wordmark or tagline in the SVG, not in the PNG. If the picture changes, update the `og:image:alt` text in `themes/xearthlayer/layouts/_partials/head.html` to match.
 
 ## App Version Sync

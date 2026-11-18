@@ -4,10 +4,11 @@ description = "A look back at XEarthLayer's first year of streaming ortho scener
 date = 2026-11-18T00:00:00-08:00
 author = 'XEarthLayer Team'
 tags = ['anniversary','dev diary']
+images = ['/images/news/xearthlayer-one-year-card.jpg']
 draft = false
 +++
 
-![XEarthLayer Birthday Cake with a single candle on a plate with a fork](/images/news/xearthlayer-cake.png)
+![XEarthLayer Birthday Cake with a single candle on a plate with a fork](/images/news/xearthlayer-cake.webp)
 
 {{< lead >}}
 Today marks the first anniversary of XEarthLayer's development. Over the last year, the project has gone from strength to strength through five significant versions, steadily improving a Rust-based solution for streaming ortho scenery in X-Plane 12.
@@ -34,7 +35,7 @@ Looking ahead, I find myself in familiar territory. In a couple of days, I am dr
 
 New features on my to-do list include native Windows 11 support, a system service wrapper for the core, an optional graphical user interface for controlling XEarthLayer, more improvements to night lighting and much more, all to think about while enjoying the festivities in Southern California.
 
-![Ortho4 XEarthLayer Orchestrator (OXO) web interface, presenting the Earth with colored regions for each XEarthLayer regional scenery package, which are listed in a table view on the right hand side](/images/news/oxo-interface.png)
+![Ortho4 XEarthLayer Orchestrator (OXO) web interface, presenting the Earth with colored regions for each XEarthLayer regional scenery package, which are listed in a table view on the right hand side](/images/news/oxo-interface.webp)
 
 Finally, some of you may know that XEarthLayer now has a companion tool called OXO, which is rapidly approaching the point where I am happy to release it. OXO will let anyone produce night-lit tiles for XEarthLayer and quickly build world-scale scenery packages using highly distributed compute running on Kubernetes or Podman. With OXO's release, the specification for the night-lighting recipe will be published, allowing any third party to use this feature in their own projects.
 
